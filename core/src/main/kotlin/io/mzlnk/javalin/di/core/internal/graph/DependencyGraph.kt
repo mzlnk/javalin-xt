@@ -1,6 +1,6 @@
-package io.mzlnk.javalin.boot.core.internal.graph
+package io.mzlnk.javalin.di.core.internal.graph
 
-import io.mzlnk.javalin.boot.core.internal.definition.SingletonDefinition
+import io.mzlnk.javalin.di.core.internal.definition.SingletonDefinition
 
 internal class DependencyGraph private constructor(
     private val _nodes: Array<SingletonDefinition>,

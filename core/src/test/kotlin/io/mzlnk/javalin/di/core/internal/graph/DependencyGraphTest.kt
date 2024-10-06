@@ -1,7 +1,7 @@
-package io.mzlnk.javalin.boot.core.internal.graph
+package io.mzlnk.javalin.di.core.internal.graph
 
-import io.mzlnk.javalin.boot.core.internal.definition.singletonDefinition
-import io.mzlnk.javalin.boot.core.internal.utils.*
+import io.mzlnk.javalin.di.core.internal.definition.singletonDefinition
+import io.mzlnk.javalin.di.core.internal.utils.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

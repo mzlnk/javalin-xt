@@ -1,6 +1,6 @@
-package io.mzlnk.javalin.boot.core.internal.definition
+package io.mzlnk.javalin.di.core.internal.definition
 
-import io.mzlnk.javalin.boot.core.internal.utils.TestModule
+import io.mzlnk.javalin.di.core.internal.utils.TestModule
 import java.lang.reflect.Method
 
 @DslMarker

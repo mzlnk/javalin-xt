@@ -5,9 +5,9 @@ plugins {
     `maven-publish`
 }
 
-group = "io.mzlnk.javalinboot"
+group = "io.mzlnk"
 version = "1.0-SNAPSHOT"
-archivesName = "core"
+archivesName = "javalin-di-core"
 
 repositories {
     mavenCentral()
@@ -18,8 +18,8 @@ publishing {
         create<MavenPublication>("mavenKotlin") {
             from(components["java"])
 
-            groupId = "io.kontx"
-            artifactId = "core"
+            groupId = "io.mzlnk"
+            artifactId = "javalin-di-core"
             version = "1.0-SNAPSHOT"
         }
     }

@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.boot.demo
+package io.mzlnk.javalin.di.demo
 
 import io.kontx.core.Module
 import io.kontx.core.Singleton

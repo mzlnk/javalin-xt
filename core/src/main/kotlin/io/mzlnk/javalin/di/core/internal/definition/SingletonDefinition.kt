@@ -1,6 +1,6 @@
-package io.mzlnk.javalin.boot.core.internal.definition
+package io.mzlnk.javalin.di.core.internal.definition
 
-import io.mzlnk.javalin.boot.core.internal.ApplicationContext
+import io.mzlnk.javalin.di.core.internal.ApplicationContext
 import java.lang.reflect.Method
 
 internal data class SingletonDefinition(
