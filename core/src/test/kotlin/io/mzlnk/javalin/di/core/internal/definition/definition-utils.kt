@@ -12,7 +12,8 @@ internal fun singletonDefinition(
     name: String? = null,
     init: (@ScopedDsl SingletonDefinitionBuilder).() -> Unit = {}
 ): SingletonDefinition =
-    SingletonDefinitionBuilder().apply(init).build(type, name)
+    SingletonDefinitionBuilder().apply(init).build(SingletonDefinition.Key(type, name))
+
 
 internal class SingletonDefinitionBuilder {
 
@@ -22,7 +23,7 @@ internal class SingletonDefinitionBuilder {
 
     )
 
-    private var _dependencies: List<SingletonDefinition.Dependency> = emptyList()
+    private var _dependencies: List<SingletonDefinition.Key> = emptyList()
     private var _conditions: List<SingletonDefinition.Condition> = emptyList()
 
     fun source(init: (@ScopedDsl SourceBuilder).() -> Unit) {
@@ -33,11 +34,8 @@ internal class SingletonDefinitionBuilder {
         _dependencies = DependenciesBuilder().apply(init).build()
     }
 
-    fun build(type: Class<*>, name: String?) = SingletonDefinition(
-        key = SingletonDefinition.Key(
-            type = type,
-            name = name
-        ),
+    fun build(key: SingletonDefinition.Key) = SingletonDefinition(
+        key = key,
         source = _source!!,
         dependencies = _dependencies,
         conditions = _conditions
@@ -57,20 +55,17 @@ internal class SingletonDefinitionBuilder {
 
     class DependenciesBuilder {
 
-        private val _dependencies = mutableListOf<SingletonDefinition.Dependency>()
+        private val _dependencies = mutableListOf<SingletonDefinition.Key>()
 
         fun single(init: (@ScopedDsl DependencyBuilder.Single).() -> Unit) {
             _dependencies.add(DependencyBuilder.Single().apply(init).build())
-        }
-
-        fun iterable(init: (@ScopedDsl DependencyBuilder.Iterable).() -> Unit) {
-            _dependencies.add(DependencyBuilder.Iterable().apply(init).build())
         }
 
         fun build() = _dependencies.toList()
 
     }
 
+    // TODO: add support for iterable dependencies/types
     interface DependencyBuilder {
 
         class Single {
@@ -78,23 +73,9 @@ internal class SingletonDefinitionBuilder {
             var type: Class<*>? = null
             var name: String? = null
 
-            fun build() = SingletonDefinition.Dependency.Single(
+            fun build() = SingletonDefinition.Key(
                 type = type!!,
                 name = name
-            )
-
-        }
-
-        class Iterable {
-
-            var type: Class<*>? = null
-            var name: String? = null
-            var iterableType: Class<*>? = null
-
-            fun build() = SingletonDefinition.Dependency.Iterable(
-                type = type!!,
-                name = name,
-                iterableType = iterableType!!
             )
 
         }

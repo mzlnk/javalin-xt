@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.kontx:core:1.0-SNAPSHOT")
+    implementation("io.mzlnk:javalin-di-core:1.0-SNAPSHOT")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 

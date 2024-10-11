@@ -3,9 +3,10 @@ package io.mzlnk.javalin.di.core.internal.graph
 import io.mzlnk.javalin.di.core.internal.definition.singletonDefinition
 import io.mzlnk.javalin.di.core.internal.utils.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
-class DependencyGraphTest {
+class DependencyGraphFactoryTest {
 
     @Test
     fun `should create graph for dependent singletons`() {
@@ -26,7 +27,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -57,7 +58,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -96,7 +97,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -128,7 +129,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -171,7 +172,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD, singletonE)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -209,7 +210,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -254,7 +255,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -263,101 +264,6 @@ class DependencyGraphTest {
             singletonC to singletonA,
             singletonD to singletonB,
             singletonD to singletonC
-        )
-    }
-
-    @Test
-    fun `should create graph for iterable dependency with one dependency`() {
-        /*
-         * dependency graph:
-         * A <- B
-         * dep(A) = List<B>
-         */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                iterable {
-                    type = B
-                    iterableType = List::class.java
-                }
-            }
-        }
-        val singletonB1 = singletonDefinition(B)
-
-        // and:
-        val definitions = listOf(singletonA, singletonB1)
-
-        // when:
-        val graph = DependencyGraph.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).containsExactly(singletonB1 to singletonA)
-    }
-
-    @Test
-    fun `should create graph for iterable dependency with no dependencies`() {
-        /*
-         * dependency graph:
-         * A
-         * dep(A) = List<B>
-         */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                iterable {
-                    type = B
-                    iterableType = List::class.java
-                }
-            }
-        }
-
-        // and:
-        val definitions = listOf(singletonA)
-
-        // when:
-        val graph = DependencyGraph.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).isEmpty()
-    }
-
-    @Test
-    fun `should create graph for iterable dependency with multiple dependencies`() {
-        /*
-         * dependency graph:
-         * A <- B
-         * dep(A) = List<B>
-         */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                iterable {
-                    type = B
-                    iterableType = List::class.java
-                }
-            }
-        }
-        val singletonB1 = singletonDefinition(B)
-        val singletonB2 = singletonDefinition(B)
-        val singletonB3 = singletonDefinition(B)
-
-        // and:
-        val definitions = listOf(singletonA, singletonB1, singletonB2, singletonB3)
-
-        // when:
-        val graph = DependencyGraph.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).containsExactlyInAnyOrder(
-            singletonB1 to singletonA,
-            singletonB2 to singletonA,
-            singletonB3 to singletonA
         )
     }
 
@@ -383,7 +289,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB_b1)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -425,7 +331,7 @@ class DependencyGraphTest {
         val definitions = listOf(singletonA, singletonB, singletonC_c1, singletonC_c2, singletonC)
 
         // when:
-        val graph = DependencyGraph.create(definitions)
+        val graph = DependencyGraphFactory.create(definitions)
 
         // then:
         assertThat(graph.nodes).isEqualTo(definitions)
@@ -436,101 +342,63 @@ class DependencyGraphTest {
     }
 
     @Test
+    @Disabled("Not implemented yet")
+    fun `should create graph for iterable dependency with one dependency`() {
+        /*
+         * dependency graph:
+         * A <- B
+         * dep(A) = List<B>
+         */
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    fun `should create graph for iterable dependency with no dependencies`() {
+        /*
+         * dependency graph:
+         * A
+         * dep(A) = List<B>
+         */
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    fun `should create graph for iterable dependency with multiple dependencies`() {
+        /*
+         * dependency graph:
+         * A <- B
+         * dep(A) = List<B>
+         */
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
     fun `should create graph for iterable dependency with one named dependency`() {
         /*
          * dependency graph:
          * A <- B
          * dep(A) = List<B>
          */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                iterable {
-                    type = B
-                    iterableType = List::class.java
-                }
-            }
-        }
-        val singletonB1_b1 = singletonDefinition(B, name = "b1")
-
-        // and:
-        val definitions = listOf(singletonA, singletonB1_b1)
-
-        // when:
-        val graph = DependencyGraph.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).containsExactly(singletonB1_b1 to singletonA)
     }
 
     @Test
+    @Disabled("Not implemented yet")
     fun `should create graph for iterable named dependency with one named dependency`() {
         /*
          * dependency graph:
          * A <- B<b1>
          * dep(A) = List<B<b1>>
          */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                iterable {
-                    type = B
-                    iterableType = List::class.java
-                    name = "b1"
-                }
-            }
-        }
-        val singletonB1_b1 = singletonDefinition(B, name = "b1")
-
-        // and:
-        val definitions = listOf(singletonA, singletonB1_b1)
-
-        // when:
-        val graph = DependencyGraph.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).containsExactly(singletonB1_b1 to singletonA)
     }
 
     @Test
+    @Disabled("Not implemented yet")
     fun `should create graph for iterable named dependency with multiple named dependencies`() {
         /*
          * dependency graph:
          * A <- B<b1>
          * dep(A) = List<B<b1>>
          */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                iterable {
-                    type = B
-                    iterableType = List::class.java
-                    name = "b1"
-                }
-            }
-        }
-        val singletonB1_b1 = singletonDefinition(B, name = "b1")
-        val singletonB2_b1 = singletonDefinition(B, name = "b1")
-        val singletonB2_b2 = singletonDefinition(B, name = "b2")
-        val singletonB3 = singletonDefinition(B)
-
-        // and:
-        val definitions = listOf(singletonA, singletonB1_b1, singletonB2_b1, singletonB2_b2, singletonB3)
-
-        // when:
-        val graph = DependencyGraph.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).containsExactlyInAnyOrder(
-            singletonB1_b1 to singletonA,
-            singletonB2_b1 to singletonA,
-        )
     }
 
 }
