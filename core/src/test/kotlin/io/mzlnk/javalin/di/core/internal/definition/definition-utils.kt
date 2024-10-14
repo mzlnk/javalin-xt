@@ -1,6 +1,5 @@
 package io.mzlnk.javalin.di.core.internal.definition
 
-import io.mzlnk.javalin.di.core.internal.utils.TestModule
 import java.lang.reflect.Method
 
 @DslMarker
@@ -79,6 +78,12 @@ internal class SingletonDefinitionBuilder {
             )
 
         }
+    }
+
+    private class TestModule {
+
+        fun testMethod() {}
+
     }
 
 }
