@@ -1,9 +1,13 @@
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "2.0.21"
 }
 
-group = "io.kontx"
-version = "1.0-SNAPSHOT"
+group = "io.mzlnk"
+version = "0.0.1"
+
+kotlin {
+    jvmToolchain(21)
+}
 
 repositories {
     mavenCentral()
@@ -11,13 +15,10 @@ repositories {
 }
 
 dependencies {
-    implementation("io.mzlnk:javalin-di-core:1.0-SNAPSHOT")
+    implementation("io.mzlnk:javalin-di:0.0.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
 }

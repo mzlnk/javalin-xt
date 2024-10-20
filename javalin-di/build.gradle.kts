@@ -1,24 +1,19 @@
 import org.gradle.api.JavaVersion.VERSION_17
 
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "2.0.21"
     `maven-publish`
 }
 
 group = "io.mzlnk"
-version = "1.0-SNAPSHOT"
+version = "0.0.1"
 
 repositories {
     mavenCentral()
 }
 
-java {
-    sourceCompatibility = VERSION_17
-    targetCompatibility = VERSION_17
-}
-
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 publishing {
@@ -27,8 +22,8 @@ publishing {
             from(components["java"])
 
             groupId = "io.mzlnk"
-            artifactId = "javalin-di-core"
-            version = "1.0-SNAPSHOT"
+            artifactId = "javalin-di"
+            version = "0.0.1"
         }
     }
 
