@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+import org.gradle.api.JavaVersion.VERSION_17
 
 plugins {
     kotlin("jvm") version "1.9.21"
@@ -7,10 +7,18 @@ plugins {
 
 group = "io.mzlnk"
 version = "1.0-SNAPSHOT"
-archivesName = "javalin-di-core"
 
 repositories {
     mavenCentral()
+}
+
+java {
+    sourceCompatibility = VERSION_17
+    targetCompatibility = VERSION_17
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 publishing {
@@ -41,6 +49,4 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
-kotlin {
-    jvmToolchain(21)
-}
+
