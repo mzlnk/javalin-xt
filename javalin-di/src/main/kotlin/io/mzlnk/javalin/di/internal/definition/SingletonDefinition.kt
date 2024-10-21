@@ -1,6 +1,6 @@
-package io.mzlnk.javalin.di.core.internal.definition
+package io.mzlnk.javalin.di.internal.definition
 
-import io.mzlnk.javalin.di.core.internal.ApplicationContext
+import io.mzlnk.javalin.di.ApplicationContext
 import java.lang.reflect.Method
 import java.util.UUID
 

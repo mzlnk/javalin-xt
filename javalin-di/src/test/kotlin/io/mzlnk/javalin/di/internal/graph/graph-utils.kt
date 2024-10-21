@@ -1,6 +1,6 @@
-package io.mzlnk.javalin.di.core.internal.graph
+package io.mzlnk.javalin.di.internal.graph
 
-import io.mzlnk.javalin.di.core.internal.definition.SingletonDefinition
+import io.mzlnk.javalin.di.internal.definition.SingletonDefinition
 
 internal fun dependencyGraph(
     nodes: List<SingletonDefinition>,

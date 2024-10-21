@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.core.internal.utils
+package io.mzlnk.javalin.di.internal.utils
 
 class TypeA
 class TypeB

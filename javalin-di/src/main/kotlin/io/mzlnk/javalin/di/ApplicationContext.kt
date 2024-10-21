@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.core.internal
+package io.mzlnk.javalin.di
 
 internal interface ApplicationContext {
 }

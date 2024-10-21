@@ -1,11 +1,11 @@
-package io.mzlnk.javalin.di.core.internal.definition
+package io.mzlnk.javalin.di.internal.definition
 
-import io.mzlnk.javalin.di.core.Module
-import io.mzlnk.javalin.di.core.Named
-import io.mzlnk.javalin.di.core.Singleton
-import io.mzlnk.javalin.di.core.internal.utils.TypeA
-import io.mzlnk.javalin.di.core.internal.utils.TypeB
-import io.mzlnk.javalin.di.core.internal.utils.TypeC
+import io.mzlnk.javalin.di.Module
+import io.mzlnk.javalin.di.Named
+import io.mzlnk.javalin.di.Singleton
+import io.mzlnk.javalin.di.internal.utils.TypeA
+import io.mzlnk.javalin.di.internal.utils.TypeB
+import io.mzlnk.javalin.di.internal.utils.TypeC
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -36,7 +36,8 @@ class SingletonDefinitionsLoaderTest {
             .hasSize(1)
             .first()
             .extracting { it.source }
-            .isEqualTo(SingletonDefinition.Source(
+            .isEqualTo(
+                SingletonDefinition.Source(
                 clazz = TestModule::class.java,
                 method = TestModule::class.java.getDeclaredMethod("typeA")
             ))

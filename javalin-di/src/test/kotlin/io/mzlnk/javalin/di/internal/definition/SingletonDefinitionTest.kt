@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.core.internal.definition
+package io.mzlnk.javalin.di.internal.definition
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

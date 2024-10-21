@@ -1,8 +1,8 @@
-package io.mzlnk.javalin.di.core.internal.definition
+package io.mzlnk.javalin.di.internal.definition
 
-import io.mzlnk.javalin.di.core.Module
-import io.mzlnk.javalin.di.core.Named
-import io.mzlnk.javalin.di.core.Singleton
+import io.mzlnk.javalin.di.Module
+import io.mzlnk.javalin.di.Named
+import io.mzlnk.javalin.di.Singleton
 
 internal class SingletonDefinitionsLoader(
     private val classSource: ClassSource = ClasspathClassSource

@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.core
+package io.mzlnk.javalin.di
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)

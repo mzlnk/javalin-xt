@@ -1,7 +1,5 @@
-import org.gradle.api.JavaVersion.VERSION_17
-
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "_"
     `maven-publish`
 }
 
@@ -36,9 +34,17 @@ publishing {
 }
 
 dependencies {
-    implementation("org.reflections:reflections:0.10.2")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.assertj:assertj-core:3.26.3")
+    implementation(kotlin("stdlib"))
+    implementation("org.reflections:reflections:_")
+    implementation("com.google.devtools.ksp:symbol-processing-api:_")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:_")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:_")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:_")
+
+    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:_")
+
+    testImplementation("org.assertj:assertj-core:_")
 }
 
 tasks.test {
