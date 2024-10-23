@@ -1,1 +1,2 @@
 io.mzlnk.javalin.di.internal.processing.JavalinApplicationSymbolProcessorProvider
+io.mzlnk.javalin.di.internal.processing.JavalinRunnerSymbolProcessorProvider

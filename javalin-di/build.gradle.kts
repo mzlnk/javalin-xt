@@ -38,6 +38,8 @@ dependencies {
     implementation("org.reflections:reflections:_")
     implementation("com.google.devtools.ksp:symbol-processing-api:_")
 
+    compileOnly("io.javalin:javalin:_")
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:_")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:_")
     testImplementation("org.junit.jupiter:junit-jupiter-params:_")
