@@ -47,6 +47,7 @@ dependencies {
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:_")
 
     testImplementation("org.assertj:assertj-core:_")
+    testImplementation(kotlin("reflect"))
 }
 
 tasks.test {

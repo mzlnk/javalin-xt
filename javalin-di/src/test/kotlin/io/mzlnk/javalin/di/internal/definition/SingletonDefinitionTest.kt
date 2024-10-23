@@ -8,12 +8,15 @@ class SingletonDefinitionTest {
     @Test
     fun `should return string representation for singleton definition key with name`() {
         // given:
-        val clazz = TestClass::class.java
+        val type = Type(
+            packageName = TestClass::class.java.packageName,
+            name = TestClass::class.java.simpleName
+        )
         val name = "testName"
 
         // and:
         val key = SingletonDefinition.Key(
-            type = clazz,
+            type = type,
             name = name
         )
 
@@ -27,11 +30,14 @@ class SingletonDefinitionTest {
     @Test
     fun `should return string representation for singleton definition key without name`() {
         // given:
-        val clazz = TestClass::class.java
+        val type = Type(
+            packageName = TestClass::class.java.packageName,
+            name = TestClass::class.java.simpleName
+        )
 
         // and:
         val key = SingletonDefinition.Key(
-            type = clazz,
+            type = type,
             name = null
         )
 
@@ -45,8 +51,19 @@ class SingletonDefinitionTest {
     @Test
     fun `should return string representation for singleton definition source`() {
         // given:
-        val clazz = TestClass::class.java
-        val method = TestClass::class.java.getDeclaredMethod("testMethod")
+        val clazz = Clazz(
+            type = Type(
+                packageName = TestClass::class.java.packageName,
+                name = TestClass::class.java.simpleName
+            )
+        )
+
+        val method =Method(
+            returnType = Type(
+                packageName = Unit::class.java.packageName,
+                name = Unit::class.java.simpleName
+            ),
+            name = "testMethod")
 
         // and:
         val source = SingletonDefinition.Source(
@@ -58,7 +75,7 @@ class SingletonDefinitionTest {
         val result = source.toString()
 
         // then:
-        assertThat(result).isEqualTo("${clazz.canonicalName}#${method.name}")
+        assertThat(result).isEqualTo("${TestClass::class.java.canonicalName}#${method.name}")
 
     }
 

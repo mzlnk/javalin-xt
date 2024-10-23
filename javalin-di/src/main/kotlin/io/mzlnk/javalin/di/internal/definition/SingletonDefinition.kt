@@ -1,8 +1,7 @@
 package io.mzlnk.javalin.di.internal.definition
 
 import io.mzlnk.javalin.di.ApplicationContext
-import java.lang.reflect.Method
-import java.util.UUID
+import java.util.*
 
 internal data class SingletonDefinition(
     val key: Key,
@@ -14,20 +13,20 @@ internal data class SingletonDefinition(
     val id: UUID = UUID.randomUUID()
 
     internal data class Key(
-        val type: Class<*>,
+        val type: Type,
         val name: String? = null
     ) {
 
-        override fun toString(): String = "${type.canonicalName}${name?.let { "($it)" } ?: ""}"
+        override fun toString(): String = "${type}${name?.let { "($it)" } ?: ""}"
 
     }
 
     internal data class Source(
-        val clazz: Class<*>,
+        val clazz: Clazz,
         val method: Method
     ) {
 
-        override fun toString(): String = "${clazz.canonicalName}#${method.name}"
+        override fun toString(): String = "${clazz}#${method.name}"
 
     }
 

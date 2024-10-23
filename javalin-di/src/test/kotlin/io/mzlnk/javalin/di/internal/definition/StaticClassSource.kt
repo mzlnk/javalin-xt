@@ -1,10 +1,17 @@
 package io.mzlnk.javalin.di.internal.definition
 
-class StaticClassSource(vararg classes: Class<*>) : ClassSource {
+internal class StaticClassSource private constructor(private val classes: List<Clazz>) : ClazzSource {
 
-    private val classes: Collection<Class<*>> = classes.toList()
-
-    override fun read(): Collection<Class<*>> {
+    override fun read(): Collection<Clazz> {
         return classes
     }
+
+    companion object {
+
+        fun of(vararg classes: Clazz): ClazzSource {
+            return StaticClassSource(classes.toList())
+        }
+
+    }
+
 }

@@ -9,6 +9,7 @@ import io.mzlnk.javalin.di.internal.utils.TypeC
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
+import kotlin.reflect.full.declaredFunctions
 
 class SingletonDefinitionsLoaderTest {
 
@@ -25,7 +26,9 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
@@ -38,8 +41,8 @@ class SingletonDefinitionsLoaderTest {
             .extracting { it.source }
             .isEqualTo(
                 SingletonDefinition.Source(
-                clazz = TestModule::class.java,
-                method = TestModule::class.java.getDeclaredMethod("typeA")
+                clazz = clazz(TestModule::class),
+                method = method(TestModule::class.declaredFunctions.find { it.name == "typeA" }!!)
             ))
     }
 
@@ -56,7 +59,9 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
@@ -85,14 +90,16 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
         val definitions = loader.load()
 
         // then:
-        val typeBDefinition = definitions.find { it.key.type == TypeB::class.java }
+        val typeBDefinition = definitions.find { it.key.type == type(TypeB::class) }
             ?: fail("TypeB definition not found")
 
         // and:
@@ -100,7 +107,7 @@ class SingletonDefinitionsLoaderTest {
             .hasSize(1)
             .first()
             .extracting { it.type }
-            .isEqualTo(TypeA::class.java)
+            .isEqualTo(type(TypeA::class))
     }
 
     @Test
@@ -121,20 +128,22 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
         val definitions = loader.load()
 
         // then:
-        val typeCDefinition = definitions.find { it.key.type == TypeC::class.java }
+        val typeCDefinition = definitions.find { it.key.type == type(TypeC::class) }
             ?: fail("TypeC definition not found")
 
         // and:
         assertThat(typeCDefinition.dependencies)
-            .extracting<Class<*>> { it.type }
-            .containsExactlyInAnyOrder(TypeA::class.java, TypeB::class.java)
+            .extracting<Type> { it.type }
+            .containsExactlyInAnyOrder(type(TypeA::class), type(TypeB::class))
     }
 
     @Test
@@ -150,7 +159,9 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
@@ -161,7 +172,7 @@ class SingletonDefinitionsLoaderTest {
             .hasSize(1)
             .first()
             .extracting { it.key }
-            .isEqualTo(SingletonDefinition.Key(TypeA::class.java, "namedTypeA"))
+            .isEqualTo(SingletonDefinition.Key(type(TypeA::class), "namedTypeA"))
     }
 
     @Test
@@ -180,21 +191,23 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
         val definitions = loader.load()
 
         // then:
-        val typeBDefinition = definitions.find { it.key.type == TypeB::class.java }
+        val typeBDefinition = definitions.find { it.key.type == type(TypeB::class) }
             ?: fail("TypeB definition not found")
 
         // and:
         assertThat(typeBDefinition.dependencies)
             .hasSize(1)
             .first()
-            .isEqualTo(SingletonDefinition.Key(TypeA::class.java, "namedTypeA"))
+            .isEqualTo(SingletonDefinition.Key(type(TypeA::class), "namedTypeA"))
     }
 
     @Test
@@ -209,7 +222,9 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
@@ -233,7 +248,9 @@ class SingletonDefinitionsLoaderTest {
 
         // and:
         val loader = SingletonDefinitionsLoader(
-            classSource = StaticClassSource(TestModule::class.java)
+            clazzSource = StaticClassSource.of(
+                clazz(TestModule::class)
+            )
         )
 
         // when:
@@ -245,7 +262,7 @@ class SingletonDefinitionsLoaderTest {
             .first()
             .extracting { it.key.type }
             // only typeA should be loaded as it is annotated with @Singleton
-            .isEqualTo(TypeA::class.java)
+            .isEqualTo(type(TypeA::class))
     }
 
 }
