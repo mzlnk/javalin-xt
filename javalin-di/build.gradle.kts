@@ -35,7 +35,6 @@ publishing {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.reflections:reflections:_")
     implementation("com.google.devtools.ksp:symbol-processing-api:_")
 
     compileOnly("io.javalin:javalin:_")

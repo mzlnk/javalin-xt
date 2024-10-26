@@ -1,23 +1,40 @@
-package io.mzlnk.javalin.di.internal.utils
+package io.mzlnk.javalin.di.internal.graph
 
-import io.mzlnk.javalin.di.internal.definition.type
+import io.mzlnk.javalin.di.internal.definition.Type
 
-class TypeA
-class TypeB
-class TypeC
-class TypeD
-class TypeE
-class TypeF
-class TypeG
-class TypeH
-class TypeI
-
-val A = type(TypeA::class)
-val B = type(TypeB::class)
-val C = type(TypeC::class)
-val D = type(TypeD::class)
-val E = type(TypeE::class)
-val F = type(TypeF::class)
-val G = type(TypeG::class)
-val H = type(TypeH::class)
-val I = type(TypeI::class)
+val A = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeA"
+)
+val B = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeB"
+)
+val C = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeC"
+)
+val D = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeD"
+)
+val E = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeE"
+)
+val F = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeF"
+)
+val G = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeG"
+)
+val H = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeH"
+)
+val I = Type(
+    packageName = "io.mzlnk.javalin.di.test",
+    name = "TypeI"
+)

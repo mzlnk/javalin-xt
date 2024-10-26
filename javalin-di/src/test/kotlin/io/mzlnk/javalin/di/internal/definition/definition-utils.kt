@@ -1,7 +1,5 @@
 package io.mzlnk.javalin.di.internal.definition
 
-import kotlin.reflect.full.declaredFunctions
-
 @DslMarker
 @Target(AnnotationTarget.TYPE)
 internal annotation class ScopedDsl
@@ -17,8 +15,28 @@ internal fun singletonDefinition(
 internal class SingletonDefinitionBuilder {
 
     private var _source: SingletonDefinition.Source? = SingletonDefinition.Source(
-        clazz = clazz(TestModule::class),
-        method = method(TestModule::class.declaredFunctions.find { it.name == "testMethod" }!!)
+        clazz = Clazz(
+            type = Type(
+                packageName = "io.mzlnk.javalin.di.test",
+                name = "TestModule"
+            ),
+            methods = listOf(
+                Method(
+                    name = "testMethod",
+                    returnType = Type(
+                        packageName = "kotlin",
+                        name = "Unit"
+                    )
+                )
+            )
+        ),
+        method = Method(
+            name = "testMethod",
+            returnType = Type(
+                packageName = "kotlin",
+                name = "Unit"
+            )
+        )
     )
 
     private var _dependencies: List<SingletonDefinition.Key> = emptyList()
@@ -78,11 +96,4 @@ internal class SingletonDefinitionBuilder {
 
         }
     }
-
-    private class TestModule {
-
-        fun testMethod() {}
-
-    }
-
 }

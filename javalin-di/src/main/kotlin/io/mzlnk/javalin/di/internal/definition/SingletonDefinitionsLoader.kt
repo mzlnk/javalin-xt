@@ -3,6 +3,7 @@ package io.mzlnk.javalin.di.internal.definition
 import io.mzlnk.javalin.di.Module
 import io.mzlnk.javalin.di.Named
 import io.mzlnk.javalin.di.Singleton
+import kotlin.reflect.KClass
 
 internal class SingletonDefinitionsLoader(
     private val clazzSource: ClazzSource
@@ -36,4 +37,8 @@ internal class SingletonDefinitionsLoader(
             }
     }
 
+}
+
+private fun Annotation.isTypeOf(clazz: KClass<*>): Boolean {
+    return clazz.qualifiedName == type.qualifiedName
 }

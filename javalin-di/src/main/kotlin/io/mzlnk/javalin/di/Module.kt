@@ -1,5 +1,5 @@
 package io.mzlnk.javalin.di
 
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 annotation class Module

@@ -9,8 +9,8 @@ class SingletonDefinitionTest {
     fun `should return string representation for singleton definition key with name`() {
         // given:
         val type = Type(
-            packageName = TestClass::class.java.packageName,
-            name = TestClass::class.java.simpleName
+            packageName = "io.mzlnk.javalin.di.test",
+            name = "TestClass"
         )
         val name = "testName"
 
@@ -24,15 +24,15 @@ class SingletonDefinitionTest {
         val result = key.toString()
 
         // then:
-        assertThat(result).isEqualTo("${TestClass::class.java.canonicalName}($name)")
+        assertThat(result).isEqualTo("io.mzlnk.javalin.di.test.TestClass(testName)")
     }
 
     @Test
     fun `should return string representation for singleton definition key without name`() {
         // given:
         val type = Type(
-            packageName = TestClass::class.java.packageName,
-            name = TestClass::class.java.simpleName
+            packageName = "io.mzlnk.javalin.di.test",
+            name = "TestClass"
         )
 
         // and:
@@ -45,7 +45,7 @@ class SingletonDefinitionTest {
         val result = key.toString()
 
         // then:
-        assertThat(result).isEqualTo(TestClass::class.java.canonicalName)
+        assertThat(result).isEqualTo("io.mzlnk.javalin.di.test.TestClass")
     }
 
     @Test
@@ -53,15 +53,15 @@ class SingletonDefinitionTest {
         // given:
         val clazz = Clazz(
             type = Type(
-                packageName = TestClass::class.java.packageName,
-                name = TestClass::class.java.simpleName
+                packageName = "io.mzlnk.javalin.di.test",
+                name = "TestClass"
             )
         )
 
-        val method =Method(
+        val method = Method(
             returnType = Type(
-                packageName = Unit::class.java.packageName,
-                name = Unit::class.java.simpleName
+                packageName = "kotlin",
+                name = "Unit"
             ),
             name = "testMethod")
 
@@ -75,14 +75,8 @@ class SingletonDefinitionTest {
         val result = source.toString()
 
         // then:
-        assertThat(result).isEqualTo("${TestClass::class.java.canonicalName}#${method.name}")
+        assertThat(result).isEqualTo("io.mzlnk.javalin.di.test.TestClass#testMethod")
 
     }
-
-}
-
-private class TestClass {
-
-    fun testMethod() {}
 
 }
