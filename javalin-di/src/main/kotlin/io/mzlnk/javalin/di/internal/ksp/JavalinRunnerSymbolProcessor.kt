@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import io.mzlnk.javalin.di.internal.processing.ApplicationSkeletonProcessor
 
 class JavalinRunnerSymbolProcessor(
     private val codeGenerator: CodeGenerator,
@@ -19,30 +20,15 @@ class JavalinRunnerSymbolProcessor(
 
         val packageName = mainFunction.packageName.asString()
 
+        val project = ResolverProjectLoader.load(resolver)
+        val applicationSkeletonFile = ApplicationSkeletonProcessor.process(project)
+
         try {
             codeGenerator.createNewFile(
                 dependencies = Dependencies(aggregating = false, mainFunction.containingFile!!),
-                packageName = packageName,
-                fileName = "JavalinRunner",
-            ).write(
-                // language=kotlin
-                """
-            package $packageName
-
-            import io.javalin.Javalin
-            import io.javalin.config.JavalinConfig
-            import io.mzlnk.javalin.di.spi.JavalinRunnerProvider
-            
-            class JavalinRunnerProviderImpl : JavalinRunnerProvider {
-                override fun run(configCustomizer: (JavalinConfig) -> Unit) {
-                    val app = Javalin.create { config ->
-                        configCustomizer(config)
-                    }.start()
-                }
-            
-            }
-            """.trimIndent().toByteArray()
-            )
+                packageName = applicationSkeletonFile.packageName,
+                fileName = applicationSkeletonFile.fileName,
+            ).write(applicationSkeletonFile.content.toByteArray())
         } catch (ignored: Exception) {
         }
 
