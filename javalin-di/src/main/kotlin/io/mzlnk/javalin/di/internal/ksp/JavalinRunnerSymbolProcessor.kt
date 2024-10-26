@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing
+package io.mzlnk.javalin.di.internal.ksp
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated

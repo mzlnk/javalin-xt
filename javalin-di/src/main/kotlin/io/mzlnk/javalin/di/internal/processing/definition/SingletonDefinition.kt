@@ -1,6 +1,9 @@
-package io.mzlnk.javalin.di.internal.definition
+package io.mzlnk.javalin.di.internal.processing.definition
 
 import io.mzlnk.javalin.di.ApplicationContext
+import io.mzlnk.javalin.di.internal.processing.Clazz
+import io.mzlnk.javalin.di.internal.processing.Method
+import io.mzlnk.javalin.di.internal.processing.Type
 import java.util.*
 
 internal data class SingletonDefinition(

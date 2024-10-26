@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.definition
+package io.mzlnk.javalin.di.internal.processing
 
 internal data class Method(
     val name: String,

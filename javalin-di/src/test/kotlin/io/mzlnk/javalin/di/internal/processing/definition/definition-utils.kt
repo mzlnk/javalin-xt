@@ -1,4 +1,9 @@
-package io.mzlnk.javalin.di.internal.definition
+package io.mzlnk.javalin.di.internal.processing.definition
+
+import io.mzlnk.javalin.di.internal.processing.Clazz
+import io.mzlnk.javalin.di.internal.processing.Method
+import io.mzlnk.javalin.di.internal.processing.definition.SingletonDefinition
+import io.mzlnk.javalin.di.internal.processing.Type
 
 @DslMarker
 @Target(AnnotationTarget.TYPE)

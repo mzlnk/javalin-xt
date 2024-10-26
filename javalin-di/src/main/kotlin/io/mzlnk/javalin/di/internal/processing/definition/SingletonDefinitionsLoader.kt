@@ -1,16 +1,16 @@
-package io.mzlnk.javalin.di.internal.definition
+package io.mzlnk.javalin.di.internal.processing.definition
 
 import io.mzlnk.javalin.di.Module
 import io.mzlnk.javalin.di.Named
 import io.mzlnk.javalin.di.Singleton
+import io.mzlnk.javalin.di.internal.processing.Annotation
+import io.mzlnk.javalin.di.internal.processing.Project
 import kotlin.reflect.KClass
 
-internal class SingletonDefinitionsLoader(
-    private val clazzSource: ClazzSource
-) {
+internal object SingletonDefinitionsLoader {
 
-    fun load(): List<SingletonDefinition> {
-        val allClasses = clazzSource.read()
+    fun load(project: Project): List<SingletonDefinition> {
+        val allClasses = project.classes
 
         return allClasses
             .filter { clazz -> clazz.annotations.any { it.isTypeOf(Module::class) } }

@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.definition
+package io.mzlnk.javalin.di.internal.processing
 
 data class Type(
     val packageName: String,

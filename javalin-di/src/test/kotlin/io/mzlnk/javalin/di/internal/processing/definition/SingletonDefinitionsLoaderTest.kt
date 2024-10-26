@@ -1,8 +1,13 @@
-package io.mzlnk.javalin.di.internal.definition
+package io.mzlnk.javalin.di.internal.processing.definition
 
 import io.mzlnk.javalin.di.Named
 import io.mzlnk.javalin.di.Singleton
 import io.mzlnk.javalin.di.Module
+import io.mzlnk.javalin.di.internal.processing.*
+import io.mzlnk.javalin.di.internal.processing.Annotation
+import io.mzlnk.javalin.di.internal.processing.Clazz
+import io.mzlnk.javalin.di.internal.processing.Method
+import io.mzlnk.javalin.di.internal.processing.definition.SingletonDefinitionsLoader
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -34,12 +39,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
+        val definitions = SingletonDefinitionsLoader.load(project)
 
         // then:
         assertThat(definitions)
@@ -79,12 +82,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
+        val definitions = SingletonDefinitionsLoader.load(project)
 
         // then:
         assertThat(definitions)
@@ -130,12 +131,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
+        val definitions = SingletonDefinitionsLoader.load(project)
 
         // then:
         val typeBDefinition = definitions.find { it.key.type == typeTypeB() }
@@ -196,12 +195,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
+        val definitions = SingletonDefinitionsLoader.load(project)
 
         // then:
         val typeCDefinition = definitions.find { it.key.type == typeTypeC() }
@@ -241,12 +238,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
+        val definitions = SingletonDefinitionsLoader.load(project)
 
         // then:
         assertThat(definitions)
@@ -296,13 +291,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
-
+        val definitions = SingletonDefinitionsLoader.load(project)
         // then:
         val typeBDefinition = definitions.find { it.key.type == typeTypeB() }
             ?: fail("TypeB definition not found")
@@ -337,12 +329,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
+        val definitions = SingletonDefinitionsLoader.load(project)
 
         // then:
         assertThat(definitions).isEmpty()
@@ -378,12 +368,10 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val loader = SingletonDefinitionsLoader(
-            clazzSource = StaticClassSource.of(clazz)
-        )
+        val project = Project(classes = listOf(clazz))
 
         // when:
-        val definitions = loader.load()
+        val definitions = SingletonDefinitionsLoader.load(project)
 
         // then:
         assertThat(definitions)
