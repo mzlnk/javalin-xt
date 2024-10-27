@@ -39,7 +39,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)
@@ -82,7 +82,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)
@@ -131,7 +131,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)
@@ -195,7 +195,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)
@@ -238,7 +238,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)
@@ -291,7 +291,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)
@@ -329,7 +329,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)
@@ -368,7 +368,7 @@ class SingletonDefinitionsLoaderTest {
         )
 
         // and:
-        val project = Project(classes = listOf(clazz))
+        val project = Project(classes = listOf(clazz), rootPackageName = "test")
 
         // when:
         val definitions = SingletonDefinitionsLoader.load(project)

@@ -9,10 +9,10 @@ internal object ApplicationSkeletonProcessor {
     fun process(project: Project): ApplicationSkeletonFile {
         val content = SingletonDefinitionsLoader.load(project)
             .let { definitions -> DependencyGraphFactory.create(definitions) }
-            .let { graph -> ApplicationSkeletonContentGenerator.generate(project.mainFunctionPackageName, graph) }
+            .let { graph -> ApplicationSkeletonContentGenerator.generate(project.rootPackageName, graph) }
 
         return ApplicationSkeletonFile(
-            packageName = project.mainFunctionPackageName,
+            packageName = project.rootPackageName,
             fileName = "JavalinRunnerProviderImpl",
             content = content
         )

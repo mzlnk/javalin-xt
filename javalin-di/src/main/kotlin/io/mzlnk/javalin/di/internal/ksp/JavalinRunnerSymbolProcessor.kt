@@ -2,8 +2,6 @@ package io.mzlnk.javalin.di.internal.ksp
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
-import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import io.mzlnk.javalin.di.internal.processing.ApplicationSkeletonProcessor
 
 class JavalinRunnerSymbolProcessor(
@@ -12,20 +10,12 @@ class JavalinRunnerSymbolProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val mainFunction = resolver.getAllFiles()
-            .flatMap { it.declarations }
-            .filter { it is KSFunctionDeclaration && it.isMain() }
-            .map { it as KSFunctionDeclaration }
-            .firstOrNull() ?: return emptyList()
-
-        val packageName = mainFunction.packageName.asString()
-
-        val project = ResolverProjectLoader.load(resolver)
+        val project = ResolverProjectLoader.load(resolver) ?: return emptyList()
         val applicationSkeletonFile = ApplicationSkeletonProcessor.process(project)
 
         try {
             codeGenerator.createNewFile(
-                dependencies = Dependencies(aggregating = false, mainFunction.containingFile!!),
+                dependencies = Dependencies(aggregating = true),
                 packageName = applicationSkeletonFile.packageName,
                 fileName = applicationSkeletonFile.fileName,
             ).write(applicationSkeletonFile.content.toByteArray())
@@ -39,39 +29,12 @@ class JavalinRunnerSymbolProcessor(
                 fileName = "META-INF/services/io.mzlnk.javalin.di.spi.JavalinRunnerProvider",
                 extensionName = ""
             ).write(
-                "$packageName.JavalinRunnerProviderImpl".toByteArray()
+                "${applicationSkeletonFile.packageName}.JavalinRunnerProviderImpl".toByteArray()
             )
-        } catch(ignored: Exception) {}
+        } catch (ignored: Exception) {
+        }
 
         return emptyList()
-    }
-
-    private fun KSFunctionDeclaration.isMain(): Boolean {
-        if (this.simpleName.asString() != "main") {
-            return false
-        }
-
-        if (this.parentDeclaration != null) {
-            return false
-        }
-
-        if (this.returnType?.resolve()?.declaration?.qualifiedName?.asString() != "kotlin.Unit") {
-            return false
-        }
-
-        if (this.parameters.size != 1) {
-            return false
-        }
-
-        val parameterType = this.parameters[0].type.resolve()
-        val parameterTypeDeclaration = parameterType.declaration as? KSClassDeclaration
-
-        if (parameterTypeDeclaration?.qualifiedName?.asString() != "kotlin.Array") {
-            return false
-        }
-
-        val argumentType = parameterType.arguments.firstOrNull()?.type?.resolve()
-        return argumentType?.declaration?.qualifiedName?.asString() == "kotlin.String"
     }
 
 }
