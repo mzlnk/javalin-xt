@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing.definition
+package io.mzlnk.javalin.di.internal.processing.runner.definition
 
 import io.mzlnk.javalin.di.Named
 import io.mzlnk.javalin.di.Singleton
@@ -7,7 +7,8 @@ import io.mzlnk.javalin.di.internal.processing.*
 import io.mzlnk.javalin.di.internal.processing.Annotation
 import io.mzlnk.javalin.di.internal.processing.Clazz
 import io.mzlnk.javalin.di.internal.processing.Method
-import io.mzlnk.javalin.di.internal.processing.definition.SingletonDefinitionsLoader
+import io.mzlnk.javalin.di.internal.processing.runner.definition.SingletonDefinitionsLoader
+import io.mzlnk.javalin.di.internal.processing.runner.definition.SingletonDefinition
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test

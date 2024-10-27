@@ -1,12 +1,12 @@
 package io.mzlnk.javalin.di.internal.processing
 
-import io.mzlnk.javalin.di.internal.processing.file.MetaInfFileGenerator
-import io.mzlnk.javalin.di.internal.processing.file.RunnerFileGenerator
+import io.mzlnk.javalin.di.internal.processing.service.ServiceFileGenerator
+import io.mzlnk.javalin.di.internal.processing.runner.RunnerFileGenerator
 
 internal object ApplicationSkeletonProcessor {
 
     fun process(project: Project): ApplicationSkeleton {
-        val files = listOf(RunnerFileGenerator, MetaInfFileGenerator).map { it.generate(project) }
+        val files = listOf(RunnerFileGenerator, ServiceFileGenerator).map { it.generate(project) }
 
         return ApplicationSkeleton(
             generatedFiles = files

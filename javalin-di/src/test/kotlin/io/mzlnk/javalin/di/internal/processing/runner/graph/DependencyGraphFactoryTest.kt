@@ -1,7 +1,7 @@
-package io.mzlnk.javalin.di.internal.processing.graph
+package io.mzlnk.javalin.di.internal.processing.runner.graph
 
-import io.mzlnk.javalin.di.internal.processing.definition.singletonDefinition
-import io.mzlnk.javalin.di.internal.processing.graph.DependencyGraphFactory
+import io.mzlnk.javalin.di.internal.processing.runner.definition.singletonDefinition
+import io.mzlnk.javalin.di.internal.processing.runner.graph.DependencyGraphFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

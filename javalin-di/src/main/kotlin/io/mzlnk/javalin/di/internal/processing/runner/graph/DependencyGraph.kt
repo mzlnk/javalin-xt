@@ -1,6 +1,6 @@
-package io.mzlnk.javalin.di.internal.processing.graph
+package io.mzlnk.javalin.di.internal.processing.runner.graph
 
-import io.mzlnk.javalin.di.internal.processing.definition.SingletonDefinition
+import io.mzlnk.javalin.di.internal.processing.runner.definition.SingletonDefinition
 import java.util.Queue
 import java.util.ArrayDeque
 

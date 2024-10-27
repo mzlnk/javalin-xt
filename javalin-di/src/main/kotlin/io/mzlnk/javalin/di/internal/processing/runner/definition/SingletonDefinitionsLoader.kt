@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing.definition
+package io.mzlnk.javalin.di.internal.processing.runner.definition
 
 import io.mzlnk.javalin.di.Module
 import io.mzlnk.javalin.di.Named

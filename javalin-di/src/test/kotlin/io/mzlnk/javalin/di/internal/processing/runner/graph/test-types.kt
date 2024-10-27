@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing.graph
+package io.mzlnk.javalin.di.internal.processing.runner.graph
 
 import io.mzlnk.javalin.di.internal.processing.Type
 

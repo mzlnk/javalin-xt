@@ -1,13 +1,14 @@
-package io.mzlnk.javalin.di.internal.processing.file
+package io.mzlnk.javalin.di.internal.processing.runner
 
 import io.mzlnk.javalin.di.internal.processing.ApplicationSkeleton
+import io.mzlnk.javalin.di.internal.processing.FileGenerator
 import io.mzlnk.javalin.di.internal.processing.Project
-import io.mzlnk.javalin.di.internal.processing.definition.SingletonDefinitionsLoader
-import io.mzlnk.javalin.di.internal.processing.graph.DependencyGraphFactory
+import io.mzlnk.javalin.di.internal.processing.runner.definition.SingletonDefinitionsLoader
+import io.mzlnk.javalin.di.internal.processing.runner.graph.DependencyGraphFactory
 
 internal object RunnerFileGenerator : FileGenerator {
 
-    override fun generate(project: Project): ApplicationSkeleton.File {
+    override fun generate(project: Project): ApplicationSkeleton.GeneratedFile {
         val definitions = SingletonDefinitionsLoader.load(project)
         val dependencyGraph = DependencyGraphFactory.create(definitions)
 
@@ -29,7 +30,7 @@ internal object RunnerFileGenerator : FileGenerator {
             |}
             """.trimMargin()
 
-        return ApplicationSkeleton.File(
+        return ApplicationSkeleton.GeneratedFile(
             name = "JavalinRunnerProviderImpl",
             extension = "kt",
             packageName = project.rootPackageName,
