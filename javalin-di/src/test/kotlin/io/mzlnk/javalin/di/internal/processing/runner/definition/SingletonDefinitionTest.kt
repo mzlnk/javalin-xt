@@ -52,35 +52,4 @@ class SingletonDefinitionTest {
         assertThat(result).isEqualTo("io.mzlnk.javalin.di.test.TestClass")
     }
 
-    @Test
-    fun `should return string representation for singleton definition source`() {
-        // given:
-        val clazz = Clazz(
-            type = Type(
-                packageName = "io.mzlnk.javalin.di.test",
-                name = "TestClass"
-            )
-        )
-
-        val method = Method(
-            returnType = Type(
-                packageName = "kotlin",
-                name = "Unit"
-            ),
-            name = "testMethod")
-
-        // and:
-        val source = SingletonDefinition.Source(
-            clazz = clazz,
-            method = method
-        )
-
-        // when:
-        val result = source.toString()
-
-        // then:
-        assertThat(result).isEqualTo("io.mzlnk.javalin.di.test.TestClass#testMethod")
-
-    }
-
 }

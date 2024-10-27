@@ -1,8 +1,6 @@
 package io.mzlnk.javalin.di.internal.processing.runner.definition
 
-import io.mzlnk.javalin.di.internal.processing.Clazz
 import io.mzlnk.javalin.di.internal.processing.Method
-import io.mzlnk.javalin.di.internal.processing.runner.definition.SingletonDefinition
 import io.mzlnk.javalin.di.internal.processing.Type
 
 @DslMarker
@@ -19,37 +17,16 @@ internal fun singletonDefinition(
 
 internal class SingletonDefinitionBuilder {
 
-    private var _source: SingletonDefinition.Source? = SingletonDefinition.Source(
-        clazz = Clazz(
-            type = Type(
-                packageName = "io.mzlnk.javalin.di.test",
-                name = "TestModule"
-            ),
-            methods = listOf(
-                Method(
-                    name = "testMethod",
-                    returnType = Type(
-                        packageName = "kotlin",
-                        name = "Unit"
-                    )
-                )
-            )
-        ),
-        method = Method(
-            name = "testMethod",
-            returnType = Type(
-                packageName = "kotlin",
-                name = "Unit"
-            )
+    private var _source: Method? = Method(
+        name = "testMethod",
+        returnType = Type(
+            packageName = "kotlin",
+            name = "Unit"
         )
     )
 
     private var _dependencies: List<SingletonDefinition.Key> = emptyList()
-    private var _conditions: List<SingletonDefinition.Condition> = emptyList()
-
-    fun source(init: (@ScopedDsl SourceBuilder).() -> Unit) {
-        _source = SourceBuilder().apply(init).build()
-    }
+    private var _conditions: List<Condition> = emptyList()
 
     fun dependencies(init: (@ScopedDsl DependenciesBuilder).() -> Unit) {
         _dependencies = DependenciesBuilder().apply(init).build()
@@ -61,18 +38,6 @@ internal class SingletonDefinitionBuilder {
         dependencies = _dependencies,
         conditions = _conditions
     )
-
-    class SourceBuilder {
-
-        var clazz: Clazz? = null
-        var method: Method? = null
-
-        fun build() = SingletonDefinition.Source(
-            clazz = clazz!!,
-            method = method!!
-        )
-
-    }
 
     class DependenciesBuilder {
 

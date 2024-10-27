@@ -1,16 +1,14 @@
 package io.mzlnk.javalin.di.internal.processing.runner.definition
 
-import io.mzlnk.javalin.di.ApplicationContext
-import io.mzlnk.javalin.di.internal.processing.Clazz
 import io.mzlnk.javalin.di.internal.processing.Method
 import io.mzlnk.javalin.di.internal.processing.Type
 import java.util.*
 
 internal data class SingletonDefinition(
     val key: Key,
-    val source: Source,
-    val dependencies: List<Key> = emptyList(),
-    val conditions: List<Condition> = emptyList()
+    val source: Method,
+    val dependencies: List<Key>,
+    val conditions: List<Condition>,
 ) {
 
     val id: UUID = UUID.randomUUID()
@@ -21,21 +19,6 @@ internal data class SingletonDefinition(
     ) {
 
         override fun toString(): String = "${type}${name?.let { "($it)" } ?: ""}"
-
-    }
-
-    internal data class Source(
-        val clazz: Clazz,
-        val method: Method
-    ) {
-
-        override fun toString(): String = "${clazz}#${method.name}"
-
-    }
-
-    internal interface Condition {
-
-        fun matches(context: ApplicationContext): Boolean
 
     }
 
