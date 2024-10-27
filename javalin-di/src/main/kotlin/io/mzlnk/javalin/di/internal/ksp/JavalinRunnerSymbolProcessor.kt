@@ -11,27 +11,18 @@ class JavalinRunnerSymbolProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val project = ResolverProjectLoader.load(resolver) ?: return emptyList()
-        val applicationSkeletonFile = ApplicationSkeletonProcessor.process(project)
+        val applicationSkeleton = ApplicationSkeletonProcessor.process(project)
 
-        try {
-            codeGenerator.createNewFile(
-                dependencies = Dependencies(aggregating = true),
-                packageName = applicationSkeletonFile.packageName,
-                fileName = applicationSkeletonFile.fileName,
-            ).write(applicationSkeletonFile.content.toByteArray())
-        } catch (ignored: Exception) {
-        }
-
-        try {
-            codeGenerator.createNewFile(
-                dependencies = Dependencies.ALL_FILES,
-                packageName = "",
-                fileName = "META-INF/services/io.mzlnk.javalin.di.spi.JavalinRunnerProvider",
-                extensionName = ""
-            ).write(
-                "${applicationSkeletonFile.packageName}.JavalinRunnerProviderImpl".toByteArray()
-            )
-        } catch (ignored: Exception) {
+        applicationSkeleton.generatedFiles.forEach { file ->
+            try {
+                codeGenerator.createNewFile(
+                    dependencies = Dependencies(aggregating = true),
+                    packageName = file.packageName ?: "",
+                    fileName = file.name,
+                    extensionName = file.extension
+                ).write(file.content.toByteArray())
+            } catch (ignored: Exception) {
+            }
         }
 
         return emptyList()
