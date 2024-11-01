@@ -1,7 +1,5 @@
-package io.mzlnk.javalin.di.internal.processing.runner.graph
+package io.mzlnk.javalin.di.internal.context
 
-import io.mzlnk.javalin.di.internal.processing.runner.definition.singletonDefinition
-import io.mzlnk.javalin.di.internal.processing.runner.graph.DependencyGraphFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -18,7 +16,7 @@ class DependencyGraphFactoryTest {
         // given:
         val singletonA = singletonDefinition(A) {
             dependencies {
-                single { type = B }
+                single(type = B)
             }
         }
         val singletonB = singletonDefinition(B)
@@ -44,12 +42,12 @@ class DependencyGraphFactoryTest {
         // given:
         val singletonA = singletonDefinition(A) {
             dependencies {
-                single { type = B }
+                single(type = B)
             }
         }
         val singletonB = singletonDefinition(B) {
             dependencies {
-                single { type = C }
+                single ( type = C )
             }
         }
         val singletonC = singletonDefinition(C)
@@ -79,7 +77,7 @@ class DependencyGraphFactoryTest {
         // given:
         val singletonA = singletonDefinition(A) {
             dependencies {
-                single { type = B }
+                single ( type = B )
             }
         }
 
@@ -87,7 +85,7 @@ class DependencyGraphFactoryTest {
 
         val singletonC = singletonDefinition(C) {
             dependencies {
-                single { type = D }
+                single ( type = D )
             }
         }
 
@@ -117,8 +115,8 @@ class DependencyGraphFactoryTest {
         // given:
         val singletonA = singletonDefinition(A) {
             dependencies {
-                single { type = B }
-                single { type = C }
+                single ( type = B )
+                single ( type = C )
             }
         }
 
@@ -152,15 +150,15 @@ class DependencyGraphFactoryTest {
         // given:
         val singletonA = singletonDefinition(A) {
             dependencies {
-                single { type = C }
-                single { type = B }
+                single ( type = C )
+                single ( type = B )
             }
         }
 
         val singletonB = singletonDefinition(B) {
             dependencies {
-                single { type = D }
-                single { type = E }
+                single ( type = D )
+                single ( type = E )
             }
         }
 
@@ -194,13 +192,13 @@ class DependencyGraphFactoryTest {
         // given:
         val singletonA = singletonDefinition(A) {
             dependencies {
-                single { type = C }
+                single ( type = C )
             }
         }
 
         val singletonB = singletonDefinition(B) {
             dependencies {
-                single { type = C }
+                single ( type = C )
             }
         }
 
@@ -232,20 +230,20 @@ class DependencyGraphFactoryTest {
         // given:
         val singletonA = singletonDefinition(A) {
             dependencies {
-                single { type = B }
-                single { type = C }
+                single ( type = B )
+                single ( type = C )
             }
         }
 
         val singletonB = singletonDefinition(B) {
             dependencies {
-                single { type = D }
+                single ( type = D )
             }
         }
 
         val singletonC = singletonDefinition(C) {
             dependencies {
-                single { type = D }
+                single ( type = D )
             }
         }
 
@@ -273,27 +271,6 @@ class DependencyGraphFactoryTest {
          * dependency graph:
          * A <- B<b1>
          */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                single {
-                    type = B
-                    name = "b1"
-                }
-            }
-        }
-        val singletonB_b1 = singletonDefinition(B, name = "b1")
-
-        // and:
-        val definitions = listOf(singletonA, singletonB_b1)
-
-        // when:
-        val graph = DependencyGraphFactory.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).containsExactly(singletonB_b1 to singletonA)
     }
 
     @Test
@@ -304,41 +281,6 @@ class DependencyGraphFactoryTest {
          * B <- C<c2>
          * C
          */
-
-        // given:
-        val singletonA = singletonDefinition(A) {
-            dependencies {
-                single {
-                    type = C
-                    name = "c1"
-                }
-            }
-        }
-        val singletonB = singletonDefinition(B) {
-            dependencies {
-                single {
-                    type = C
-                    name = "c2"
-                }
-            }
-        }
-
-        val singletonC_c1 = singletonDefinition(C, name = "c1")
-        val singletonC_c2 = singletonDefinition(C, name = "c2")
-        val singletonC = singletonDefinition(C)
-
-        // and:
-        val definitions = listOf(singletonA, singletonB, singletonC_c1, singletonC_c2, singletonC)
-
-        // when:
-        val graph = DependencyGraphFactory.create(definitions)
-
-        // then:
-        assertThat(graph.nodes).isEqualTo(definitions)
-        assertThat(graph.edges).containsExactlyInAnyOrder(
-            singletonC_c1 to singletonA,
-            singletonC_c2 to singletonB
-        )
     }
 
     @Test

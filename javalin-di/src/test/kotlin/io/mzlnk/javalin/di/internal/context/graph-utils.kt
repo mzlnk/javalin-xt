@@ -1,11 +1,8 @@
-package io.mzlnk.javalin.di.internal.processing.runner.graph
-
-import io.mzlnk.javalin.di.internal.processing.runner.definition.SingletonDefinition
-import io.mzlnk.javalin.di.internal.processing.runner.graph.DependencyGraph
+package io.mzlnk.javalin.di.internal.context
 
 internal fun dependencyGraph(
-    nodes: List<SingletonDefinition>,
-    edges: List<Pair<SingletonDefinition, SingletonDefinition>>
+    nodes: List<SingletonDefinition<*>>,
+    edges: List<Pair<SingletonDefinition<*>, SingletonDefinition<*>>>
 ): DependencyGraph {
     val _nodes = nodes.toTypedArray()
     val _edges = Array(nodes.size) { Array(nodes.size) { false } }

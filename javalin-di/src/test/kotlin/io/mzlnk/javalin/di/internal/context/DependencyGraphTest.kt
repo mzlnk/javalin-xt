@@ -1,6 +1,5 @@
-package io.mzlnk.javalin.di.internal.processing.runner.graph
+package io.mzlnk.javalin.di.internal.context
 
-import io.mzlnk.javalin.di.internal.processing.runner.definition.singletonDefinition
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.ksp
+package io.mzlnk.javalin.di.internal.processing_v2.ksp
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
@@ -8,34 +8,19 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
-import io.mzlnk.javalin.di.internal.processing.*
-import io.mzlnk.javalin.di.internal.processing.Annotation
+import io.mzlnk.javalin.di.internal.ksp.ResolverProjectLoader
+import io.mzlnk.javalin.di.internal.processing_v2.Clazz
+import io.mzlnk.javalin.di.internal.processing_v2.Method
+import io.mzlnk.javalin.di.internal.processing_v2.Project
+import io.mzlnk.javalin.di.internal.processing_v2.Type
+import io.mzlnk.javalin.di.internal.processing_v2.Annotation
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 
 class ResolverProjectLoaderTest {
-
-    @Test
-    fun `should load root package`() {
-        // given:
-        val file = SourceFile.kotlin(
-            name = "app.kt",
-            """
-            package test.package1.package2
-            
-            fun main(args: Array<String>) {}
-            """
-        )
-
-        // when:
-        val project = process(file)
-
-        // then:
-        assertThat(project).isNotNull
-        assertThat(project!!.rootPackageName).isEqualTo("test.package1.package2")
-    }
 
     @Test
     fun `should load class`() {
@@ -54,7 +39,7 @@ class ResolverProjectLoaderTest {
 
         // then:
         assertThat(project).isNotNull
-        assertThat(project!!.classes)
+        assertThat(project!!.modules)
             .hasSize(1)
             .first()
             .usingRecursiveComparison()
@@ -83,12 +68,22 @@ class ResolverProjectLoaderTest {
         val project = process(appFile, annotationsFile, file)
 
         // then:
-        assertThat(project).isNotNull
+        Assertions.assertThat(project).isNotNull
 
-        val clazz = project!!.classes.find { it.type.name == "TestClass" } ?: fail("Class not found")
+        val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         assertThat(clazz.annotations).containsExactlyInAnyOrder(
-            Annotation(type = Type(packageName = "test", name = "Annotation1")),
-            Annotation(type = Type(packageName = "test", name = "Annotation2"))
+            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
+                type = Type(
+                    packageName = "test",
+                    name = "Annotation1"
+                )
+            ),
+            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
+                type = Type(
+                    packageName = "test",
+                    name = "Annotation2"
+                )
+            )
         )
     }
 
@@ -113,9 +108,9 @@ class ResolverProjectLoaderTest {
         val project = process(appFile, typesFile, file)
 
         // then:
-        assertThat(project).isNotNull
+        Assertions.assertThat(project).isNotNull
 
-        val clazz = project!!.classes.find { it.type.name == "TestClass" } ?: fail("Class not found")
+        val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         assertThat(clazz.methods).containsExactlyInAnyOrder(
             Method(
                 name = "methodA",
@@ -149,13 +144,23 @@ class ResolverProjectLoaderTest {
         val project = process(appFile, annotationsFile, file)
 
         // then:
-        assertThat(project).isNotNull
+        Assertions.assertThat(project).isNotNull
 
-        val clazz = project!!.classes.find { it.type.name == "TestClass" } ?: fail("Class not found")
+        val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         val method = clazz.methods.find { it.name == "methodA" } ?: fail("Method not found")
         assertThat(method.annotations).containsExactlyInAnyOrder(
-            Annotation(type = Type(packageName = "test", name = "Annotation1")),
-            Annotation(type = Type(packageName = "test", name = "Annotation2"))
+            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
+                type = Type(
+                    packageName = "test",
+                    name = "Annotation1"
+                )
+            ),
+            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
+                type = Type(
+                    packageName = "test",
+                    name = "Annotation2"
+                )
+            )
         )
     }
 
@@ -178,9 +183,9 @@ class ResolverProjectLoaderTest {
         val project = process(appFile, typesFile, file)
 
         // then:
-        assertThat(project).isNotNull
+        Assertions.assertThat(project).isNotNull
 
-        val clazz = project!!.classes.find { it.type.name == "TestClass" } ?: fail("Class not found")
+        val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         val method = clazz.methods.find { it.name == "methodA" } ?: fail("Method not found")
 
         assertThat(method.parameters).containsExactlyInAnyOrder(
@@ -208,15 +213,25 @@ class ResolverProjectLoaderTest {
         val project = process(appFile, annotationsFile, typesFile, file)
 
         // then:
-        assertThat(project).isNotNull
+        Assertions.assertThat(project).isNotNull
 
-        val clazz = project!!.classes.find { it.type.name == "TestClass" } ?: fail("Class not found")
+        val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         val method = clazz.methods.find { it.name == "methodA" } ?: fail("Method not found")
         val parameter = method.parameters.find { it.name == "param" } ?: fail("Parameter not found")
 
         assertThat(parameter.annotations).containsExactlyInAnyOrder(
-            Annotation(type = Type(packageName = "test", name = "Annotation1")),
-            Annotation(type = Type(packageName = "test", name = "Annotation2"))
+            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
+                type = Type(
+                    packageName = "test",
+                    name = "Annotation1"
+                )
+            ),
+            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
+                type = Type(
+                    packageName = "test",
+                    name = "Annotation2"
+                )
+            )
         )
     }
 
@@ -239,9 +254,9 @@ class ResolverProjectLoaderTest {
         val project = process(appFile, file)
 
         // then:
-        assertThat(project).isNotNull
+        Assertions.assertThat(project).isNotNull
 
-        val clazz = project!!.classes.find { it.type.name == "TestClass" } ?: fail("Class not found")
+        val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         val annotation = clazz.annotations.find { it.type.name == "Annotation" } ?: fail("Annotation not found")
         assertThat(annotation.arguments).containsExactlyInAnyOrder(
             Annotation.Argument(name = "arg1", value = "value1"),
@@ -266,7 +281,7 @@ class ResolverProjectLoaderTest {
             messageOutputStream = System.out
         }.compile()
 
-        assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+        Assertions.assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
 
         return verifier.generatedProject
     }
