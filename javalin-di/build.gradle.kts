@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "_"
     `maven-publish`
+    jacoco
 }
 
 group = "io.mzlnk"
@@ -50,7 +51,20 @@ dependencies {
     testImplementation(kotlin("reflect"))
 }
 
+jacoco {
+    toolVersion = "0.8.12"
+}
+
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
 }
 
