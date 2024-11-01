@@ -27,20 +27,12 @@ internal class ModuleSymbolProcessor(
             fileName = file.name,
             extensionName = file.extension
         ).write(file.content.toByteArray())
-
-        // TODO: refactor it (PoC bypass)
-//        codeGenerator.createNewFile(
-//            dependencies = Dependencies(aggregating = true),
-//            packageName = "",
-//            fileName = "META-INF/services/io.mzlnk.javalin.di.definition.SingletonDefinitionProvider",
-//            extensionName = ""
-//        ).write("${file.packageName}.${file.name}".toByteArray())
     } catch (ignored: Exception) {
     }
 
 }
 
-class ModuleSymbolProcessorProvider : SymbolProcessorProvider {
+internal class ModuleSymbolProcessorProvider : SymbolProcessorProvider {
 
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         return ModuleSymbolProcessor(

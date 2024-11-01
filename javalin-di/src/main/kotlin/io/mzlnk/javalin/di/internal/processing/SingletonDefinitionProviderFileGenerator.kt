@@ -87,7 +87,7 @@ internal object SingletonDefinitionProviderFileGenerator {
             .build()
 
         return GeneratedFile(
-            name = "${module.type.name}SingletonDefinitionProvider",
+            name = singletonDefinitionProviderQualifiedName(module),
             extension = "kt",
             packageName = module.type.packageName,
             content = file.toString()
