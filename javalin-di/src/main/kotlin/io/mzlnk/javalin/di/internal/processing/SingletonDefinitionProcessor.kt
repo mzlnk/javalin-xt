@@ -2,7 +2,8 @@ package io.mzlnk.javalin.di.internal.processing
 
 internal interface SingletonDefinitionProcessor {
 
-        fun process(project: Project): GeneratedProject
+    fun process(project: Project): GeneratedProject
+
 }
 
 internal object DefaultSingletonDefinitionProcessor : SingletonDefinitionProcessor {

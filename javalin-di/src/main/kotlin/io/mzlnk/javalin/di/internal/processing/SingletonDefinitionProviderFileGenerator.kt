@@ -36,12 +36,12 @@ internal object SingletonDefinitionProviderFileGenerator {
                                     .add("listOf(\n")
                                     .indent()
                                     .apply {
-                                        module.singletons.forEach { method ->
+                                        module.singletons.forEachIndexed { idx, method ->
                                             add("%T(\n", SingletonDefinition::class)
                                             indent()
                                             add(
-                                                "type = %T::class.java,\n",
-                                                ClassName(method.returnType.packageName, method.returnType.name)
+                                                "type = %L::class.java,\n",
+                                                method.returnType.qualifiedName
                                             )
                                             add("dependencies = ")
                                             method.parameters
@@ -50,7 +50,7 @@ internal object SingletonDefinitionProviderFileGenerator {
                                                     add("listOf(\n")
                                                     indent()
                                                     method.parameters.forEach { parameter ->
-                                                        add("%T::class.java,\n", ClassName(parameter.type.packageName, parameter.type.name))
+                                                        add("%L::class.java,\n", parameter.type.qualifiedName)
                                                     }
                                                     unindent()
                                                     add("),\n")
@@ -62,9 +62,9 @@ internal object SingletonDefinitionProviderFileGenerator {
                                             indent()
                                             method.parameters.forEachIndexed { index, parameter ->
                                                 add(
-                                                    "\nit[%L] as %T",
+                                                    "\nit[%L] as %L",
                                                     index,
-                                                    ClassName(parameter.type.packageName, parameter.type.name)
+                                                    parameter.type.qualifiedName
                                                 )
                                                 if (index < method.parameters.size - 1) add(",")
                                             }
@@ -74,9 +74,10 @@ internal object SingletonDefinitionProviderFileGenerator {
                                             unindent()
                                             add("}\n")
                                             unindent()
-                                            add("),\n")
+                                            if (idx < module.singletons.size - 1) add("),\n") else add(")\n")
                                         }
                                     }
+                                    .unindent()
                                     .add(")")
                                     .build()
                             )
