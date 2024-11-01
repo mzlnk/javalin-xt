@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing_v2
+package io.mzlnk.javalin.di.internal.processing
 
 data class GeneratedProject(
     val definitionProviders: List<GeneratedFile>,

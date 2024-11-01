@@ -1,14 +1,14 @@
-package io.mzlnk.javalin.di.internal.processing_v2.ksp
+package io.mzlnk.javalin.di.internal.processing.ksp
 
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import io.mzlnk.javalin.di.Module
-import io.mzlnk.javalin.di.internal.processing_v2.*
-import io.mzlnk.javalin.di.internal.processing_v2.Annotation
-import io.mzlnk.javalin.di.internal.processing_v2.Clazz
-import io.mzlnk.javalin.di.internal.processing_v2.Method
-import io.mzlnk.javalin.di.internal.processing_v2.Project
+import io.mzlnk.javalin.di.internal.processing.*
+import io.mzlnk.javalin.di.internal.processing.Annotation
+import io.mzlnk.javalin.di.internal.processing.Clazz
+import io.mzlnk.javalin.di.internal.processing.Method
+import io.mzlnk.javalin.di.internal.processing.Project
 
 internal object ResolverProjectLoader {
 

@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing_v2
+package io.mzlnk.javalin.di.internal.processing
 
 internal data class Project(
     val modules: List<Clazz>

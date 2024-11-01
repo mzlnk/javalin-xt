@@ -1,9 +1,9 @@
-package io.mzlnk.javalin.di.internal.processing_v2.ksp
+package io.mzlnk.javalin.di.internal.processing.ksp
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
-import io.mzlnk.javalin.di.internal.processing_v2.GeneratedFile
-import io.mzlnk.javalin.di.internal.processing_v2.SingletonDefinitionProcessor
+import io.mzlnk.javalin.di.internal.processing.GeneratedFile
+import io.mzlnk.javalin.di.internal.processing.SingletonDefinitionProcessor
 
 class ModuleSymbolProcessor(
     private val codeGenerator: CodeGenerator,

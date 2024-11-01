@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing_v2.ksp
+package io.mzlnk.javalin.di.internal.processing.ksp
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
@@ -9,11 +9,11 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import io.mzlnk.javalin.di.internal.ksp.ResolverProjectLoader
-import io.mzlnk.javalin.di.internal.processing_v2.Clazz
-import io.mzlnk.javalin.di.internal.processing_v2.Method
-import io.mzlnk.javalin.di.internal.processing_v2.Project
-import io.mzlnk.javalin.di.internal.processing_v2.Type
-import io.mzlnk.javalin.di.internal.processing_v2.Annotation
+import io.mzlnk.javalin.di.internal.processing.Clazz
+import io.mzlnk.javalin.di.internal.processing.Method
+import io.mzlnk.javalin.di.internal.processing.Project
+import io.mzlnk.javalin.di.internal.processing.Type
+import io.mzlnk.javalin.di.internal.processing.Annotation
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
@@ -44,8 +44,11 @@ class ResolverProjectLoaderTest {
             .first()
             .usingRecursiveComparison()
             .isEqualTo(
-                Clazz(
-                    type = Type(packageName = "test", name = "TestClass"),
+                _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Clazz(
+                    type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
+                        packageName = "test",
+                        name = "TestClass"
+                    ),
                 )
             )
     }
@@ -72,14 +75,14 @@ class ResolverProjectLoaderTest {
 
         val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         assertThat(clazz.annotations).containsExactlyInAnyOrder(
-            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
-                type = Type(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation(
+                type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
                     packageName = "test",
                     name = "Annotation1"
                 )
             ),
-            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
-                type = Type(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation(
+                type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
                     packageName = "test",
                     name = "Annotation2"
                 )
@@ -112,13 +115,19 @@ class ResolverProjectLoaderTest {
 
         val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         assertThat(clazz.methods).containsExactlyInAnyOrder(
-            Method(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Method(
                 name = "methodA",
-                returnType = Type(packageName = "kotlin", name = "Unit"),
+                returnType = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
+                    packageName = "kotlin",
+                    name = "Unit"
+                ),
             ),
-            Method(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Method(
                 name = "methodB",
-                returnType = Type(packageName = "test", name = "TypeA"),
+                returnType = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
+                    packageName = "test",
+                    name = "TypeA"
+                ),
             )
         )
     }
@@ -149,14 +158,14 @@ class ResolverProjectLoaderTest {
         val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         val method = clazz.methods.find { it.name == "methodA" } ?: fail("Method not found")
         assertThat(method.annotations).containsExactlyInAnyOrder(
-            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
-                type = Type(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation(
+                type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
                     packageName = "test",
                     name = "Annotation1"
                 )
             ),
-            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
-                type = Type(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation(
+                type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
                     packageName = "test",
                     name = "Annotation2"
                 )
@@ -189,8 +198,16 @@ class ResolverProjectLoaderTest {
         val method = clazz.methods.find { it.name == "methodA" } ?: fail("Method not found")
 
         assertThat(method.parameters).containsExactlyInAnyOrder(
-            Method.Parameter(name = "param1", type = Type(packageName = "test", name = "TypeA")),
-            Method.Parameter(name = "param2", type = Type(packageName = "test", name = "TypeB"))
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Method.Parameter(name = "param1", type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
+                packageName = "test",
+                name = "TypeA"
+            )
+            ),
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Method.Parameter(name = "param2", type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
+                packageName = "test",
+                name = "TypeB"
+            )
+            )
         )
     }
 
@@ -220,14 +237,14 @@ class ResolverProjectLoaderTest {
         val parameter = method.parameters.find { it.name == "param" } ?: fail("Parameter not found")
 
         assertThat(parameter.annotations).containsExactlyInAnyOrder(
-            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
-                type = Type(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation(
+                type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
                     packageName = "test",
                     name = "Annotation1"
                 )
             ),
-            io.mzlnk.javalin.di.internal.processing_v2.Annotation(
-                type = Type(
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation(
+                type = _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Type(
                     packageName = "test",
                     name = "Annotation2"
                 )
@@ -259,13 +276,13 @@ class ResolverProjectLoaderTest {
         val clazz = project!!.modules.find { it.type.name == "TestClass" } ?: fail("Class not found")
         val annotation = clazz.annotations.find { it.type.name == "Annotation" } ?: fail("Annotation not found")
         assertThat(annotation.arguments).containsExactlyInAnyOrder(
-            Annotation.Argument(name = "arg1", value = "value1"),
-            Annotation.Argument(name = "arg2", value = "value2")
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation.Argument(name = "arg1", value = "value1"),
+            _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Annotation.Argument(name = "arg2", value = "value2")
         )
     }
 
     @OptIn(ExperimentalCompilerApi::class)
-    private fun process(vararg sources: SourceFile): Project? {
+    private fun process(vararg sources: SourceFile): _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Project? {
         val verifier = ResolverProjectLoaderVerifier()
 
         val result = KotlinCompilation().apply {
@@ -325,9 +342,9 @@ class ResolverProjectLoaderTest {
 
 private class ResolverProjectLoaderVerifier : SymbolProcessor {
 
-    private var _generatedProject: Project? = null
+    private var _generatedProject: _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Project? = null
 
-    val generatedProject: Project? get() = _generatedProject
+    val generatedProject: _root_ide_package_.io.mzlnk.javalin.di.internal.processing.Project? get() = _generatedProject
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         _generatedProject = ResolverProjectLoader.load(resolver)

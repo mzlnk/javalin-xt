@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing_v2.ksp
+package io.mzlnk.javalin.di.internal.processing.ksp
 
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode

@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.processing_v2
+package io.mzlnk.javalin.di.internal.processing
 
 internal object SingletonDefinitionProcessor {
 
