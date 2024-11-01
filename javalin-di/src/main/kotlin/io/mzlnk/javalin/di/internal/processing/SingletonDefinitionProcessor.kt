@@ -1,8 +1,13 @@
 package io.mzlnk.javalin.di.internal.processing
 
-internal object SingletonDefinitionProcessor {
+internal interface SingletonDefinitionProcessor {
 
-    fun process(project: Project): GeneratedProject {
+        fun process(project: Project): GeneratedProject
+}
+
+internal object DefaultSingletonDefinitionProcessor : SingletonDefinitionProcessor {
+
+    override fun process(project: Project): GeneratedProject {
         val definitionProviders = project.modules.map { SingletonDefinitionProviderFileGenerator.generate(it) }
         val definitionProviderService = SingletonDefinitionProviderServiceFileGenerator.generate(project)
 
