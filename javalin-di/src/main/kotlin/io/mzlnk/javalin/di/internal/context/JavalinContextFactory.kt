@@ -5,7 +5,7 @@ internal class JavalinContextFactory(
 ) {
 
     fun create(): JavalinContext {
-        val definitions = source.definitions
+        val definitions = source.definitions()
         val dependencyGraph = DependencyGraphFactory.create(definitions)
 
         val context = JavalinContext()
@@ -13,7 +13,7 @@ internal class JavalinContextFactory(
             context.registerSingleton(
                 type = definition.type,
                 instance = definition.instanceProvider.invoke(
-                    definition.dependencies.map { context.getSingleton(it) }
+                    definition.dependencies.map { context.findSingleton(it) }
                 )
             )
         }

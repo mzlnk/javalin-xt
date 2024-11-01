@@ -10,7 +10,7 @@ private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.di")
 
 fun Javalin.enableDI(): Javalin {
     val (context, elapsedTime) = measureTimedValue {
-        JavalinContextFactory.create()
+        JavalinContextFactory().create()
     }
 
     LOG.info("Loaded ${context.size()} singletons")
@@ -24,5 +24,5 @@ fun <T: Any> Javalin.singleton(type: Class<T>): T {
         throw IllegalStateException("Javalin DI has not been enabled. Call Javalin.enableDI() first.")
     }
 
-    return this.context.getSingleton(type)
+    return this.context.findSingleton(type) ?: throw IllegalStateException("Singleton not found for type $type")
 }

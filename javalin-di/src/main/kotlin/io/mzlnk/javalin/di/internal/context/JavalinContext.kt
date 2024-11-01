@@ -11,8 +11,8 @@ internal class JavalinContext {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T: Any> getSingleton(type: Class<T>): T {
-        return singletons[type]!! as T
+    fun <T: Any> findSingleton(type: Class<T>): T? {
+        return singletons[type] as? T
     }
 
 }
