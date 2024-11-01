@@ -36,7 +36,7 @@ publishing {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("com.google.devtools.ksp:symbol-processing-api:_")
-    runtimeOnly("com.squareup:kotlinpoet:_")
+    implementation("com.squareup:kotlinpoet:_")
 
     compileOnly("io.javalin:javalin:_")
 
