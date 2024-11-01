@@ -1,16 +1,10 @@
 package io.mzlnk.javalin.di.internal.processing.ksp
 
-import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
 import com.tschuchort.compiletesting.SourceFile
-import com.tschuchort.compiletesting.symbolProcessorProviders
-import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import java.io.File
 
-@OptIn(ExperimentalCompilerApi::class)
 class JavalinApplicationSymbolProcessorTest {
 
     @Test

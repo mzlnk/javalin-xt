@@ -2,7 +2,7 @@ package io.mzlnk.javalin.di.internal.processing
 
 internal object SingletonDefinitionProviderFileGenerator {
 
-    fun generate(module: Clazz): GeneratedFile {
+    fun generate(module: ModuleClass): GeneratedFile {
         val content =
             // language=kotlin
             """
