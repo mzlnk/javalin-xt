@@ -1,7 +1,13 @@
 package io.mzlnk.javalin.di.demo
 
-import io.mzlnk.javalin.di.JavalinRunner
+import io.javalin.Javalin
+import io.mzlnk.javalin.di.enableDI
+
 
 fun main(args: Array<String>) {
-    JavalinRunner.run()
+    val app = Javalin.create()
+        .enableDI()
+        .start(8080)
+
+    val a = 10
 }

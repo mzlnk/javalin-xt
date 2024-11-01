@@ -4,6 +4,7 @@ import io.javalin.config.JavalinConfig
 import io.mzlnk.javalin.di.spi.JavalinRunnerProvider
 import java.util.*
 
+// TODO: remove it
 object JavalinRunner {
 
     fun run(configCustomizer: (JavalinConfig) -> Unit = {}) {
