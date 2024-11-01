@@ -1,14 +1,11 @@
 package io.mzlnk.javalin.di.internal.context
 
-import io.mzlnk.javalin.di.definition.SingletonDefinitionProvider
-import java.util.*
-
-internal object JavalinContextFactory {
+internal class JavalinContextFactory(
+    private val source: SingletonDefinitionSource = DefaultSingletonDefinitionSource
+) {
 
     fun create(): JavalinContext {
-        val providers = ServiceLoader.load(SingletonDefinitionProvider::class.java).toList()
-
-        val definitions = providers.flatMap { it.definitions }
+        val definitions = source.definitions
         val dependencyGraph = DependencyGraphFactory.create(definitions)
 
         val context = JavalinContext()
