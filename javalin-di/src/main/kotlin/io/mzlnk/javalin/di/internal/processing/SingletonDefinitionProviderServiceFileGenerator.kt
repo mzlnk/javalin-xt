@@ -8,7 +8,7 @@ internal object SingletonDefinitionProviderServiceFileGenerator {
             .joinToString(separator = "\n") { it }
 
         return GeneratedFile(
-            name = "META-INF/services/io.mzlnk.javalin.di.internal.context.SingletonDefinitionProvider",
+            name = "META-INF/services/io.mzlnk.javalin.di.definition.SingletonDefinitionProvider",
             extension = "",
             content = content
         )

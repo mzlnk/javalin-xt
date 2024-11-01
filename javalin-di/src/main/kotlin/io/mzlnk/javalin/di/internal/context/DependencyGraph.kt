@@ -1,5 +1,6 @@
 package io.mzlnk.javalin.di.internal.context
 
+import io.mzlnk.javalin.di.definition.SingletonDefinition
 import java.util.Queue
 import java.util.ArrayDeque
 

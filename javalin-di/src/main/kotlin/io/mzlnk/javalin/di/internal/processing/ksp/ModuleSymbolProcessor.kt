@@ -5,7 +5,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import io.mzlnk.javalin.di.internal.processing.GeneratedFile
 import io.mzlnk.javalin.di.internal.processing.SingletonDefinitionProcessor
 
-class ModuleSymbolProcessor(
+internal class ModuleSymbolProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger
 ) : SymbolProcessor {
@@ -32,7 +32,7 @@ class ModuleSymbolProcessor(
 //        codeGenerator.createNewFile(
 //            dependencies = Dependencies(aggregating = true),
 //            packageName = "",
-//            fileName = "META-INF/services/io.mzlnk.javalin.di.internal.context.SingletonDefinitionProvider",
+//            fileName = "META-INF/services/io.mzlnk.javalin.di.definition.SingletonDefinitionProvider",
 //            extensionName = ""
 //        ).write("${file.packageName}.${file.name}".toByteArray())
     } catch (ignored: Exception) {

@@ -1,5 +1,7 @@
 package io.mzlnk.javalin.di.internal.context
 
+import io.mzlnk.javalin.di.definition.SingletonDefinition
+
 internal fun dependencyGraph(
     nodes: List<SingletonDefinition<*>>,
     edges: List<Pair<SingletonDefinition<*>, SingletonDefinition<*>>>

@@ -2,8 +2,8 @@ package io.mzlnk.javalin.di.internal.processing
 
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import io.mzlnk.javalin.di.internal.context.SingletonDefinition
-import io.mzlnk.javalin.di.internal.context.SingletonDefinitionProvider
+import io.mzlnk.javalin.di.definition.SingletonDefinition
+import io.mzlnk.javalin.di.definition.SingletonDefinitionProvider
 
 internal object SingletonDefinitionProviderFileGenerator {
 

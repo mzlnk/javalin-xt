@@ -1,5 +1,7 @@
 package io.mzlnk.javalin.di.internal.context
 
+import io.mzlnk.javalin.di.definition.SingletonDefinition
+
 @DslMarker
 @Target(AnnotationTarget.TYPE)
 internal annotation class ScopedDsl

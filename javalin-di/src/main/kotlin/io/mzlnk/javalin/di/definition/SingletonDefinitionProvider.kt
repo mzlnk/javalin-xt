@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.context
+package io.mzlnk.javalin.di.definition
 
 interface SingletonDefinitionProvider {
 
