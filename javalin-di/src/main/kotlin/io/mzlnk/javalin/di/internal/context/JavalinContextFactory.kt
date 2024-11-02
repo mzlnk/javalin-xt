@@ -9,6 +9,11 @@ internal class JavalinContextFactory(
 
     fun create(): JavalinContext {
         val definitions = source.definitions()
+
+        definitions
+            .find { it.identifier is SingletonDefinition.Identifier.Iterable<*> }
+            ?.let { throw IterableSingletonDefinitionNotSupported(it.identifier as SingletonDefinition.Identifier.Iterable<*>) }
+
         val dependencyGraph = DependencyGraphFactory.create(definitions)
 
         if (dependencyGraph.hasCycles) {
@@ -19,7 +24,12 @@ internal class JavalinContextFactory(
         dependencyGraph.topologicalOrder.forEach { definition ->
             context.registerSingleton(
                 definition.instanceProvider.invoke(
-                    definition.dependencies.map { context.getSingleton(it) }
+                    definition.dependencies.map { dependency ->
+                        when (dependency) {
+                            is SingletonDefinition.Identifier.Single<*> -> context.getSingleton(dependency)
+                            is SingletonDefinition.Identifier.Iterable<*> -> context.getSingletonList(dependency)
+                        }
+                    }
                 )
             )
         }
@@ -41,5 +51,12 @@ private class DependencyCycleFoundException(cycles: List<Cycle<SingletonDefiniti
             }
         }
         .toString()
+
+}
+
+private class IterableSingletonDefinitionNotSupported(identifier: SingletonDefinition.Identifier.Iterable<*>) :
+    JavalinContextException() {
+
+    override val message = "Iterable singleton definition `$identifier` is not supported."
 
 }

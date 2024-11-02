@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package io.mzlnk.javalin.di.internal.context
 
 import io.mzlnk.javalin.di.definition.SingletonDefinition
@@ -19,13 +21,13 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentB::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(ComponentB::class.java)),
             instanceProvider = { ComponentA(it[0] as ComponentB) }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
+            identifier = single(ComponentB::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentB() }
         )
@@ -40,8 +42,8 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentA = context.getSingleton(single(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(single(ComponentB::class.java)) ?: fail("Component B not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
     }
@@ -60,19 +62,19 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentB::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(ComponentB::class.java)),
             instanceProvider = { ComponentA(it[0] as ComponentB) }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(identifier(ComponentC::class.java)),
+            identifier = single(ComponentB::class.java),
+            dependencies = listOf(single(ComponentC::class.java)),
             instanceProvider = { ComponentB(it[0] as ComponentC) }
         )
 
         val singletonC = SingletonDefinition(
-            identifier = identifier(ComponentC::class.java),
+            identifier = single(ComponentC::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentC() }
         )
@@ -87,9 +89,9 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.getSingleton(single(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(single(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(single(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentB.componentC).isEqualTo(componentC)
@@ -112,25 +114,25 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentB::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(ComponentB::class.java)),
             instanceProvider = { ComponentA(it[0] as ComponentB) }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
+            identifier = single(ComponentB::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentB() }
         )
 
         val singletonC = SingletonDefinition(
-            identifier = identifier(ComponentC::class.java),
-            dependencies = listOf(identifier(ComponentD::class.java)),
+            identifier = single(ComponentC::class.java),
+            dependencies = listOf(single(ComponentD::class.java)),
             instanceProvider = { ComponentC(it[0] as ComponentD) }
         )
 
         val singletonD = SingletonDefinition(
-            identifier = identifier(ComponentD::class.java),
+            identifier = single(ComponentD::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentD() }
         )
@@ -145,10 +147,10 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.getSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentA = context.getSingleton(single(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(single(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(single(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.getSingleton(single(ComponentD::class.java)) ?: fail("Component D not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentC.componentD).isEqualTo(componentD)
@@ -168,19 +170,19 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentB::class.java), identifier(ComponentC::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(ComponentB::class.java), single(ComponentC::class.java)),
             instanceProvider = { ComponentA(it[0] as ComponentB, it[1] as ComponentC) }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
+            identifier = single(ComponentB::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentB() }
         )
 
         val singletonC = SingletonDefinition(
-            identifier = identifier(ComponentC::class.java),
+            identifier = single(ComponentC::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentC() }
         )
@@ -195,9 +197,9 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.getSingleton(single(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(single(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(single(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentA.componentC).isEqualTo(componentC)
@@ -217,20 +219,20 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
+            identifier = single(ComponentA::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentA() }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(identifier(ComponentA::class.java)),
+            identifier = single(ComponentB::class.java),
+            dependencies = listOf(single(ComponentA::class.java)),
             instanceProvider = { ComponentB(it[0] as ComponentA) }
         )
 
         val singletonC = SingletonDefinition(
-            identifier = identifier(ComponentC::class.java),
-            dependencies = listOf(identifier(ComponentA::class.java)),
+            identifier = single(ComponentC::class.java),
+            dependencies = listOf(single(ComponentA::class.java)),
             instanceProvider = { ComponentC(it[0] as ComponentA) }
         )
 
@@ -244,9 +246,9 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.getSingleton(single(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(single(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(single(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentB.componentA).isEqualTo(componentA)
         assertThat(componentC.componentA).isEqualTo(componentA)
@@ -271,31 +273,31 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentB::class.java), identifier(ComponentC::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(ComponentB::class.java), single(ComponentC::class.java)),
             instanceProvider = { ComponentA(it[0] as ComponentB, it[1] as ComponentC) }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(identifier(ComponentD::class.java), identifier(ComponentE::class.java)),
+            identifier = single(ComponentB::class.java),
+            dependencies = listOf(single(ComponentD::class.java), single(ComponentE::class.java)),
             instanceProvider = { ComponentB(it[0] as ComponentD, it[1] as ComponentE) }
         )
 
         val singletonC = SingletonDefinition(
-            identifier = identifier(ComponentC::class.java),
+            identifier = single(ComponentC::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentC() }
         )
 
         val singletonD = SingletonDefinition(
-            identifier = identifier(ComponentD::class.java),
+            identifier = single(ComponentD::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentD() }
         )
 
         val singletonE = SingletonDefinition(
-            identifier = identifier(ComponentE::class.java),
+            identifier = single(ComponentE::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentE() }
         )
@@ -310,11 +312,11 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(5)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.getSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
-        val componentE = context.getSingleton(identifier(ComponentE::class.java)) ?: fail("Component E not found")
+        val componentA = context.getSingleton(single(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(single(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(single(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.getSingleton(single(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentE = context.getSingleton(single(ComponentE::class.java)) ?: fail("Component E not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentA.componentC).isEqualTo(componentC)
@@ -339,25 +341,25 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentB::class.java), identifier(ComponentC::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(ComponentB::class.java), single(ComponentC::class.java)),
             instanceProvider = { ComponentA(it[0] as ComponentB, it[1] as ComponentC) }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(identifier(ComponentD::class.java)),
+            identifier = single(ComponentB::class.java),
+            dependencies = listOf(single(ComponentD::class.java)),
             instanceProvider = { ComponentB(it[0] as ComponentD) }
         )
 
         val singletonC = SingletonDefinition(
-            identifier = identifier(ComponentC::class.java),
-            dependencies = listOf(identifier(ComponentD::class.java)),
+            identifier = single(ComponentC::class.java),
+            dependencies = listOf(single(ComponentD::class.java)),
             instanceProvider = { ComponentC(it[0] as ComponentD) }
         )
 
         val singletonD = SingletonDefinition(
-            identifier = identifier(ComponentD::class.java),
+            identifier = single(ComponentD::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentD() }
         )
@@ -372,10 +374,10 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.getSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentA = context.getSingleton(single(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(single(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(single(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.getSingleton(single(ComponentD::class.java)) ?: fail("Component D not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentA.componentC).isEqualTo(componentC)
@@ -397,13 +399,13 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentB::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(ComponentB::class.java)),
             instanceProvider = { ComponentA(it[0] as ComponentB) }
         )
 
         val singletonB1 = SingletonDefinition(
-            identifier = identifier(ComponentB1::class.java),
+            identifier = single(ComponentB1::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentB1() }
         )
@@ -418,8 +420,8 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java))
-        val componentB1 = context.getSingleton(identifier(ComponentB1::class.java))
+        val componentA = context.getSingleton(single(ComponentA::class.java))
+        val componentB1 = context.getSingleton(single(ComponentB1::class.java))
 
         assertThat(componentA.componentB).isEqualTo(componentB1)
     }
@@ -437,13 +439,13 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(TypeB::class.java)),
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(single(TypeB::class.java)),
             instanceProvider = { ComponentA(it[0] as TypeB) }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
+            identifier = single(ComponentB::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentB() }
         )
@@ -458,10 +460,180 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.getSingleton(identifier(ComponentA::class.java))
-        val componentB = context.getSingleton(identifier(ComponentB::class.java))
+        val componentA = context.getSingleton(single(ComponentA::class.java))
+        val componentB = context.getSingleton(single(ComponentB::class.java))
 
         assertThat(componentA.componentB).isEqualTo(componentB)
+    }
+    
+    @Test
+    fun `should create context for component having iterable dependency of given type`() {
+        /*
+         * dependency graph:
+         * A <- B
+         */
+        
+        // given:
+        class ComponentB
+        class ComponentA(val bComponents: List<ComponentB>)
+
+        // and:
+        val componentB1 = ComponentB()
+        val componentB2 = ComponentB()
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(iterable(ComponentB::class.java)),
+            instanceProvider = { ComponentA(it[0] as List<ComponentB>) }
+        )
+
+        val singletonB1 = SingletonDefinition(
+            identifier = single(ComponentB::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentB1 }
+        )
+
+        val singletonB2 = SingletonDefinition(
+            identifier = single(ComponentB::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentB2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB1, singletonB2)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        assertThat(context.size()).isEqualTo(3)
+
+        // and:
+        val componentA = context.getSingleton(single(ComponentA::class.java))
+        assertThat(componentA.bComponents).containsExactlyInAnyOrder(componentB1, componentB2)
+    }
+    
+    @Test
+    fun `should create context for component having iterable dependency of supertype`() {
+        /*
+         * dependency graph:
+         * A <- B
+         */
+
+        // given:
+        open class ComponentB
+        class ComponentB1 : ComponentB()
+        class ComponentB2 : ComponentB()
+        class ComponentA(val bComponents: List<ComponentB>)
+
+        // and:
+        val componentB1 = ComponentB1()
+        val componentB2 = ComponentB2()
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(iterable(ComponentB::class.java)),
+            instanceProvider = { ComponentA(it[0] as List<ComponentB>) }
+        )
+
+        val singletonB1 = SingletonDefinition(
+            identifier = single(ComponentB1::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentB1 }
+        )
+
+        val singletonB2 = SingletonDefinition(
+            identifier = single(ComponentB2::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentB2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB1, singletonB2)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentA = context.getSingleton(single(ComponentA::class.java))
+        assertThat(componentA.bComponents).containsExactlyInAnyOrder(componentB1, componentB2)
+    }
+    
+    @Test
+    fun `should create context for component having iterable dependency of interface type`() {
+        /*
+         * dependency graph:
+         * A <- B
+         */
+
+        // given:
+        class ComponentB1 : TypeB
+        class ComponentB2 : TypeB
+        class ComponentA(val bComponents: List<TypeB>)
+
+        // and:
+        val componentB1 = ComponentB1()
+        val componentB2 = ComponentB2()
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(iterable(TypeB::class.java)),
+            instanceProvider = { ComponentA(it[0] as List<TypeB>) }
+        )
+
+        val singletonB1 = SingletonDefinition(
+            identifier = single(ComponentB1::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentB1 }
+        )
+
+        val singletonB2 = SingletonDefinition(
+            identifier = single(ComponentB2::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentB2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB1, singletonB2)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentA = context.getSingleton(single(ComponentA::class.java))
+        assertThat(componentA.bComponents).containsExactlyInAnyOrder(componentB1, componentB2)
+    }
+
+    @Test
+    fun `should create context component having iterable dependency of type but no candidates`() {
+        /*
+         * dependency graph:
+         * A <- B
+         */
+
+        // given:
+        class ComponentB
+        class ComponentA(val bComponents: List<ComponentB>)
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = single(ComponentA::class.java),
+            dependencies = listOf(iterable(ComponentB::class.java)),
+            instanceProvider = { ComponentA(it[0] as List<ComponentB>) }
+        )
+
+        // and:
+        val definitions = listOf(singletonA)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentA = context.getSingleton(single(ComponentA::class.java))
+        assertThat(componentA.bComponents).isEmpty()
     }
 
     @Test
@@ -471,7 +643,7 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
+            identifier = single(ComponentA::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentA() }
         )
@@ -483,7 +655,7 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        assertThatCode { context.getSingleton(identifier(ComponentA::class.java)) }.doesNotThrowAnyException()
+        assertThatCode { context.getSingleton(single(ComponentA::class.java)) }.doesNotThrowAnyException()
     }
 
     @Test
@@ -494,7 +666,7 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonB1 = SingletonDefinition(
-            identifier = identifier(ComponentA1::class.java),
+            identifier = single(ComponentA1::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentA1() }
         )
@@ -506,8 +678,8 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentA1 = context.getSingleton(identifier(ComponentA1::class.java))
-        val componentA = context.getSingleton(identifier(ComponentA::class.java))
+        val componentA1 = context.getSingleton(single(ComponentA1::class.java))
+        val componentA = context.getSingleton(single(ComponentA::class.java))
 
         assertThat(componentA1).isEqualTo(componentA)
     }
@@ -519,7 +691,7 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
+            identifier = single(ComponentB::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentB() }
         )
@@ -531,10 +703,131 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentB = context.getSingleton(identifier(ComponentB::class.java))
-        val typeB = context.getSingleton(identifier(TypeB::class.java))
+        val componentB = context.getSingleton(single(ComponentB::class.java))
+        val typeB = context.getSingleton(single(TypeB::class.java))
 
         assertThat(componentB).isEqualTo(typeB)
+    }
+    
+    @Test
+    fun `should access all singletons by type`() {
+        // given:
+        class ComponentA
+        
+        // and:
+        val componentA1 = ComponentA()
+        val componentA2 = ComponentA()
+        
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = single(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA1 }
+        )
+        
+        val singletonA2 = SingletonDefinition(
+            identifier = single(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA2 }
+        )
+        
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+        
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+        
+        // then:
+        val components = context.getSingletonList(iterable(ComponentA::class.java))
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)    
+    }
+    
+    @Test
+    fun `should access all singletons by supertype`() {
+        // given:
+        open class ComponentA
+        class ComponentA1 : ComponentA()
+        class ComponentA2 : ComponentA()
+        
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+        
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = single(ComponentA1::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA1}
+        )
+        
+        val singletonA2 = SingletonDefinition(
+            identifier = single(ComponentA2::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA2 }
+        )
+        
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+        
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+        
+        // then:
+        val components = context.getSingletonList(iterable(ComponentA::class.java))
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+    }
+    
+    @Test
+    fun `should access all singletons by implemented interface`() {
+        // given:
+        class ComponentA1 : TypeA
+        class ComponentA2 : TypeA
+        
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+        
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = single(ComponentA1::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA1 }
+        )
+        
+        val singletonA2 = SingletonDefinition(
+            identifier = single(ComponentA2::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA2 }
+        )
+        
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+        
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+        
+        // then:
+        val components = context.getSingletonList(iterable(TypeA::class.java))
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+    }
+
+    @Test
+    fun `should access no singletons if there are no candidates for given type`() {
+        // given:
+        class ComponentA
+
+        // and:
+        // no definitions for ComponentA
+
+        // and:
+        val definitions = emptyList<SingletonDefinition<*>>()
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val components = context.getSingletonList(iterable(ComponentA::class.java))
+        assertThat(components).isEmpty()
     }
 
     @Test
@@ -545,20 +838,20 @@ class JavalinContextFactoryTest {
 
         // and:
         val singletonA1 = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
+            identifier = single(ComponentA::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentA() }
         )
 
         val singletonA2 = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
+            identifier = single(ComponentA::class.java),
             dependencies = emptyList(),
             instanceProvider = { ComponentA() }
         )
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(identifier(ComponentA::class.java)),
+            identifier = single(ComponentB::class.java),
+            dependencies = listOf(single(ComponentA::class.java)),
             instanceProvider = { ComponentB(it[0] as ComponentA) }
         )
 
@@ -585,8 +878,8 @@ class JavalinContextFactoryTest {
         // no definition for ComponentA
 
         val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(identifier(ComponentA::class.java)),
+            identifier = single(ComponentB::class.java),
+            dependencies = listOf(single(ComponentA::class.java)),
             instanceProvider = { ComponentB(it[0] as ComponentA) }
         )
 
@@ -623,18 +916,18 @@ class JavalinContextFactoryTest {
         // and:
         val definitions = listOf(
             SingletonDefinition(
-                identifier = identifier(Components.ComponentA::class.java),
-                dependencies = listOf(identifier(Components.ComponentB::class.java)),
+                identifier = single(Components.ComponentA::class.java),
+                dependencies = listOf(single(Components.ComponentB::class.java)),
                 instanceProvider = { Components().ComponentA(it[0] as Components.ComponentB) }
             ),
             SingletonDefinition(
-                identifier = identifier(Components.ComponentB::class.java),
-                dependencies = listOf(identifier(Components.ComponentC::class.java)),
+                identifier = single(Components.ComponentB::class.java),
+                dependencies = listOf(single(Components.ComponentC::class.java)),
                 instanceProvider = { Components().ComponentB(it[0] as Components.ComponentC) }
             ),
             SingletonDefinition(
-                identifier = identifier(Components.ComponentC::class.java),
-                dependencies = listOf(identifier(Components.ComponentA::class.java)),
+                identifier = single(Components.ComponentC::class.java),
+                dependencies = listOf(single(Components.ComponentA::class.java)),
                 instanceProvider = { Components().ComponentC(it[0] as Components.ComponentA) }
             )
         )
@@ -656,14 +949,42 @@ class JavalinContextFactoryTest {
         )
     }
 
+    @Test
+    fun `should throw exception when try to register iterable singleton`() {
+        // given:
+        class ComponentA
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = iterable(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { listOf(ComponentA()) }
+        )
+
+        // and:
+        val definitions = listOf(singletonA)
+
+        // when:
+        val exception = assertThatThrownBy {
+            JavalinContextFactory(source = { definitions }).create()
+        }
+
+        // then:
+        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.hasMessage("Iterable singleton definition `List<io.mzlnk.javalin.di.internal.context.JavalinContextFactoryTest${'$'}should throw exception when try to register iterable singleton${'$'}ComponentA>` is not supported.")
+    }
+
     private companion object {
 
         // general purpose types for testing
         interface TypeA
         interface TypeB
 
-        fun <T> identifier(type: Class<T>): SingletonDefinition.Identifier<T> =
+        fun <T : Any> single(type: Class<T>): SingletonDefinition.Identifier.Single<T> =
             SingletonDefinition.Identifier.Single(type = type)
+
+        fun <T : Any> iterable(type: Class<T>): SingletonDefinition.Identifier.Iterable<T> =
+            SingletonDefinition.Identifier.Iterable(type = type)
 
     }
 

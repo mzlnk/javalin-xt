@@ -9,33 +9,43 @@ internal class JavalinContext {
 
     fun size(): Int = singletons.size
 
-    fun <T: Any> registerSingleton(instance: T) {
+    fun <T : Any> registerSingleton(instance: T) {
         val identifier = SingletonDefinition.Identifier.Single(type = instance::class.java)
         singletons += (identifier to instance)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T: Any> getSingleton(identifier: SingletonDefinition.Identifier<T>): T {
+    fun <T : Any> getSingleton(identifier: SingletonDefinition.Identifier.Single<T>): T {
         val matcher = matcherFor(identifier)
 
         val matching = singletons.filter { (candidateIdentifier, _) ->
             matcher.matches(candidateIdentifier)
         }
 
-        if(matching.size > 1) {
+        if (matching.size > 1) {
             throw MultipleCandidatesFoundException(identifier)
         }
 
-        if(matching.isEmpty()) {
+        if (matching.isEmpty()) {
             throw NoCandidatesFoundException(identifier)
         }
 
         return matching.first().second as T
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> getSingletonList(identifier: SingletonDefinition.Identifier.Iterable<T>): List<T> {
+        val matcher = matcherFor(identifier)
+
+        return singletons
+            .filter { (candidateIdentifier, _) -> matcher.matches(candidateIdentifier) }
+            .map { it.second as T }
+    }
+
 }
 
-private class MultipleCandidatesFoundException(identifier: SingletonDefinition.Identifier<*>) : JavalinContextException() {
+private class MultipleCandidatesFoundException(identifier: SingletonDefinition.Identifier<*>) :
+    JavalinContextException() {
 
     override val message: String = "Multiple candidates found for $identifier"
 

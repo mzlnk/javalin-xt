@@ -4,7 +4,7 @@ import java.util.*
 
 data class SingletonDefinition<T>(
     val identifier: Identifier<T>,
-    val dependencies: List<Identifier<out Any>>,
+    val dependencies: List<Identifier<*>>,
     val instanceProvider: (args: List<*>) -> T
 ) where T : Any {
 
@@ -12,11 +12,17 @@ data class SingletonDefinition<T>(
 
     override fun toString(): String = identifier.toString()
 
-    sealed interface Identifier<T> {
+    sealed interface Identifier<T: Any> {
 
-        data class Single<T>(val type: Class<T>) : Identifier<T> {
+        data class Single<T: Any>(val type: Class<T>) : Identifier<T> {
 
             override fun toString(): String = type.name
+
+        }
+
+        data class Iterable<T: Any>(val type: Class<T>) : Identifier<List<T>> {
+
+            override fun toString(): String = "List<${type.name}>"
 
         }
 
