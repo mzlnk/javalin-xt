@@ -1,21 +1,19 @@
-package io.mzlnk.javalin.di.internal.context
+package io.mzlnk.javalin.di.internal.utils.graph
 
-import io.mzlnk.javalin.di.definition.SingletonDefinition
-import java.util.Queue
-import java.util.ArrayDeque
+import java.util.*
 
-internal class DependencyGraph(
-    private val _nodes: Array<SingletonDefinition<*>>,
+internal class Graph<E>(
+    private val _nodes: Array<E>,
     private val _edges: Array<Array<Boolean>>
 ) {
 
-    val nodes: List<SingletonDefinition<*>> = _nodes.toList()
-    val edges: List<Pair<SingletonDefinition<*>, SingletonDefinition<*>>> = _edges
-        .mapIndexed { i, row -> row.mapIndexedNotNull { j, edge -> if(edge) i to j else null } }
+    val nodes: List<E> = _nodes.toList()
+    val edges: List<Pair<E, E>> = _edges
+        .mapIndexed { i, row -> row.mapIndexedNotNull { j, edge -> if (edge) i to j else null } }
         .flatten()
         .map { (i, j) -> _nodes[i] to _nodes[j] }
 
-    val topologicalOrder: List<SingletonDefinition<*>> = run {
+    val topologicalOrder: List<E> = run {
         val nodesIndegrees = IntArray(_nodes.size) { 0 }
 
         // calculate indegree:
@@ -27,7 +25,7 @@ internal class DependencyGraph(
             }
         }
 
-        val result: MutableList<SingletonDefinition<*>> = mutableListOf()
+        val result: MutableList<E> = mutableListOf()
 
         val nodesWithNoIncomingEdge: Queue<Int> = ArrayDeque()
         for (i in _nodes.indices) {
@@ -52,7 +50,7 @@ internal class DependencyGraph(
         }
 
         if (result.size != _nodes.size) {
-            throw DependencyGraphCreationException.CircularDependencyFound()
+            throw IllegalStateException("Graph contains a cycle")
         }
 
         result

@@ -1,11 +1,12 @@
 package io.mzlnk.javalin.di.internal.context
 
 import io.mzlnk.javalin.di.definition.SingletonDefinition
+import io.mzlnk.javalin.di.internal.utils.graph.Graph
 import java.util.*
 
 internal object DependencyGraphFactory {
 
-    fun create(definitions: List<SingletonDefinition<*>>): DependencyGraph {
+    fun create(definitions: List<SingletonDefinition<*>>): Graph<SingletonDefinition<*>> {
         val nodes: Array<SingletonDefinition<*>> = definitions.toTypedArray()
         val edges: Array<Array<Boolean>> = Array(nodes.size) { Array(nodes.size) { false } }
 
@@ -48,7 +49,7 @@ internal object DependencyGraphFactory {
             }
         }
 
-        return DependencyGraph(
+        return Graph(
             _nodes = nodes,
             _edges = edges
         )
