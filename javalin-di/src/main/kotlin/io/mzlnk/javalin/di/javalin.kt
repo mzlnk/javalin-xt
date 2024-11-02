@@ -26,5 +26,5 @@ fun <T: Any> Javalin.singleton(type: Class<T>): T {
     }
 
     val identifier = SingletonDefinition.Identifier.Single(type = type)
-    return this.context.findSingleton(identifier) ?: throw IllegalStateException("Singleton not found for type $type")
+    return this.context.getSingleton(identifier)
 }

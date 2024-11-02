@@ -19,7 +19,7 @@ internal class JavalinContextFactory(
         dependencyGraph.topologicalOrder.forEach { definition ->
             context.registerSingleton(
                 definition.instanceProvider.invoke(
-                    definition.dependencies.map { context.findSingleton(it) }
+                    definition.dependencies.map { context.getSingleton(it) }
                 )
             )
         }
@@ -32,13 +32,12 @@ internal class JavalinContextFactory(
 private class DependencyCycleFoundException(cycles: List<Cycle<SingletonDefinition<*>>>) : JavalinContextException() {
 
     override val message = StringBuilder()
-        .append("\n")
         .append("Failed to create context due to dependency cycle(s):")
         .apply {
             cycles.forEachIndexed { idx, cycle ->
                 append("\nCycle #${idx + 1}:\n")
                 append(cycle.toString())
-                append("\n")
+                if (idx < cycles.size - 1) append("\n")
             }
         }
         .toString()

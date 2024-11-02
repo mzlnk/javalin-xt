@@ -15,7 +15,7 @@ internal class JavalinContext {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T: Any> findSingleton(identifier: SingletonDefinition.Identifier<T>): T? {
+    fun <T: Any> getSingleton(identifier: SingletonDefinition.Identifier<T>): T {
         val matcher = matcherFor(identifier)
 
         val matching = singletons.filter { (candidateIdentifier, _) ->
@@ -26,7 +26,11 @@ internal class JavalinContext {
             throw MultipleCandidatesFoundException(identifier)
         }
 
-        return matching.firstOrNull()?.second as? T
+        if(matching.isEmpty()) {
+            throw NoCandidatesFoundException(identifier)
+        }
+
+        return matching.first().second as T
     }
 
 }

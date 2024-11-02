@@ -40,8 +40,8 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.findSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.findSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
     }
@@ -87,9 +87,9 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.findSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.findSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.findSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentB.componentC).isEqualTo(componentC)
@@ -145,17 +145,17 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.findSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.findSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.findSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.findSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.getSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentC.componentD).isEqualTo(componentD)
     }
 
     @Test
-    fun `should create context for multiple dependencies for one component`() {
+    fun `should create context for component having multiple dependencies`() {
         /*
          * dependency graph:
          * C -> A <- B
@@ -195,16 +195,65 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.findSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.findSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.findSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentA.componentC).isEqualTo(componentC)
     }
 
     @Test
-    fun `should create context for multiple dependencies for multiple components in chain`() {
+    fun `should create context for component being dependency for multiple components`() {
+        /*
+         * dependency graph:
+         * C <- A -> B
+         */
+
+        // given:
+        class ComponentA
+        class ComponentB(val componentA: ComponentA)
+        class ComponentC(val componentA: ComponentA)
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentA() }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(identifier(ComponentA::class.java)),
+            instanceProvider = { ComponentB(it[0] as ComponentA) }
+        )
+
+        val singletonC = SingletonDefinition(
+            identifier = identifier(ComponentC::class.java),
+            dependencies = listOf(identifier(ComponentA::class.java)),
+            instanceProvider = { ComponentC(it[0] as ComponentA) }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB, singletonC)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        assertThat(context.size()).isEqualTo(3)
+
+        // and:
+        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+
+        assertThat(componentB.componentA).isEqualTo(componentA)
+        assertThat(componentC.componentA).isEqualTo(componentA)
+    }
+
+    @Test
+    fun `should create context for multiple components having multiple dependencies in chain`() {
         /*
          * dependency graph:
          * C -> A
@@ -261,11 +310,11 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(5)
 
         // and:
-        val componentA = context.findSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.findSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.findSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.findSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
-        val componentE = context.findSingleton(identifier(ComponentE::class.java)) ?: fail("Component E not found")
+        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.getSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentE = context.getSingleton(identifier(ComponentE::class.java)) ?: fail("Component E not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentA.componentC).isEqualTo(componentC)
@@ -274,56 +323,7 @@ class JavalinContextFactoryTest {
     }
 
     @Test
-    fun `should create context for component dependent to multiple components`() {
-        /*
-         * dependency graph:
-         * A <- C -> B
-         */
-
-        // given:
-        class ComponentC
-        class ComponentA(val componentC: ComponentC)
-        class ComponentB(val componentC: ComponentC)
-
-        // and:
-        val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(identifier(ComponentC::class.java)),
-            instanceProvider = { ComponentA(it[0] as ComponentC) }
-        )
-
-        val singletonB = SingletonDefinition(
-            identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(identifier(ComponentC::class.java)),
-            instanceProvider = { ComponentB(it[0] as ComponentC) }
-        )
-
-        val singletonC = SingletonDefinition(
-            identifier = identifier(ComponentC::class.java),
-            dependencies = emptyList(),
-            instanceProvider = { ComponentC() }
-        )
-
-        // and:
-        val definitions = listOf(singletonA, singletonB, singletonC)
-
-        // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
-
-        // then:
-        assertThat(context.size()).isEqualTo(3)
-
-        // and:
-        val componentA = context.findSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.findSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.findSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-
-        assertThat(componentA.componentC).isEqualTo(componentC)
-        assertThat(componentB.componentC).isEqualTo(componentC)
-    }
-
-    @Test
-    fun `should create context for diamond shaped dependencies`() {
+    fun `should create context for diamond shaped component dependency tree`() {
         /*
          * dependency graph:
          *   -> B ->
@@ -372,10 +372,10 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.findSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.findSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.findSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.findSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentA = context.getSingleton(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.getSingleton(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.getSingleton(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.getSingleton(identifier(ComponentD::class.java)) ?: fail("Component D not found")
 
         assertThat(componentA.componentB).isEqualTo(componentB)
         assertThat(componentA.componentC).isEqualTo(componentC)
@@ -384,7 +384,7 @@ class JavalinContextFactoryTest {
     }
 
     @Test
-    fun `should throw exception if there are multiple candidates for given dependency`() {
+    fun `should throw exception if there are multiple candidates for given component dependency`() {
         // given:
         class ComponentA
         class ComponentB(val componentA: ComponentA)
@@ -418,7 +418,88 @@ class JavalinContextFactoryTest {
 
         // then:
         exception.isInstanceOf(JavalinContextException::class.java)
-        exception.hasMessage("Multiple candidates found for io.mzlnk.javalin.di.internal.context.JavalinContextFactoryTest\$should throw exception if there are multiple candidates for given dependency\$ComponentA")
+        exception.hasMessage("Multiple candidates found for io.mzlnk.javalin.di.internal.context.JavalinContextFactoryTest\$should throw exception if there are multiple candidates for given component dependency\$ComponentA")
+    }
+
+    @Test
+    fun `should throw exception if there are no candidates for given component dependency`() {
+        // given:
+        class ComponentA
+        class ComponentB(val componentA: ComponentA)
+
+        // and:
+        // no definition for ComponentA
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(identifier(ComponentA::class.java)),
+            instanceProvider = { ComponentB(it[0] as ComponentA) }
+        )
+
+        // and:
+        val definitions = listOf(singletonB)
+
+        // when:
+        val exception = assertThatThrownBy {
+            JavalinContextFactory(source = {definitions}).create()
+        }
+
+        // then:
+        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.hasMessage("No candidates found for io.mzlnk.javalin.di.internal.context.JavalinContextFactoryTest\$should throw exception if there are no candidates for given component dependency\$ComponentA")
+    }
+
+    @Test
+    fun `should throw exception if there is a dependency cycle between components`() {
+        /*
+         * dependency graph:
+         * ┌->A -> B -> C -┐
+         * └---------------┘
+         */
+
+        // given:
+        class Components {
+
+            inner class ComponentA(val componentB: ComponentB)
+            inner class ComponentB(val componentC: ComponentC)
+            inner class ComponentC(val componentA: ComponentA)
+
+        }
+
+        // and:
+        val definitions = listOf(
+            SingletonDefinition(
+                identifier = identifier(Components.ComponentA::class.java),
+                dependencies = listOf(identifier(Components.ComponentB::class.java)),
+                instanceProvider = { Components().ComponentA(it[0] as Components.ComponentB) }
+            ),
+            SingletonDefinition(
+                identifier = identifier(Components.ComponentB::class.java),
+                dependencies = listOf(identifier(Components.ComponentC::class.java)),
+                instanceProvider = { Components().ComponentB(it[0] as Components.ComponentC) }
+            ),
+            SingletonDefinition(
+                identifier = identifier(Components.ComponentC::class.java),
+                dependencies = listOf(identifier(Components.ComponentA::class.java)),
+                instanceProvider = { Components().ComponentC(it[0] as Components.ComponentA) }
+            )
+        )
+
+        // when:
+        val exception = assertThatThrownBy {
+            JavalinContextFactory(source = {definitions}).create()
+        }
+
+        // then:
+        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.hasMessage(
+            """
+            Failed to create context due to dependency cycle(s):
+            Cycle #1:
+            ┌->io.mzlnk.javalin.di.internal.context.JavalinContextFactoryTest${'$'}should throw exception if there is a dependency cycle between components${'$'}Components${'$'}ComponentA -> io.mzlnk.javalin.di.internal.context.JavalinContextFactoryTest${'$'}should throw exception if there is a dependency cycle between components${'$'}Components${'$'}ComponentC -> io.mzlnk.javalin.di.internal.context.JavalinContextFactoryTest${'$'}should throw exception if there is a dependency cycle between components${'$'}Components${'$'}ComponentB -┐
+            └---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------┘
+            """.trimIndent()
+        )
     }
     
     private companion object {
