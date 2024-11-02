@@ -22,7 +22,6 @@ class TestModule {
         componentC: ComponentC
     ): ComponentD = ComponentD()
 
-
 }
 
 class ComponentA

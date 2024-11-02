@@ -1,6 +1,7 @@
 package io.mzlnk.javalin.di.internal.context
 
 import io.mzlnk.javalin.di.definition.SingletonDefinition
+import io.mzlnk.javalin.di.internal.context.SingletonMatcher.Companion.matcherFor
 import io.mzlnk.javalin.di.internal.utils.graph.Graph
 import java.util.*
 
@@ -16,36 +17,18 @@ internal object DependencyGraphFactory {
 
         nodes.forEach { node ->
             node.dependencies.forEach { dependency ->
+                val matcher = matcherFor(dependency)
+
                 nodes
                     // skip the node itself
                     .filter { candidate -> candidate.id != node.id }
                     // apply filters:
-                    .let { candidates -> DependenciesFilter.ByType.filter(dependency, candidates) }
-                    // apply validators:
-                    .also { candidates ->
-                        DependenciesValidator.ExactlyOneCandidateForDependency.validate(
-                            dependency,
-                            candidates
-                        )
-                    }
+                    .filter { candidate -> matcher.matches(candidate.identifier) }
                     // set corresponding edges
                     .forEach { candidate ->
                         edges[nodeIdxsByIds[candidate.id]!!][nodeIdxsByIds[node.id]!!] = true
                     }
 
-            }
-        }
-
-        // validate against circular dependencies
-        for (i in nodes.indices) {
-            for (j in nodes.indices) {
-                if (i == j) {
-                    continue
-                }
-
-                if (edges[i][j] && edges[j][i]) {
-                    throw DependencyGraphCreationException.CircularDependencyFound()
-                }
             }
         }
 
@@ -55,81 +38,5 @@ internal object DependencyGraphFactory {
         )
     }
 
-
-}
-
-private interface DependenciesFilter {
-
-    fun filter(
-        dependency: Class<*>,
-        candidates: List<SingletonDefinition<*>>
-    ): List<SingletonDefinition<*>>
-
-    object ByType : DependenciesFilter {
-
-        override fun filter(
-            dependency: Class<*>,
-            candidates: List<SingletonDefinition<*>>
-        ): List<SingletonDefinition<*>> {
-            return candidates.filter { candidate ->
-                // TODO: add support for subtypes
-                dependency == candidate.type
-            }
-        }
-    }
-
-    // TODO: implement it
-//    object ByName : DependenciesFilter {
-//
-//        /*
-//         *  Filtering matrix:
-//         *
-//         *  node \ dep | no-name | name                   |
-//         *  no-name    |    1    |  0                     |
-//         *  name       |    1    |  node.name == dep.name |
-//         */
-//        override fun filter(
-//            dependency: SingletonDefinition.Key,
-//            candidates: List<SingletonDefinition>
-//        ): List<SingletonDefinition> {
-//            return candidates.filter { candidate ->
-//                dependency.name?.let { name -> name == candidate.key.name } ?: true
-//            }
-//        }
-//
-//    }
-
-
-}
-
-private interface DependenciesValidator {
-
-    fun validate(
-        dependency: Class<*>,
-        candidates: List<SingletonDefinition<*>>
-    )
-
-    object ExactlyOneCandidateForDependency : DependenciesValidator {
-
-        override fun validate(
-            dependency: Class<*>,
-            candidates: List<SingletonDefinition<*>>
-        ) {
-            if(candidates.isEmpty()) {
-                throw DependencyGraphCreationException.DependencyNotFound()
-            }
-            if(candidates.size > 1) {
-                throw DependencyGraphCreationException.MultipleDependenciesFound()
-            }
-        }
-    }
-
-}
-
-internal abstract class DependencyGraphCreationException(message: String) : RuntimeException(message) {
-
-    class DependencyNotFound : DependencyGraphCreationException("Dependency not found")
-    class MultipleDependenciesFound : DependencyGraphCreationException("Multiple dependencies found")
-    class CircularDependencyFound : DependencyGraphCreationException("Circular dependency found")
 
 }

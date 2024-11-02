@@ -85,7 +85,7 @@ class GraphTest {
         )
 
         // expect
-        assertThat(graph.hasCycle).isTrue()
+        assertThat(graph.hasCycles).isTrue()
     }
 
     @Test
@@ -110,7 +110,7 @@ class GraphTest {
         )
 
         // expect:
-        assertThat(graph.hasCycle).isFalse()
+        assertThat(graph.hasCycles).isFalse()
     }
 
     @Test

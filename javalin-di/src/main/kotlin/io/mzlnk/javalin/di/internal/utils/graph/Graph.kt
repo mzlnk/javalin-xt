@@ -13,7 +13,7 @@ internal class Graph<E>(
         .flatten()
         .map { (i, j) -> _nodes[i] to _nodes[j] }
 
-    val topologicalOrder: List<E> get() {
+    val topologicalOrder: List<E> by lazy {
         val nodesIndegrees = IntArray(_nodes.size) { 0 }
 
         // calculate indegree:
@@ -53,10 +53,10 @@ internal class Graph<E>(
             throw IllegalStateException("Graph contains a cycle")
         }
 
-        return result
+        result
     }
 
-    val cycles: List<Cycle<E>> get() {
+    val cycles: List<Cycle<E>> by lazy {
         val color = Array(_nodes.size) { Color.WHITE }
 
         val cycles: MutableList<Cycle<E>> = mutableListOf()
@@ -89,10 +89,10 @@ internal class Graph<E>(
             }
         }
 
-        return cycles
+        cycles
     }
 
-    val hasCycle: Boolean get() = cycles.isNotEmpty()
+    val hasCycles: Boolean get() = cycles.isNotEmpty()
 
     private enum class Color {
         WHITE, GRAY, BLACK

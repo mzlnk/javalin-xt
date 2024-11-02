@@ -39,10 +39,14 @@ internal object SingletonDefinitionProviderFileGenerator {
                                         module.singletons.forEachIndexed { idx, method ->
                                             add("%T(\n", SingletonDefinition::class)
                                             indent()
+                                            add("identifier = %T(\n", SingletonDefinition.Identifier.Single::class)
+                                            indent()
                                             add(
-                                                "type = %L::class.java,\n",
+                                                "type = %L::class.java\n",
                                                 method.returnType.qualifiedName
                                             )
+                                            unindent()
+                                            add("),\n")
                                             add("dependencies = ")
                                             method.parameters
                                                 .takeIf { it.isNotEmpty() }
@@ -50,7 +54,11 @@ internal object SingletonDefinitionProviderFileGenerator {
                                                     add("listOf(\n")
                                                     indent()
                                                     method.parameters.forEach { parameter ->
-                                                        add("%L::class.java,\n", parameter.type.qualifiedName)
+                                                        add(
+                                                            "%T(type = %L::class.java),\n",
+                                                            SingletonDefinition.Identifier.Single::class.java,
+                                                            parameter.type.qualifiedName
+                                                        )
                                                     }
                                                     unindent()
                                                     add("),\n")

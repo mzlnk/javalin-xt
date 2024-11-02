@@ -1,6 +1,7 @@
 package io.mzlnk.javalin.di
 
 import io.javalin.Javalin
+import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.internal.JavalinProxy
 import io.mzlnk.javalin.di.internal.context.JavalinContextFactory
 import org.slf4j.LoggerFactory
@@ -24,5 +25,6 @@ fun <T: Any> Javalin.singleton(type: Class<T>): T {
         throw IllegalStateException("Javalin DI has not been enabled. Call Javalin.enableDI() first.")
     }
 
-    return this.context.findSingleton(type) ?: throw IllegalStateException("Singleton not found for type $type")
+    val identifier = SingletonDefinition.Identifier.Single(type = type)
+    return this.context.findSingleton(identifier) ?: throw IllegalStateException("Singleton not found for type $type")
 }

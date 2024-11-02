@@ -90,17 +90,21 @@ class SingletonDefinitionProcessorTest {
             |
             |  override val definitions: List<SingletonDefinition<*>> = listOf(
             |        SingletonDefinition(
-            |          type = c.d.Type1::class.java,
+            |          identifier = SingletonDefinition.Identifier.Single(
+            |            type = c.d.Type1::class.java
+            |          ),
             |          dependencies = emptyList(),
             |          instanceProvider = {
             |            module.providesType1()
             |          }
             |        ),
             |        SingletonDefinition(
-            |          type = e.f.Type2::class.java,
+            |          identifier = SingletonDefinition.Identifier.Single(
+            |            type = e.f.Type2::class.java
+            |          ),
             |          dependencies = listOf(
-            |            g.h.Type3::class.java,
-            |            i.j.Type4::class.java,
+            |            SingletonDefinition.Identifier.Single(type = g.h.Type3::class.java),
+            |            SingletonDefinition.Identifier.Single(type = i.j.Type4::class.java),
             |          ),
             |          instanceProvider = {
             |            module.providesType2(
