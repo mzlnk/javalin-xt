@@ -384,6 +384,160 @@ class JavalinContextFactoryTest {
     }
 
     @Test
+    fun `should create context for component having dependency which is supertype`() {
+        /*
+         * dependency graph:
+         * A <- B
+         */
+
+        // given:
+        open class ComponentB
+        class ComponentB1 : ComponentB()
+        class ComponentA(val componentB: ComponentB)
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = listOf(identifier(ComponentB::class.java)),
+            instanceProvider = { ComponentA(it[0] as ComponentB) }
+        )
+
+        val singletonB1 = SingletonDefinition(
+            identifier = identifier(ComponentB1::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentB1() }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB1)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        assertThat(context.size()).isEqualTo(2)
+
+        // and:
+        val componentA = context.getSingleton(identifier(ComponentA::class.java))
+        val componentB1 = context.getSingleton(identifier(ComponentB1::class.java))
+
+        assertThat(componentA.componentB).isEqualTo(componentB1)
+    }
+
+    @Test
+    fun `should create context for component having dependency which interface type`() {
+        /*
+         * dependency graph:
+         * A <- B
+         */
+
+        // given:
+        class ComponentB : TypeB
+        class ComponentA(val componentB: TypeB)
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = listOf(identifier(TypeB::class.java)),
+            instanceProvider = { ComponentA(it[0] as TypeB) }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentB() }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        assertThat(context.size()).isEqualTo(2)
+
+        // and:
+        val componentA = context.getSingleton(identifier(ComponentA::class.java))
+        val componentB = context.getSingleton(identifier(ComponentB::class.java))
+
+        assertThat(componentA.componentB).isEqualTo(componentB)
+    }
+
+    @Test
+    fun `should access singleton by its type`() {
+        // given:
+        class ComponentA
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentA() }
+        )
+
+        // and:
+        val definitions = listOf(singletonA)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        assertThatCode { context.getSingleton(identifier(ComponentA::class.java)) }.doesNotThrowAnyException()
+    }
+
+    @Test
+    fun `should access the same singleton by its supertype`() {
+        // given:
+        open class ComponentA
+        class ComponentA1 : ComponentA()
+
+        // and:
+        val singletonB1 = SingletonDefinition(
+            identifier = identifier(ComponentA1::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentA1() }
+        )
+
+        // and:
+        val definitions = listOf(singletonB1)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentA1 = context.getSingleton(identifier(ComponentA1::class.java))
+        val componentA = context.getSingleton(identifier(ComponentA::class.java))
+
+        assertThat(componentA1).isEqualTo(componentA)
+    }
+
+    @Test
+    fun `should access the same singleton by implemented type`() {
+        // given:
+        class ComponentB : TypeB
+
+        // and:
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentB() }
+        )
+
+        // and:
+        val definitions = listOf(singletonB)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentB = context.getSingleton(identifier(ComponentB::class.java))
+        val typeB = context.getSingleton(identifier(TypeB::class.java))
+
+        assertThat(componentB).isEqualTo(typeB)
+    }
+
+    @Test
     fun `should throw exception if there are multiple candidates for given component dependency`() {
         // given:
         class ComponentA
@@ -413,7 +567,7 @@ class JavalinContextFactoryTest {
 
         // when:
         val exception = assertThatThrownBy {
-            JavalinContextFactory(source = {definitions}).create()
+            JavalinContextFactory(source = { definitions }).create()
         }
 
         // then:
@@ -441,7 +595,7 @@ class JavalinContextFactoryTest {
 
         // when:
         val exception = assertThatThrownBy {
-            JavalinContextFactory(source = {definitions}).create()
+            JavalinContextFactory(source = { definitions }).create()
         }
 
         // then:
@@ -487,7 +641,7 @@ class JavalinContextFactoryTest {
 
         // when:
         val exception = assertThatThrownBy {
-            JavalinContextFactory(source = {definitions}).create()
+            JavalinContextFactory(source = { definitions }).create()
         }
 
         // then:
@@ -501,11 +655,16 @@ class JavalinContextFactoryTest {
             """.trimIndent()
         )
     }
-    
+
     private companion object {
-        
-        fun <T> identifier(type: Class<T>): SingletonDefinition.Identifier<T> = SingletonDefinition.Identifier.Single(type = type)
-        
+
+        // general purpose types for testing
+        interface TypeA
+        interface TypeB
+
+        fun <T> identifier(type: Class<T>): SingletonDefinition.Identifier<T> =
+            SingletonDefinition.Identifier.Single(type = type)
+
     }
 
 }

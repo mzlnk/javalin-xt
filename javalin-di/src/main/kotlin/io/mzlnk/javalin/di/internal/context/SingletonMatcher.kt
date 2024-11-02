@@ -23,7 +23,7 @@ private class SingleSingletonMatcher(
 
     override fun matches(identifier: SingletonDefinition.Identifier<*>): Boolean {
         return when (identifier) {
-            is SingletonDefinition.Identifier.Single<*> -> identifier.type == this.identifier.type
+            is SingletonDefinition.Identifier.Single<*> -> this.identifier.type.isAssignableFrom(identifier.type)
         }
     }
 }
