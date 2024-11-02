@@ -13,7 +13,7 @@ internal class Graph<E>(
         .flatten()
         .map { (i, j) -> _nodes[i] to _nodes[j] }
 
-    val topologicalOrder: List<E> = run {
+    val topologicalOrder: List<E> get() {
         val nodesIndegrees = IntArray(_nodes.size) { 0 }
 
         // calculate indegree:
@@ -49,11 +49,49 @@ internal class Graph<E>(
             }
         }
 
-        if (result.size != _nodes.size) {
+        if(result.size != _nodes.size) {
             throw IllegalStateException("Graph contains a cycle")
         }
 
-        result
+        return result
+    }
+
+    val hasCycle: Boolean get() {
+        val color = Array(_nodes.size) { Color.WHITE }
+
+        fun hasCycle(node: Int): Boolean {
+            // Mark the node as being visited (in progress)
+            color[node] = Color.GRAY
+
+            // Explore all neighbors
+            for (i in _nodes.indices) {
+                if (_edges[node][i]) {
+                    if (color[i] == Color.GRAY) {
+                        return true
+                    }
+
+                    if (color[i] == Color.WHITE && hasCycle(i)) {
+                        return true
+                    }
+                }
+            }
+
+            color[node] = Color.BLACK
+            return false
+        }
+
+        // Check for cycles starting from each node
+        for (i in _nodes.indices) {
+            if (color[i] == Color.WHITE && hasCycle(i)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private enum class Color {
+        WHITE, GRAY, BLACK
     }
 
 }

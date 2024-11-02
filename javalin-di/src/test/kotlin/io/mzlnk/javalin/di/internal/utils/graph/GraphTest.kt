@@ -1,14 +1,15 @@
 package io.mzlnk.javalin.di.internal.utils.graph
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class GraphTest {
 
     @Test
-    fun `should return graph nodes in topological order`() {
+    fun `should return graph nodes in topological order for acyclic graph`() {
         /*
-         * dependency graph:
+         * graph:
          * C -> A
          *      ^
          *      |
@@ -31,6 +32,85 @@ class GraphTest {
 
         // then:
         assertThat(topologicalOrder).containsExactly(C, D, E, B, A)
+    }
+
+    @Test
+    fun `should throw exception when get topological order for cyclic graph`() {
+        /*
+         * graph:
+         * A -> B
+         * ^    |
+         * |    v
+         * D <- C
+         */
+
+        // given:
+        val graph = graph(
+            nodes = listOf(A, B, C, D),
+            edges = listOf(
+                A to B,
+                B to C,
+                C to D,
+                D to A
+            )
+        )
+
+        // when:
+        val exception = assertThatThrownBy { graph.topologicalOrder }
+
+        // then:
+        exception.isInstanceOf(IllegalStateException::class.java)
+        exception.hasMessage("Graph contains a cycle")
+    }
+
+    @Test
+    fun `should return true when graph has cycle`() {
+        /*
+         * graph:
+         * A -> B
+         * ^    |
+         * |    v
+         * D <- C
+         */
+
+        // given:
+        val graph = graph(
+            nodes = listOf(A, B, C, D),
+            edges = listOf(
+                A to B,
+                B to C,
+                C to D,
+                D to A
+            )
+        )
+
+        // expect
+        assertThat(graph.hasCycle).isTrue()
+    }
+
+    @Test
+    fun `should return false when graph has no cycle`() {
+        /*
+         * graph:
+         * A -> B
+         * |    |
+         * v    v
+         * D <- C
+         */
+
+        // given:
+        val graph = graph(
+            nodes = listOf(A, B, C, D),
+            edges = listOf(
+                A to B,
+                B to C,
+                C to D,
+                A to D
+            )
+        )
+
+        // expect:
+        assertThat(graph.hasCycle).isFalse()
     }
 
     private companion object {
