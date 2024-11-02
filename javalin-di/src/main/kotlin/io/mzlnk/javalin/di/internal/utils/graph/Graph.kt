@@ -56,10 +56,12 @@ internal class Graph<E>(
         return result
     }
 
-    val hasCycle: Boolean get() {
+    val cycles: List<Cycle<E>> get() {
         val color = Array(_nodes.size) { Color.WHITE }
 
-        fun hasCycle(node: Int): Boolean {
+        val cycles: MutableList<Cycle<E>> = mutableListOf()
+
+        fun findCycle(node: Int, path: List<Int>) {
             // Mark the node as being visited (in progress)
             color[node] = Color.GRAY
 
@@ -67,28 +69,30 @@ internal class Graph<E>(
             for (i in _nodes.indices) {
                 if (_edges[node][i]) {
                     if (color[i] == Color.GRAY) {
-                        return true
+                        val cycle = path.subList(path.indexOf(i), path.size).map { _nodes[it] }
+                        cycles.add(Cycle(cycle))
                     }
 
-                    if (color[i] == Color.WHITE && hasCycle(i)) {
-                        return true
+                    if (color[i] == Color.WHITE) {
+                        findCycle(i, path + i)
                     }
                 }
             }
 
             color[node] = Color.BLACK
-            return false
         }
 
         // Check for cycles starting from each node
         for (i in _nodes.indices) {
-            if (color[i] == Color.WHITE && hasCycle(i)) {
-                return true
+            if (color[i] == Color.WHITE) {
+                findCycle(i, listOf(i))
             }
         }
 
-        return false
+        return cycles
     }
+
+    val hasCycle: Boolean get() = cycles.isNotEmpty()
 
     private enum class Color {
         WHITE, GRAY, BLACK

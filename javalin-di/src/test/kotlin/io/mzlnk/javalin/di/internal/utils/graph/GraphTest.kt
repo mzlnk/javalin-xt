@@ -113,15 +113,79 @@ class GraphTest {
         assertThat(graph.hasCycle).isFalse()
     }
 
+    @Test
+    fun `should return all cycles in graph`() {
+        /*
+         * graph:
+         * A -> B <- E
+         * ^    |    ^
+         * |    v    |
+         * D <- C -> F
+         */
+
+        // given:
+        val graph = graph(
+            nodes = listOf(A, B, C, D, E, F),
+            edges = listOf(
+                A to B,
+                B to C,
+                C to D,
+                D to A,
+                E to B,
+                F to E,
+                C to F
+            )
+        )
+
+        // when:
+        val cycles = graph.cycles
+
+        // then:
+        assertThat(cycles).hasSize(2)
+        assertThat(cycles[0].nodes).containsExactly(A, B, C, D)
+        assertThat(cycles[1].nodes).containsExactly(B, C, F, E)
+    }
+
+    @Test
+    fun `should return no cycles in acyclic graph`() {
+        /*
+         * graph:
+         * C -> A
+         *      ^
+         *      |
+         * D -> B <- E
+         */
+
+        // given:
+        val graph = graph(
+            nodes = listOf(A, B, C, D, E),
+            edges = listOf(
+                C to A,
+                D to B,
+                B to A,
+                E to B
+            )
+        )
+
+        // when:
+        val cycles = graph.cycles
+
+        // then:
+        assertThat(cycles).isEmpty()
+    }
+
     private companion object {
 
-        private data class Element(val id: String)
+        private data class Element(val id: String) {
+            override fun toString(): String = id
+        }
 
         private val A: Element = Element(id = "A")
         private val B: Element = Element(id = "B")
         private val C: Element = Element(id = "C")
         private val D: Element = Element(id = "D")
         private val E: Element = Element(id = "E")
+        private val F: Element = Element(id = "F")
 
         private fun graph(
             nodes: List<Element>,
