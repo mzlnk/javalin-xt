@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.di.internal.utils
+package io.mzlnk.javalin.di.internal.utils.logging
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
