@@ -1,5 +1,6 @@
 package io.mzlnk.javalin.di.definition
 
+import io.mzlnk.javalin.di.type.TypeReference
 import java.util.*
 
 data class SingletonDefinition<T>(
@@ -12,19 +13,11 @@ data class SingletonDefinition<T>(
 
     override fun toString(): String = identifier.toString()
 
-    sealed interface Identifier<T: Any> {
+    data class Identifier<T : Any>(
+        val typeRef: TypeReference<T>
+    ) {
 
-        data class Single<T: Any>(val type: Class<T>) : Identifier<T> {
-
-            override fun toString(): String = type.name
-
-        }
-
-        data class Iterable<T: Any>(val type: Class<T>) : Identifier<List<T>> {
-
-            override fun toString(): String = "List<${type.name}>"
-
-        }
+        override fun toString(): String = typeRef.type.typeName
 
     }
 

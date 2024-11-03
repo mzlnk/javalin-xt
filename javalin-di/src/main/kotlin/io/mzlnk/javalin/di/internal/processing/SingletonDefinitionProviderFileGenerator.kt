@@ -39,7 +39,7 @@ internal object SingletonDefinitionProviderFileGenerator {
                                         module.singletons.forEachIndexed { idx, method ->
                                             add("%T(\n", SingletonDefinition::class)
                                             indent()
-                                            add("identifier = %T(\n", SingletonDefinition.Identifier.Single::class)
+                                            add("identifier = %T(\n", SingletonDefinition.Identifier::class)
                                             indent()
                                             add(
                                                 "type = %L::class.java\n",
@@ -56,7 +56,7 @@ internal object SingletonDefinitionProviderFileGenerator {
                                                     method.parameters.forEach { parameter ->
                                                         add(
                                                             "%T(type = %L::class.java),\n",
-                                                            SingletonDefinition.Identifier.Single::class.java,
+                                                            SingletonDefinition.Identifier::class.java,
                                                             parameter.type.qualifiedName
                                                         )
                                                     }

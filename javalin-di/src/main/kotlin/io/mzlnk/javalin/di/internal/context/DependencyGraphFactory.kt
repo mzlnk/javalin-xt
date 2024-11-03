@@ -3,10 +3,12 @@ package io.mzlnk.javalin.di.internal.context
 import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.internal.context.SingletonMatcher.Companion.matcherFor
 import io.mzlnk.javalin.di.internal.utils.graph.Graph
+import io.mzlnk.javalin.di.type.TypeReference
 import java.util.*
 
 internal object DependencyGraphFactory {
 
+    @Suppress("UNCHECKED_CAST")
     fun create(definitions: List<SingletonDefinition<*>>): Graph<SingletonDefinition<*>> {
         val nodes: Array<SingletonDefinition<*>> = definitions.toTypedArray()
         val edges: Array<Array<Boolean>> = Array(nodes.size) { Array(nodes.size) { false } }
@@ -17,7 +19,11 @@ internal object DependencyGraphFactory {
 
         nodes.forEach { node ->
             node.dependencies.forEach { dependency ->
-                val matcher = matcherFor(dependency)
+                val matcher = if(dependency.typeRef.isList()) {
+                    matcherFor(SingletonDefinition.Identifier((dependency.typeRef as TypeReference<List<Any>>).elementType))
+                } else {
+                    matcherFor(dependency)
+                }
 
                 nodes
                     // skip the node itself

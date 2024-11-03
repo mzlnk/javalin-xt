@@ -2,17 +2,15 @@ package io.mzlnk.javalin.di.internal.context
 
 import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.internal.utils.graph.Cycle
+import io.mzlnk.javalin.di.type.TypeReference
 
 internal class JavalinContextFactory(
     private val source: SingletonDefinitionSource = DefaultSingletonDefinitionSource
 ) {
 
+    @Suppress("UNCHECKED_CAST")
     fun create(): JavalinContext {
         val definitions = source.definitions()
-
-        definitions
-            .find { it.identifier is SingletonDefinition.Identifier.Iterable<*> }
-            ?.let { throw IterableSingletonDefinitionNotSupported(it.identifier as SingletonDefinition.Identifier.Iterable<*>) }
 
         val dependencyGraph = DependencyGraphFactory.create(definitions)
 
@@ -23,11 +21,15 @@ internal class JavalinContextFactory(
         val context = JavalinContext()
         dependencyGraph.topologicalOrder.forEach { definition ->
             context.registerSingleton(
-                definition.instanceProvider.invoke(
+                identifier = definition.identifier,
+                instance = definition.instanceProvider.invoke(
                     definition.dependencies.map { dependency ->
-                        when (dependency) {
-                            is SingletonDefinition.Identifier.Single<*> -> context.getSingleton(dependency)
-                            is SingletonDefinition.Identifier.Iterable<*> -> context.getSingletonList(dependency)
+                        if (dependency.typeRef.isList()) {
+                            context.findAll(
+                                SingletonDefinition.Identifier((dependency.typeRef as TypeReference<List<Any>>).elementType)
+                            )
+                        } else {
+                            context.getOne(dependency)
                         }
                     }
                 )
@@ -54,7 +56,7 @@ private class DependencyCycleFoundException(cycles: List<Cycle<SingletonDefiniti
 
 }
 
-private class IterableSingletonDefinitionNotSupported(identifier: SingletonDefinition.Identifier.Iterable<*>) :
+private class IterableSingletonDefinitionNotSupported(identifier: SingletonDefinition.Identifier<*>) :
     JavalinContextException() {
 
     override val message = "Iterable singleton definition `$identifier` is not supported."

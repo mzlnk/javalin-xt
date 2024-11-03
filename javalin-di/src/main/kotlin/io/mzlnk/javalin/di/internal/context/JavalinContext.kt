@@ -9,13 +9,12 @@ internal class JavalinContext {
 
     fun size(): Int = singletons.size
 
-    fun <T : Any> registerSingleton(instance: T) {
-        val identifier = SingletonDefinition.Identifier.Single(type = instance::class.java)
+    fun <T : Any> registerSingleton(identifier: SingletonDefinition.Identifier<out T>, instance: T) {
         singletons += (identifier to instance)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getSingleton(identifier: SingletonDefinition.Identifier.Single<T>): T {
+    fun <T : Any> getOne(identifier: SingletonDefinition.Identifier<T>): T {
         val matcher = matcherFor(identifier)
 
         val matching = singletons.filter { (candidateIdentifier, _) ->
@@ -34,7 +33,7 @@ internal class JavalinContext {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getSingletonList(identifier: SingletonDefinition.Identifier.Iterable<T>): List<T> {
+    fun <T : Any> findAll(identifier: SingletonDefinition.Identifier<T>): List<T> {
         val matcher = matcherFor(identifier)
 
         return singletons
