@@ -22,26 +22,12 @@ abstract class TypeReference<T> {
         this.type = type
     }
 
-    internal val isIterable get() = Iterable::class.java.isAssignableFrom(clazz(type))
-
     internal fun isAssignableFrom(typeRef: TypeReference<*>): Boolean {
-        if (this.type is Class<*> && typeRef.type is Class<*>) {
-            return this.type.isAssignableFrom(typeRef.type)
+        return if (this.type is Class<*> && typeRef.type is Class<*>) {
+            this.type.isAssignableFrom(typeRef.type)
         } else {
-            return typeRef.type == this.type
+            typeRef.type == this.type
         }
-    }
-
-    private companion object {
-
-        fun clazz(type: Type): Class<*> {
-            return when(type) {
-                is Class<*> -> type
-                is ParameterizedType -> type.rawType as Class<*>
-                else -> throw IllegalStateException("Unsupported type: ${type.typeName}")
-            }
-        }
-
     }
 
 }

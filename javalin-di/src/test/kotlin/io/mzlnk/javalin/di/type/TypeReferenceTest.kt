@@ -32,22 +32,4 @@ class TypeReferenceTest {
         assertThat(typeReference.type.typeName).isEqualTo("java.util.Map<java.lang.String, ? extends java.util.List<? extends java.lang.Integer>>")
     }
 
-    @Test
-    fun `should detect iterable type`() {
-        // given:
-        val typeReference = object : TypeReference<List<String>>() {}
-
-        // expect:
-        assertThat(typeReference.isIterable).isTrue()
-    }
-
-    @Test
-    fun `should not detect iterable type`() {
-        // given:
-        val typeReference = object : TypeReference<String>() {}
-
-        // expect:
-        assertThat(typeReference.isIterable).isFalse()
-    }
-
 }

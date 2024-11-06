@@ -348,13 +348,49 @@ class JavalinContextFactoryTest {
     }
 
     @Test
-    fun `should create context for component having dependency which is supertype`() {
+    fun `should inject a candidate to component dependency if defined by given type`() {
         /*
          * dependency graph:
          * A <- B
          */
 
         // given:
+        val componentB = ComponentB()
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = listOf(identifier(ComponentB::class.java)),
+            instanceProvider = { ComponentA("B" to it[0] as ComponentB) }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentB }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentA = context.getOne(identifier(ComponentA::class.java))
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
+    }
+
+    @Test
+    fun `should inject a candidate to component dependency if defined by supertype`() {
+        /*
+         * dependency graph:
+         * A <- B
+         */
+
+        // given:
+        val componentB1 = ComponentB1()
+
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
             dependencies = listOf(identifier(ComponentB::class.java)),
@@ -364,7 +400,7 @@ class JavalinContextFactoryTest {
         val singletonB1 = SingletonDefinition(
             identifier = identifier(ComponentB1::class.java),
             dependencies = emptyList(),
-            instanceProvider = { ComponentB1() }
+            instanceProvider = { componentB1 }
         )
 
         // and:
@@ -378,19 +414,19 @@ class JavalinContextFactoryTest {
 
         // and:
         val componentA = context.getOne(identifier(ComponentA::class.java))
-        val componentB1 = context.getOne(identifier(ComponentB1::class.java))
-
         assertThat(componentA.components["B"]).isEqualTo(componentB1)
     }
 
     @Test
-    fun `should create context for component having dependency which interface type`() {
+    fun `should inject a candidate to component dependency if defined by interface type`() {
         /*
          * dependency graph:
          * A <- B
          */
 
         // given:
+        val componentB = ComponentB()
+
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
             dependencies = listOf(identifier(TypeB::class.java)),
@@ -400,7 +436,7 @@ class JavalinContextFactoryTest {
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
             dependencies = emptyList(),
-            instanceProvider = { ComponentB() }
+            instanceProvider = { componentB }
         )
 
         // and:
@@ -414,13 +450,11 @@ class JavalinContextFactoryTest {
 
         // and:
         val componentA = context.getOne(identifier(ComponentA::class.java))
-        val componentB = context.getOne(identifier(ComponentB::class.java))
-
         assertThat(componentA.components["B"]).isEqualTo(componentB)
     }
 
     @Test
-    fun `should create context for component having iterable dependency of given type`() {
+    fun `should inject list of candidates to component dependency if list defined by given type`() {
         /*
          * dependency graph:
          * A <- B
@@ -464,7 +498,7 @@ class JavalinContextFactoryTest {
     }
 
     @Test
-    fun `should create context for component having iterable dependency of supertype`() {
+    fun `should inject list of candidates to component dependency if list defined by super type`() {
         /*
          * dependency graph:
          * A <- B
@@ -505,7 +539,8 @@ class JavalinContextFactoryTest {
     }
 
     @Test
-    fun `should create context for component having iterable dependency of interface type`() {
+
+    fun `should inject list of candidates to component dependency if list defined by interface type`() {
         /*
          * dependency graph:
          * A <- B
@@ -546,7 +581,7 @@ class JavalinContextFactoryTest {
     }
 
     @Test
-    fun `should create context component having iterable dependency of type but no candidates`() {
+    fun `should inject empty list to component dependency if no candidate provided`() {
         /*
          * dependency graph:
          * A <- B
@@ -571,6 +606,82 @@ class JavalinContextFactoryTest {
     }
 
     @Test
+    fun `should inject list of candidates to component dependency if list defined explicitly`() {
+        // given:
+        val componentA1 = ComponentA()
+        val componentA2 = ComponentA()
+
+        // and:
+        val singletonsA1A2 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}),
+            dependencies = emptyList(),
+            instanceProvider = { listOf(componentA1, componentA2) }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(identifier(object : TypeReference<List<ComponentA>>() {})),
+            instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
+        )
+
+        // and:
+        val definitions = listOf(singletonsA1A2, singletonB)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentB = context.getOne(identifier(ComponentB::class.java))
+        assertThat(componentB.components["As"] as List<ComponentA>).containsExactlyInAnyOrder(componentA1, componentA2)
+    }
+
+    @Test
+    fun `should inject list of singletons defined one by one instead of explicit list if defined both`() {
+        // given:
+        val componentA1 = ComponentA()
+        val componentA2 = ComponentA()
+
+        // and:
+        val componentA3 = ComponentA()
+        val componentA4 = ComponentA()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA2 }
+        )
+
+        val singletonsA3A4 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}),
+            dependencies = emptyList(),
+            instanceProvider = { listOf(componentA3, componentA4) }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(identifier(object : TypeReference<List<ComponentA>>() {})),
+            instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2, singletonsA3A4, singletonB)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val componentB = context.getOne(identifier(ComponentB::class.java))
+        assertThat(componentB.components["As"] as List<ComponentA>).containsExactlyInAnyOrder(componentA1, componentA2)
+    }
+
+    @Test
     fun `should access singleton by its type`() {
         // given:
         val singletonA = SingletonDefinition(
@@ -587,6 +698,28 @@ class JavalinContextFactoryTest {
 
         // then:
         assertThatCode { context.getOne(identifier(ComponentA::class.java)) }.doesNotThrowAnyException()
+    }
+
+    @Test
+    fun `should access singleton by its type with generic type`() {
+        // given:
+        val componentG = ComponentG<String>()
+
+        // and:
+        val singletonG = SingletonDefinition(
+            identifier = identifier(object : TypeReference<ComponentG<String>>() {}),
+            dependencies = emptyList(),
+            instanceProvider = { componentG }
+        )
+
+        // and:
+        val definitions = listOf(singletonG)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        assertThat(context.getOne(identifier(object : TypeReference<ComponentG<String>>() {}))).isEqualTo(componentG)
     }
 
     @Test
@@ -740,6 +873,105 @@ class JavalinContextFactoryTest {
     }
 
     @Test
+    fun `should access list of singletons if definition explicitly provides it as list`() {
+        // given:
+        val componentA1 = ComponentA()
+        val componentA2 = ComponentA()
+
+        // and:
+        val singletonsA1A2 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}),
+            dependencies = emptyList(),
+            instanceProvider = { listOf(componentA1, componentA2) }
+        )
+
+        // and:
+        val definitions = listOf(singletonsA1A2)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val components = context.getOne(identifier(object : TypeReference<List<ComponentA>>() {}))
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+    }
+
+    @Test
+    fun `should access list of singletons defined one by one instead of explicit list if defined both`() {
+        // given:
+        val componentA1 = ComponentA()
+        val componentA2 = ComponentA()
+
+        // and:
+        val componentA3 = ComponentA()
+        val componentA4 = ComponentA()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { componentA2 }
+        )
+
+        val singletonsA3A4 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}),
+            dependencies = emptyList(),
+            instanceProvider = { listOf(componentA3, componentA4) }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2, singletonsA3A4)
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        val components = context.getOne(identifier(object : TypeReference<List<ComponentA>>() {}))
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+    }
+
+    @Test
+    fun `should throw exception if there are defined multiple explicit lists of singletons for given type`() {
+        // given:
+        val singletonsA1A2 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}),
+            dependencies = emptyList(),
+            instanceProvider = { listOf(ComponentA(), ComponentA()) }
+        )
+
+        val singletonsA3A4 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}),
+            dependencies = emptyList(),
+            instanceProvider = { listOf(ComponentA(), ComponentA()) }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(identifier(object : TypeReference<List<ComponentA>>() {})),
+            instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
+        )
+
+        // and:
+        val definitions = listOf(singletonsA1A2, singletonsA3A4, singletonB)
+
+        // when:
+        val exception = assertThatThrownBy {
+            JavalinContextFactory(source = { definitions }).create()
+        }
+
+        // then:
+        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.hasMessage("Multiple candidates found for java.util.List<io.mzlnk.javalin.di.internal.context.ComponentA>")
+    }
+
+
+    @Test
     fun `should throw exception if there are multiple candidates for given component dependency`() {
         // given:
         val singletonA1 = SingletonDefinition(
@@ -857,14 +1089,18 @@ private interface TypeA
 private interface TypeB
 
 // general purpose classes for testing
+// @formatter:off
 private open class ComponentA(vararg components: Pair<String, Any>) : TypeA { val components = mapOf(*components) }
 private open class ComponentB(vararg components: Pair<String, Any>) : TypeB { val components = mapOf(*components) }
 private open class ComponentC(vararg components: Pair<String, Any>) { val components = mapOf(*components) }
 private open class ComponentD(vararg components: Pair<String, Any>) { val components = mapOf(*components) }
 private open class ComponentE(vararg components: Pair<String, Any>) { val components = mapOf(*components) }
+private open class ComponentG<T>(vararg components: Pair<String, Any>) { val components = mapOf(*components) }
+// @formatter:on
 
 private class ComponentA1(vararg components: Pair<String, Any>) : ComponentA(*components)
 private class ComponentA2(vararg components: Pair<String, Any>) : ComponentA(*components)
 
 private class ComponentB1(vararg components: Pair<String, Any>) : ComponentB(*components)
 private class ComponentB2(vararg components: Pair<String, Any>) : ComponentB(*components)
+
