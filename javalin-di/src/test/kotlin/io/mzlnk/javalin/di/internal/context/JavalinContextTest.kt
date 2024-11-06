@@ -8,7 +8,7 @@ import io.mzlnk.javalin.di.type.TypeReference
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class JavalinContextFactoryTest {
+class JavalinContextTest {
 
     @Test
     fun `should create context for dependent components`() {
@@ -34,7 +34,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(2)
@@ -76,7 +76,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -127,7 +127,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(4)
@@ -172,7 +172,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -216,7 +216,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -275,7 +275,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD, singletonE)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(5)
@@ -331,7 +331,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(4)
@@ -375,7 +375,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
@@ -408,7 +408,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB1)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(2)
@@ -444,7 +444,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(2)
@@ -488,7 +488,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB1, singletonB2)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -532,7 +532,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB1, singletonB2)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
@@ -574,7 +574,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA, singletonB1, singletonB2)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
@@ -599,7 +599,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
@@ -629,7 +629,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonsA1A2, singletonB)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
@@ -675,7 +675,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA1, singletonA2, singletonsA3A4, singletonB)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
@@ -696,7 +696,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.findInstance(identifier(ComponentA::class.java))).isEqualTo(componentA)
@@ -718,7 +718,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonG)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.findInstance(identifier(object : TypeReference<ComponentG<String>>() {}))).isEqualTo(
@@ -742,7 +742,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA1)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.findInstance(identifier(ComponentA::class.java))).isEqualTo(componentA1)
@@ -764,7 +764,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonB)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.findInstance(identifier(TypeB::class.java))).isEqualTo(componentB)
@@ -779,7 +779,7 @@ class JavalinContextFactoryTest {
         val definitions = emptyList<SingletonDefinition<*>>()
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         assertThat(context.findInstance(identifier(ComponentA::class.java))).isNull()
@@ -808,7 +808,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA1, singletonA2)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
@@ -840,7 +840,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA1, singletonA2)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
@@ -872,7 +872,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA1, singletonA2)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val components = context.findInstance(identifier(object : TypeReference<List<TypeA>>() {}))
@@ -890,7 +890,7 @@ class JavalinContextFactoryTest {
         val definitions = emptyList<SingletonDefinition<*>>()
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
@@ -916,7 +916,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonsA1A2)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
@@ -956,7 +956,7 @@ class JavalinContextFactoryTest {
         val definitions = listOf(singletonA1, singletonA2, singletonsA3A4)
 
         // when:
-        val context = JavalinContextFactory(source = { definitions }).create()
+        val context = JavalinContext.create(definitions)
 
         // then:
         val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
@@ -989,7 +989,7 @@ class JavalinContextFactoryTest {
 
         // when:
         val exception = assertThatThrownBy {
-            JavalinContextFactory(source = { definitions }).create()
+            JavalinContext.create(definitions)
         }
 
         // then:
@@ -1024,7 +1024,7 @@ class JavalinContextFactoryTest {
 
         // when:
         val exception = assertThatThrownBy {
-            JavalinContextFactory(source = { definitions }).create()
+            JavalinContext.create(definitions)
         }
 
         // then:
@@ -1048,7 +1048,7 @@ class JavalinContextFactoryTest {
 
         // when:
         val exception = assertThatThrownBy {
-            JavalinContextFactory(source = { definitions }).create()
+            JavalinContext.create(definitions)
         }
 
         // then:
@@ -1085,7 +1085,7 @@ class JavalinContextFactoryTest {
 
         // when:
         val exception = assertThatThrownBy {
-            JavalinContextFactory(source = { definitions }).create()
+            JavalinContext.create(definitions)
         }
 
         // then:

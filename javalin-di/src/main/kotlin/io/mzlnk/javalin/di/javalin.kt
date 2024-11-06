@@ -3,7 +3,8 @@ package io.mzlnk.javalin.di
 import io.javalin.Javalin
 import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.internal.JavalinProxy
-import io.mzlnk.javalin.di.internal.context.JavalinContextFactory
+import io.mzlnk.javalin.di.internal.context.DefaultSingletonDefinitionSource
+import io.mzlnk.javalin.di.internal.context.JavalinContext
 import io.mzlnk.javalin.di.type.TypeReference
 import org.slf4j.LoggerFactory
 import kotlin.time.measureTimedValue
@@ -12,7 +13,8 @@ private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.di")
 
 fun Javalin.enableDI(): Javalin {
     val (context, elapsedTime) = measureTimedValue {
-        JavalinContextFactory().create()
+        val definitions = DefaultSingletonDefinitionSource.definitions()
+        JavalinContext.create(definitions)
     }
 
     LOG.info("Loaded ${context.size()} singletons")

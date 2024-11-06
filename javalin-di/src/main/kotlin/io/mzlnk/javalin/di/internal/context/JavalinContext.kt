@@ -28,4 +28,30 @@ internal class JavalinContext {
         return matching.firstOrNull()?.second as? T
     }
 
+    internal companion object {
+
+        fun create(definitions: List<SingletonDefinition<*>>): JavalinContext {
+            val dependencyGraph = DependencyGraphFactory.create(definitions)
+
+            if (dependencyGraph.hasCycles) {
+                throw dependencyCycleFoundException(dependencyGraph.cycles)
+            }
+
+            val context = JavalinContext()
+            dependencyGraph.topologicalOrder.forEach { definition ->
+                context.registerSingleton(
+                    identifier = definition.identifier,
+                    instance = definition.instanceProvider.invoke(
+                        definition.dependencies.map { dependency ->
+                            context.findInstance(dependency)
+                        }
+                    )
+                )
+            }
+
+            return context
+        }
+
+    }
+
 }
