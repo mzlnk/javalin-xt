@@ -14,7 +14,7 @@ internal class JavalinContext {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getOne(identifier: SingletonDefinition.Identifier<T>): T {
+    fun <T : Any> findInstance(identifier: SingletonDefinition.Identifier<T>): T? {
         val matcher = matcherFor(identifier)
 
         val matching = singletons.filter { (candidateIdentifier, _) ->
@@ -25,20 +25,7 @@ internal class JavalinContext {
             throw MultipleCandidatesFoundException(identifier)
         }
 
-        if (matching.isEmpty()) {
-            throw NoCandidatesFoundException(identifier)
-        }
-
-        return matching.first().second as T
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun <T : Any> findAll(identifier: SingletonDefinition.Identifier<T>): List<T> {
-        val matcher = matcherFor(identifier)
-
-        return singletons
-            .filter { (candidateIdentifier, _) -> matcher.matches(candidateIdentifier) }
-            .map { it.second as T }
+        return matching.firstOrNull()?.second as? T
     }
 
 }

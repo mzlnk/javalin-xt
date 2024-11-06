@@ -21,11 +21,13 @@ fun Javalin.enableDI(): Javalin {
     return JavalinProxy(this, context)
 }
 
-fun <T: Any> Javalin.singleton(type: Class<T>): T {
+fun <T : Any> Javalin.getInstance(type: Class<T>): T = getInstance(object : TypeReference<T>() {})
+
+fun <T : Any> Javalin.getInstance(type: TypeReference<T>): T {
     if (this !is JavalinProxy) {
         throw IllegalStateException("Javalin DI has not been enabled. Call Javalin.enableDI() first.")
     }
 
-    val identifier = SingletonDefinition.Identifier(typeRef = object : TypeReference<T>() {})
-    return this.context.getOne(identifier)
+    val identifier = SingletonDefinition.Identifier(typeRef = type)
+    return this.context.findInstance(identifier) ?: throw IllegalStateException("No instance found for $identifier")
 }

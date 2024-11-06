@@ -39,8 +39,8 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getOne(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
 
         assertThat(componentA.components["B"]).isEqualTo(componentB)
     }
@@ -81,9 +81,9 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getOne(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getOne(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentA.components["B"]).isEqualTo(componentB)
         assertThat(componentB.components["C"]).isEqualTo(componentC)
@@ -132,10 +132,10 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getOne(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getOne(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.getOne(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.findInstance(identifier(ComponentD::class.java)) ?: fail("Component D not found")
 
         assertThat(componentA.components["B"]).isEqualTo(componentB)
         assertThat(componentC.components["D"]).isEqualTo(componentD)
@@ -177,9 +177,9 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getOne(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getOne(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentA.components["B"]).isEqualTo(componentB)
         assertThat(componentA.components["C"]).isEqualTo(componentC)
@@ -221,9 +221,9 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getOne(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getOne(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: fail("Component C not found")
 
         assertThat(componentB.components["A"]).isEqualTo(componentA)
         assertThat(componentC.components["A"]).isEqualTo(componentA)
@@ -280,11 +280,11 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(5)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getOne(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getOne(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.getOne(identifier(ComponentD::class.java)) ?: fail("Component D not found")
-        val componentE = context.getOne(identifier(ComponentE::class.java)) ?: fail("Component E not found")
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.findInstance(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentE = context.findInstance(identifier(ComponentE::class.java)) ?: fail("Component E not found")
 
         assertThat(componentA.components["B"]).isEqualTo(componentB)
         assertThat(componentA.components["C"]).isEqualTo(componentC)
@@ -336,10 +336,10 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java)) ?: fail("Component A not found")
-        val componentB = context.getOne(identifier(ComponentB::class.java)) ?: fail("Component B not found")
-        val componentC = context.getOne(identifier(ComponentC::class.java)) ?: fail("Component C not found")
-        val componentD = context.getOne(identifier(ComponentD::class.java)) ?: fail("Component D not found")
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
+        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: fail("Component C not found")
+        val componentD = context.findInstance(identifier(ComponentD::class.java)) ?: fail("Component D not found")
 
         assertThat(componentA.components["B"]).isEqualTo(componentB)
         assertThat(componentA.components["C"]).isEqualTo(componentC)
@@ -377,7 +377,7 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentA = context.getOne(identifier(ComponentA::class.java))
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
         assertThat(componentA.components["B"]).isEqualTo(componentB)
     }
 
@@ -413,7 +413,7 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java))
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
         assertThat(componentA.components["B"]).isEqualTo(componentB1)
     }
 
@@ -449,7 +449,7 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java))
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
         assertThat(componentA.components["B"]).isEqualTo(componentB)
     }
 
@@ -493,7 +493,7 @@ class JavalinContextFactoryTest {
         assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.getOne(identifier(ComponentA::class.java))
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
         assertThat(componentA.components["Bs"] as List<ComponentB>).containsExactlyInAnyOrder(componentB1, componentB2)
     }
 
@@ -534,7 +534,7 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentA = context.getOne(identifier(ComponentA::class.java))
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
         assertThat(componentA.components["Bs"] as List<ComponentB>).containsExactlyInAnyOrder(componentB1, componentB2)
     }
 
@@ -576,7 +576,7 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentA = context.getOne(identifier(ComponentA::class.java))
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
         assertThat(componentA.components["Bs"] as List<ComponentB>).containsExactlyInAnyOrder(componentB1, componentB2)
     }
 
@@ -601,7 +601,7 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentA = context.getOne(identifier(ComponentA::class.java))
+        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: fail("Component A not found")
         assertThat(componentA.components["Bs"] as List<ComponentB>).isEmpty()
     }
 
@@ -631,7 +631,7 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentB = context.getOne(identifier(ComponentB::class.java))
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
         assertThat(componentB.components["As"] as List<ComponentA>).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
@@ -677,17 +677,18 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentB = context.getOne(identifier(ComponentB::class.java))
+        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: fail("Component B not found")
         assertThat(componentB.components["As"] as List<ComponentA>).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
-    fun `should access singleton by its type`() {
+    fun `should get singleton by its type`() {
         // given:
+        val componentA = ComponentA()
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
             dependencies = emptyList(),
-            instanceProvider = { ComponentA() }
+            instanceProvider = { componentA }
         )
 
         // and:
@@ -697,11 +698,11 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        assertThatCode { context.getOne(identifier(ComponentA::class.java)) }.doesNotThrowAnyException()
+        assertThat(context.findInstance(identifier(ComponentA::class.java))).isEqualTo(componentA)
     }
 
     @Test
-    fun `should access singleton by its type with generic type`() {
+    fun `should get singleton by its type with generic type`() {
         // given:
         val componentG = ComponentG<String>()
 
@@ -719,38 +720,43 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        assertThat(context.getOne(identifier(object : TypeReference<ComponentG<String>>() {}))).isEqualTo(componentG)
+        assertThat(context.findInstance(identifier(object : TypeReference<ComponentG<String>>() {}))).isEqualTo(
+            componentG
+        )
     }
 
     @Test
-    fun `should access the same singleton by its supertype`() {
+    fun `should get singleton by its supertype`() {
         // given:
-        val singletonB1 = SingletonDefinition(
+        val componentA1 = ComponentA1()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
             identifier = identifier(ComponentA1::class.java),
             dependencies = emptyList(),
-            instanceProvider = { ComponentA1() }
+            instanceProvider = { componentA1 }
         )
 
         // and:
-        val definitions = listOf(singletonB1)
+        val definitions = listOf(singletonA1)
 
         // when:
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentA1 = context.getOne(identifier(ComponentA1::class.java))
-        val componentA = context.getOne(identifier(ComponentA::class.java))
-
-        assertThat(componentA1).isEqualTo(componentA)
+        assertThat(context.findInstance(identifier(ComponentA::class.java))).isEqualTo(componentA1)
     }
 
     @Test
-    fun `should access the same singleton by implemented type`() {
+    fun `should get singleton by its implemented interface type`() {
         // given:
+        val componentB = ComponentB()
+
+        // and:
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
             dependencies = emptyList(),
-            instanceProvider = { ComponentB() }
+            instanceProvider = { componentB }
         )
 
         // and:
@@ -760,14 +766,26 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val componentB = context.getOne(identifier(ComponentB::class.java))
-        val typeB = context.getOne(identifier(TypeB::class.java))
-
-        assertThat(componentB).isEqualTo(typeB)
+        assertThat(context.findInstance(identifier(TypeB::class.java))).isEqualTo(componentB)
     }
 
     @Test
-    fun `should access all singletons by type`() {
+    fun `should get null if there is no candidate for given type`() {
+        // given:
+        // no definitions for ComponentA
+
+        // and:
+        val definitions = emptyList<SingletonDefinition<*>>()
+
+        // when:
+        val context = JavalinContextFactory(source = { definitions }).create()
+
+        // then:
+        assertThat(context.findInstance(identifier(ComponentA::class.java))).isNull()
+    }
+
+    @Test
+    fun `should get all singletons by type`() {
         // given:
         val componentA1 = ComponentA()
         val componentA2 = ComponentA()
@@ -792,12 +810,14 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val components = context.findAll(identifier(ComponentA::class.java))
+        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
+            ?: fail("Components not found")
+
         assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
-    fun `should access all singletons by supertype`() {
+    fun `should get all singletons by supertype`() {
         // given:
         val componentA1 = ComponentA1()
         val componentA2 = ComponentA2()
@@ -822,12 +842,14 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val components = context.findAll(identifier(ComponentA::class.java))
+        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
+            ?: fail("Components not found")
+
         assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
-    fun `should access all singletons by implemented interface`() {
+    fun `should get all singletons by implemented interface type`() {
         // given:
         val componentA1 = ComponentA1()
         val componentA2 = ComponentA2()
@@ -852,12 +874,14 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val components = context.findAll(identifier(TypeA::class.java))
+        val components = context.findInstance(identifier(object : TypeReference<List<TypeA>>() {}))
+            ?: fail("Components not found")
+
         assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
-    fun `should access no singletons if there are no candidates for given type`() {
+    fun `should get empty list if there are no candidates for given type`() {
         // given:
         // no definitions for ComponentA
 
@@ -868,12 +892,14 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val components = context.findAll(identifier(ComponentA::class.java))
+        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
+            ?: fail("Components not found")
+
         assertThat(components).isEmpty()
     }
 
     @Test
-    fun `should access list of singletons if definition explicitly provides it as list`() {
+    fun `should get list of singletons if definition explicitly provides it as list`() {
         // given:
         val componentA1 = ComponentA()
         val componentA2 = ComponentA()
@@ -892,12 +918,12 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val components = context.getOne(identifier(object : TypeReference<List<ComponentA>>() {}))
+        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
         assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
-    fun `should access list of singletons defined one by one instead of explicit list if defined both`() {
+    fun `should get list of singletons defined one by one instead of explicit list if defined both`() {
         // given:
         val componentA1 = ComponentA()
         val componentA2 = ComponentA()
@@ -932,7 +958,7 @@ class JavalinContextFactoryTest {
         val context = JavalinContextFactory(source = { definitions }).create()
 
         // then:
-        val components = context.getOne(identifier(object : TypeReference<List<ComponentA>>() {}))
+        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
         assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 

@@ -8,7 +8,6 @@ internal class JavalinContextFactory(
     private val source: SingletonDefinitionSource = DefaultSingletonDefinitionSource
 ) {
 
-    @Suppress("UNCHECKED_CAST")
     fun create(): JavalinContext {
         val definitions = source.definitions()
 
@@ -24,13 +23,7 @@ internal class JavalinContextFactory(
                 identifier = definition.identifier,
                 instance = definition.instanceProvider.invoke(
                     definition.dependencies.map { dependency ->
-                        if (dependency.typeRef.isList()) {
-                            context.findAll(
-                                SingletonDefinition.Identifier((dependency.typeRef as TypeReference<List<Any>>).elementType)
-                            )
-                        } else {
-                            context.getOne(dependency)
-                        }
+                        context.findInstance(dependency)
                     }
                 )
             )
