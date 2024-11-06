@@ -22,23 +22,10 @@ internal class JavalinContext {
         }
 
         if (matching.size > 1) {
-            throw MultipleCandidatesFoundException(identifier)
+            throw multipleCandidatesFoundException(identifier)
         }
 
         return matching.firstOrNull()?.second as? T
     }
-
-}
-
-private class MultipleCandidatesFoundException(identifier: SingletonDefinition.Identifier<*>) :
-    JavalinContextException() {
-
-    override val message: String = "Multiple candidates found for $identifier"
-
-}
-
-private class NoCandidatesFoundException(identifier: SingletonDefinition.Identifier<*>) : JavalinContextException() {
-
-    override val message: String = "No candidates found for $identifier"
 
 }

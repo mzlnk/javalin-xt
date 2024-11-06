@@ -1,6 +1,6 @@
-package io.mzlnk.javalin.di.internal.context
+package io.mzlnk.javalin.di
 
-abstract class JavalinContextException : RuntimeException() {
+class JavalinDIException(message: String) : RuntimeException(message) {
 
     /*
      * Prevent the stack trace from being filled in.

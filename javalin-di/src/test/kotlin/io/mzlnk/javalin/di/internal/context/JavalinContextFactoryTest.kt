@@ -2,6 +2,7 @@
 
 package io.mzlnk.javalin.di.internal.context
 
+import io.mzlnk.javalin.di.JavalinDIException
 import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.type.TypeReference
 import org.assertj.core.api.Assertions.*
@@ -992,7 +993,7 @@ class JavalinContextFactoryTest {
         }
 
         // then:
-        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.isInstanceOf(JavalinDIException::class.java)
         exception.hasMessage("Multiple candidates found for java.util.List<io.mzlnk.javalin.di.internal.context.ComponentA>")
     }
 
@@ -1027,7 +1028,7 @@ class JavalinContextFactoryTest {
         }
 
         // then:
-        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.isInstanceOf(JavalinDIException::class.java)
         exception.hasMessage("Multiple candidates found for io.mzlnk.javalin.di.internal.context.ComponentA")
     }
 
@@ -1051,7 +1052,7 @@ class JavalinContextFactoryTest {
         }
 
         // then:
-        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.isInstanceOf(JavalinDIException::class.java)
         exception.hasMessage("No candidates found for io.mzlnk.javalin.di.internal.context.ComponentA")
     }
 
@@ -1088,7 +1089,7 @@ class JavalinContextFactoryTest {
         }
 
         // then:
-        exception.isInstanceOf(JavalinContextException::class.java)
+        exception.isInstanceOf(JavalinDIException::class.java)
         exception.hasMessage(
             """
             Failed to create context due to dependency cycle(s):
