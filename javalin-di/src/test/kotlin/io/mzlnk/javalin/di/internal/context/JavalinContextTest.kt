@@ -994,7 +994,7 @@ class JavalinContextTest {
 
         // then:
         exception.isInstanceOf(JavalinDIException::class.java)
-        exception.hasMessage("Multiple candidates found for java.util.List<io.mzlnk.javalin.di.internal.context.ComponentA>")
+        exception.hasMessage("Multiple candidates found for java.util.List<? extends io.mzlnk.javalin.di.internal.context.ComponentA>")
     }
 
 

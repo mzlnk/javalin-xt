@@ -6,7 +6,7 @@ import java.util.*
 data class SingletonDefinition<T>(
     val identifier: Identifier<T>,
     val dependencies: List<Identifier<*>>,
-    val instanceProvider: (args: List<*>) -> T
+    val instanceProvider: (args: List<out Any>) -> T
 ) where T : Any {
 
     val id: UUID = UUID.randomUUID()

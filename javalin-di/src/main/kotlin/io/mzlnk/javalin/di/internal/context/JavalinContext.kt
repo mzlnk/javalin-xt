@@ -2,6 +2,7 @@ package io.mzlnk.javalin.di.internal.context
 
 import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.internal.context.SingletonMatcher.Companion.matcherFor
+import io.mzlnk.javalin.di.type.TypeReference
 
 internal class JavalinContext {
 
@@ -21,11 +22,32 @@ internal class JavalinContext {
             matcher.matches(candidateIdentifier)
         }
 
-        if (matching.size > 1) {
-            throw multipleCandidatesFoundException(identifier)
+        if (identifier.typeRef.isList()) {
+            val elementType = (identifier.typeRef as TypeReference<List<Any>>).elementType
+
+            // return components defined one by one first
+            matching
+                .filter { elementType.isAssignableFrom(it.first.typeRef) }
+                .takeIf { it.isNotEmpty() }
+                ?.map { it.second }
+                ?.let { return it as T }
+
+            // if no components defined one by one, return components defined explicitly as list
+            matching
+                .filter { identifier.typeRef == it.first.typeRef }
+                .takeIf { it.isNotEmpty() }
+                ?.also { if (it.size > 1) throw multipleCandidatesFoundException(identifier) }
+                ?.firstOrNull()
+                ?.let { return it.second as T }
+
+            // if no components defined, return empty list
+            return emptyList<T>() as T
         }
 
-        return matching.firstOrNull()?.second as? T
+        return matching
+            .also { if (matching.size > 1) throw multipleCandidatesFoundException(identifier) }
+            .firstOrNull()
+            ?.second as? T
     }
 
     internal companion object {
@@ -43,7 +65,7 @@ internal class JavalinContext {
                     identifier = definition.identifier,
                     instance = definition.instanceProvider.invoke(
                         definition.dependencies.map { dependency ->
-                            context.findInstance(dependency)
+                            context.findInstance(dependency) ?: throw noCandidatesFoundException(dependency)
                         }
                     )
                 )

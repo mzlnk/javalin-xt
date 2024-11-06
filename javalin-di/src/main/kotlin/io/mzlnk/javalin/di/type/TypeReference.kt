@@ -18,6 +18,17 @@ abstract class TypeReference<T> {
         this.type = (superClass as ParameterizedType).actualTypeArguments[0]
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other !is TypeReference<*>) return false
+
+        return type == other.type
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
+    }
+
     internal constructor(type: Type) {
         this.type = type
     }
