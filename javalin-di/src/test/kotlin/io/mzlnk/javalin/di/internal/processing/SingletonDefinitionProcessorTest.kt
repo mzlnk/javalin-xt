@@ -71,7 +71,7 @@ class SingletonDefinitionProcessorTest {
         val generatedProject = DefaultSingletonDefinitionProcessor.process(project)
 
         // then:
-        val providerFile = generatedProject.definitionProviders.find { it.name == "a.b.TestModuleSingletonDefinitionProvider" }
+        val providerFile = generatedProject.definitionProviders.find { it.name == "TestModuleSingletonDefinitionProvider" }
             ?: fail("Definition provider file not found")
 
         assertThat(providerFile.packageName).isEqualTo("a.b")
@@ -83,6 +83,7 @@ class SingletonDefinitionProcessorTest {
             |
             |import io.mzlnk.javalin.di.definition.SingletonDefinition
             |import io.mzlnk.javalin.di.definition.SingletonDefinitionProvider
+            |import io.mzlnk.javalin.di.type.TypeReference
             |import kotlin.collections.List
             |
             |public class TestModuleSingletonDefinitionProvider : SingletonDefinitionProvider {
@@ -90,8 +91,8 @@ class SingletonDefinitionProcessorTest {
             |
             |  override val definitions: List<SingletonDefinition<*>> = listOf(
             |        SingletonDefinition(
-            |          identifier = SingletonDefinition.Identifier.Single(
-            |            type = c.d.Type1::class.java
+            |          identifier = SingletonDefinition.Identifier(
+            |            typeRef = object : TypeReference<c.d.Type1>() {}
             |          ),
             |          dependencies = emptyList(),
             |          instanceProvider = {
@@ -99,12 +100,12 @@ class SingletonDefinitionProcessorTest {
             |          }
             |        ),
             |        SingletonDefinition(
-            |          identifier = SingletonDefinition.Identifier.Single(
-            |            type = e.f.Type2::class.java
+            |          identifier = SingletonDefinition.Identifier(
+            |            typeRef = object : TypeReference<e.f.Type2>() {}
             |          ),
             |          dependencies = listOf(
-            |            SingletonDefinition.Identifier.Single(type = g.h.Type3::class.java),
-            |            SingletonDefinition.Identifier.Single(type = i.j.Type4::class.java),
+            |            SingletonDefinition.Identifier(typeRef = object : TypeReference<g.h.Type3>() {}),
+            |            SingletonDefinition.Identifier(typeRef = object : TypeReference<i.j.Type4>() {}),
             |          ),
             |          instanceProvider = {
             |            module.providesType2(

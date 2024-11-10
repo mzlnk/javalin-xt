@@ -4,6 +4,7 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.definition.SingletonDefinitionProvider
+import io.mzlnk.javalin.di.type.TypeReference
 
 internal object SingletonDefinitionProviderFileGenerator {
 
@@ -42,7 +43,8 @@ internal object SingletonDefinitionProviderFileGenerator {
                                             add("identifier = %T(\n", SingletonDefinition.Identifier::class)
                                             indent()
                                             add(
-                                                "type = %L::class.java\n",
+                                                "typeRef = object : %T<%L>() {}\n",
+                                                TypeReference::class.java,
                                                 method.returnType.qualifiedName
                                             )
                                             unindent()
@@ -55,8 +57,9 @@ internal object SingletonDefinitionProviderFileGenerator {
                                                     indent()
                                                     method.parameters.forEach { parameter ->
                                                         add(
-                                                            "%T(type = %L::class.java),\n",
+                                                            "%T(typeRef = object : %T<%L>() {}),\n",
                                                             SingletonDefinition.Identifier::class.java,
+                                                            TypeReference::class.java,
                                                             parameter.type.qualifiedName
                                                         )
                                                     }
@@ -96,7 +99,7 @@ internal object SingletonDefinitionProviderFileGenerator {
             .build()
 
         return GeneratedFile(
-            name = singletonDefinitionProviderQualifiedName(module),
+            name = singletonDefinitionProviderSimpleName(module),
             extension = "kt",
             packageName = module.type.packageName,
             content = file.toString()
