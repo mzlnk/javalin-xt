@@ -1,0 +1,15 @@
+<configuration>
+
+    <!-- Console appender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%cyan(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%c{20}): %msg%n%throwable</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root logger configuration -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

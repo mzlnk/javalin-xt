@@ -49,23 +49,6 @@ configurations.create("cucumberRuntime") {
     extendsFrom(configurations["e2eTestImplementation"])
 }
 
-dependencies {
-    implementation(kotlin("stdlib"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:_")
-    implementation("com.squareup:kotlinpoet:_")
-
-    compileOnly("io.javalin:javalin:_")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:_")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:_")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:_")
-
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:_")
-
-    testImplementation("org.assertj:assertj-core:_")
-    testImplementation(kotlin("reflect"))
-}
-
 publishing {
     publications {
         create<MavenPublication>("mavenKotlin") {
@@ -105,6 +88,7 @@ dependencies {
     e2eTestImplementation("io.cucumber:cucumber-core:_")
     e2eTestImplementation("io.cucumber:cucumber-expressions:_")
     e2eTestImplementation("org.assertj:assertj-core:_")
+    e2eTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
 }
 
 jacoco {
@@ -146,4 +130,3 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         freeCompilerArgs.add("-Xjvm-default=all")
     }
 }
-
