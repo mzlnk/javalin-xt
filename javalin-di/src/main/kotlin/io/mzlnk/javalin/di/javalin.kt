@@ -14,6 +14,7 @@ private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.di")
 // test-1
 // test-2
 // test-3
+// test-4
 
 fun Javalin.enableDI(): Javalin {
     val (context, elapsedTime) = measureTimedValue {
