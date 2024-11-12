@@ -65,6 +65,13 @@ class Project private constructor(val rootDirectory: Path) {
                 targetPath = Path.of("./gradle/wrapper/gradle-wrapper.properties")
             )
 
+            project.copyResource(
+                hostPath = Path.of("build/libs/javalin-di.jar"),
+                targetPath = Path.of("./libs/javalin-di.jar")
+            )
+
+            println("Project initialized at ${project.rootDirectory}")
+
             return project
         }
 

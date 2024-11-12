@@ -10,10 +10,6 @@ plugins {
 group = "io.mzlnk"
 version = "0.0.1"
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     jvmToolchain(17)
 }
@@ -32,40 +28,14 @@ sourceSets {
     }
 }
 
-idea {
-    module {
-        testSources.from(
-            sourceSets["e2eTest"].kotlin.srcDirs
-        )
-        testResources.from(
-            sourceSets["e2eTest"].resources.srcDirs
-        )
-    }
-}
-
 val e2eTestImplementation = configurations["e2eTestImplementation"]
 
 configurations.create("cucumberRuntime") {
     extendsFrom(configurations["e2eTestImplementation"])
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenKotlin") {
-            from(components["java"])
-
-            groupId = "io.mzlnk"
-            artifactId = "javalin-di"
-            version = "0.0.1"
-        }
-    }
-
-    repositories {
-        maven {
-            name = "local" // Name the repository
-            url = uri("${System.getProperty("user.home")}/.m2/repository") // Define a local directory to publish the artifact
-        }
-    }
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -89,6 +59,36 @@ dependencies {
     e2eTestImplementation("io.cucumber:cucumber-expressions:_")
     e2eTestImplementation("org.assertj:assertj-core:_")
     e2eTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
+}
+
+idea {
+    module {
+        testSources.from(
+            sourceSets["e2eTest"].kotlin.srcDirs
+        )
+        testResources.from(
+            sourceSets["e2eTest"].resources.srcDirs
+        )
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("JavalinDI") {
+            from(components["java"])
+
+            groupId = "io.mzlnk"
+            artifactId = "javalin-di"
+            version = "0.0.1"
+        }
+    }
+
+    repositories {
+        maven {
+            name = "local"
+            url = uri("${System.getProperty("user.home")}/.m2/repository")
+        }
+    }
 }
 
 jacoco {
@@ -129,4 +129,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         jvmTarget = JvmTarget.JVM_17
         freeCompilerArgs.add("-Xjvm-default=all")
     }
+}
+
+tasks.named<Jar>("jar") {
+    archiveBaseName.set("javalin-di")
+    archiveVersion.set("")
 }

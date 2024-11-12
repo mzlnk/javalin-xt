@@ -12,14 +12,18 @@ kotlin {
 }
 
 repositories {
+    flatDir {
+        dirs("libs")
+    }
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
+    // load javalin-di from local JAR located at `libs/` directory
+    implementation(":javalin-di")
+    ksp(":javalin-di")
+
     implementation("io.javalin:javalin:6.3.0")
-    implementation("io.mzlnk:javalin-di:0.0.1")
-    ksp("io.mzlnk:javalin-di:0.0.1")
     implementation("ch.qos.logback:logback-classic:1.5.12")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
