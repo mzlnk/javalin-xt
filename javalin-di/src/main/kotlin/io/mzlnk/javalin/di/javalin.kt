@@ -12,6 +12,7 @@ import kotlin.time.measureTimedValue
 private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.di")
 
 // test-1
+// test-2
 
 fun Javalin.enableDI(): Javalin {
     val (context, elapsedTime) = measureTimedValue {
