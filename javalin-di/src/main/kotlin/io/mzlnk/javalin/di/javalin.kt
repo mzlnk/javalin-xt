@@ -11,6 +11,8 @@ import kotlin.time.measureTimedValue
 
 private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.di")
 
+// test-1
+
 fun Javalin.enableDI(): Javalin {
     val (context, elapsedTime) = measureTimedValue {
         val definitions = DefaultSingletonDefinitionSource.definitions()
