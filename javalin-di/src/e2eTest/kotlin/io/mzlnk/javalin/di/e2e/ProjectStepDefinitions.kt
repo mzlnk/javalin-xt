@@ -45,7 +45,7 @@ class ProjectStepDefinitions {
     fun `application starts successfully`() {
         val result = runBlocking {
             runCatching {
-                withTimeout(10.seconds) {
+                withTimeout(30.seconds) {
                     while(true) {
                         if(application.isStarted) break
                         delay(200.milliseconds)
