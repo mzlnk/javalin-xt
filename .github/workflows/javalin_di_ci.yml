@@ -15,11 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
+          distribution: 'adopt'
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
@@ -28,9 +28,6 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
-
-      - name: Make Gradle wrapper executable
-        run: chmod +x gradlew
 
       - name: Run tests
         run: ./gradlew check
