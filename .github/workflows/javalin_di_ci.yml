@@ -30,8 +30,8 @@ jobs:
             gradle-${{ runner.os }}-
 
       - name: Run tests
-        run: ./gradlew check
+        run: ./javalin-di/gradlew check
 
       - name: Run E2E tests
-        run: ./gradlew e2eTest
+        run: ./javalin-di/gradlew e2eTest
 
