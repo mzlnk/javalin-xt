@@ -2,17 +2,35 @@ package io.mzlnk.javalin.di.internal.utils.graph
 
 import java.util.*
 
+/**
+ * Represents a directed graph of nodes of type [E].
+ *
+ * @param E type of the nodes
+ */
 internal class Graph<E>(
     private val _nodes: Array<E>,
     private val _edges: Array<Array<Boolean>>
 ) {
 
+    /**
+     * List of nodes in the graph.
+     */
     val nodes: List<E> = _nodes.toList()
+
+    /**
+     * List of edges in the graph. Each edge is represented as a pair of nodes.
+     * Pair (A, B) means that there is an edge from node A to node B.
+     */
     val edges: List<Pair<E, E>> = _edges
         .mapIndexed { i, row -> row.mapIndexedNotNull { j, edge -> if (edge) i to j else null } }
         .flatten()
         .map { (i, j) -> _nodes[i] to _nodes[j] }
 
+    /**
+     * List of nodes in topological order.
+     *
+     * @throws IllegalStateException if the graph contains a cycle
+     */
     val topologicalOrder: List<E> by lazy {
         val nodesIndegrees = IntArray(_nodes.size) { 0 }
 
@@ -56,6 +74,9 @@ internal class Graph<E>(
         result
     }
 
+    /**
+     * List of cycles in the graph.
+     */
     val cycles: List<Cycle<E>> by lazy {
         val color = Array(_nodes.size) { Color.WHITE }
 
@@ -92,6 +113,9 @@ internal class Graph<E>(
         cycles
     }
 
+    /**
+     * Returns true if the graph contains cycles.
+     */
     val hasCycles: Boolean get() = cycles.isNotEmpty()
 
     private enum class Color {

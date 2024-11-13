@@ -11,6 +11,9 @@ import kotlin.time.measureTimedValue
 
 private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.di")
 
+/**
+ * Enables dependency injection for Javalin.
+ */
 fun Javalin.enableDI(): Javalin {
     val (context, elapsedTime) = measureTimedValue {
         val definitions = DefaultSingletonDefinitionSource.definitions()
@@ -23,8 +26,26 @@ fun Javalin.enableDI(): Javalin {
     return JavalinProxy(this, context)
 }
 
+/**
+ * Gets an instance of the specified type from the DI context.
+ *
+ * @param type the type of the instance to get
+ * @return the instance if exists
+ *
+ * @throws IllegalStateException if the DI context has not been enabled
+ * @throws IllegalStateException if no instance found for the specified type
+ */
 fun <T : Any> Javalin.getInstance(type: Class<T>): T = getInstance(object : TypeReference<T>() {})
 
+/**
+ * Gets an instance of the specified type from the DI context.
+ *
+ * @param type the type of the instance to get
+ * @return the instance if exists
+ *
+ * @throws IllegalStateException if the DI context has not been enabled
+ * @throws IllegalStateException if no instance found for the specified type
+ */
 fun <T : Any> Javalin.getInstance(type: TypeReference<T>): T {
     if (this !is JavalinProxy) {
         throw IllegalStateException("Javalin DI has not been enabled. Call Javalin.enableDI() first.")

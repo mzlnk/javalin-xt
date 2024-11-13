@@ -4,6 +4,8 @@ import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.definition.SingletonDefinitionProvider
 import java.util.*
 
+// TODO: refactor it
+
 internal fun interface SingletonDefinitionSource {
 
     fun definitions(): List<SingletonDefinition<*>>

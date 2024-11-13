@@ -8,8 +8,18 @@ import io.mzlnk.javalin.di.Singleton
 import io.mzlnk.javalin.di.internal.processing.*
 import io.mzlnk.javalin.di.internal.processing.Project
 
+/**
+ * Factory component that uses KSP API to load the project based on the source code.
+ */
 internal object ResolverProjectLoader {
 
+    /**
+     * Loads the project using information from the KSP resolver.
+     *
+     * @param resolver resolver to load the project from
+     *
+     * @return loaded project
+     */
     fun load(resolver: Resolver): Project {
         val modules = resolver.getSymbolsWithAnnotation(Module::class.java.canonicalName)
             .map { it as KSClassDeclaration }

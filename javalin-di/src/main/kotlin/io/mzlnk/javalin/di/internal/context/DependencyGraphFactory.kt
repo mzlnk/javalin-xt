@@ -6,6 +6,19 @@ import io.mzlnk.javalin.di.internal.utils.graph.Graph
 import io.mzlnk.javalin.di.type.TypeReference
 import java.util.*
 
+/**
+ * Factory component used to create dependency graph based on provided singleton definitions.
+ *
+ * The resulting graph consists of:
+ * - nodes representing singleton definitions
+ * - edges representing dependencies between singleton definitions:
+ *   - an edge from node A to node B means that node A depends on node B
+ *   - if there are multiple nodes matching the dependency, there will be multiple edges
+ *
+ * @param definitions list of singleton definitions to be used to create the graph
+ *
+ * @return directed graph representing dependencies between singleton definitions
+ */
 internal object DependencyGraphFactory {
 
     @Suppress("UNCHECKED_CAST")

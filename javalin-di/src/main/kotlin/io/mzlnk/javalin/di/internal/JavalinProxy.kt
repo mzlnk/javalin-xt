@@ -19,6 +19,12 @@ import io.mzlnk.javalin.di.internal.context.JavalinContext
 import jakarta.servlet.Servlet
 import java.util.function.Consumer
 
+/**
+ * Proxy class used to wrap Javalin instance and provide access to its context.
+ *
+ * @param delegate actual instance of Javalin to be wrapped
+ * @param context attached context provided by Javalin DI
+ */
 internal class JavalinProxy(
     private val delegate: Javalin,
     val context: JavalinContext

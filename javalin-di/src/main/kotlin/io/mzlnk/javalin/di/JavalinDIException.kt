@@ -1,5 +1,8 @@
 package io.mzlnk.javalin.di
 
+/**
+ * Exception thrown when an error related to Javalin DI occurs.
+ */
 class JavalinDIException(message: String) : RuntimeException(message) {
 
     /*

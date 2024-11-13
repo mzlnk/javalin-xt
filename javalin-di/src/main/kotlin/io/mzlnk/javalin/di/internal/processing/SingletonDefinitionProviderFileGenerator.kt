@@ -7,8 +7,51 @@ import io.mzlnk.javalin.di.definition.SingletonDefinitionProvider
 import io.mzlnk.javalin.di.type.TypeReference
 
 // TODO: refactor it
+/**
+ * Generates a file representing a singleton definition provider classes for the given module.
+ *
+ * It uses KotlinPoet to generate class file content.
+ *
+ * The structure of the generated file is as follows:
+ * ```
+ * [package name]
+ *
+ * [imports]
+ *
+ * class [module name]SingletonDefinitionProvider : SingletonDefinitionProvider {
+ *
+ *   private val module = [module name]()
+ *
+ *   override val definitions: List<SingletonDefinition<*>> = listOf(
+ *     SingletonDefinition(
+ *       identifier = SingletonDefinition.Identifier(
+ *         typeRef = object : TypeReference<[return type]>() {}
+ *       ),
+ *       dependencies = listOf(
+ *         SingletonDefinition.Identifier(typeRef = object : TypeReference<[parameter type]>() {}),
+ *         ...
+ *       ),
+ *       instanceProvider = {
+ *         module.[method name](
+ *           it[0] as [parameter type],
+ *           ...
+ *         )
+ *       }
+ *     ),
+ *     ...
+ *   )
+ * }
+ * ```
+ */
 internal object SingletonDefinitionProviderFileGenerator {
 
+    /**
+     * Generates a file representing a singleton definition provider classes for the given module.
+     *
+     * @param module module to create the definition provider for
+     *
+     * @return generated file representing a singleton definition provider class file
+     */
     fun generate(module: ModuleClass): GeneratedFile {
         val file = FileSpec.builder(
             packageName = module.type.packageName,

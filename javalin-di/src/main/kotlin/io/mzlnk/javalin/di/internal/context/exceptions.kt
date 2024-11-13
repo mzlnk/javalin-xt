@@ -4,18 +4,27 @@ import io.mzlnk.javalin.di.JavalinDIException
 import io.mzlnk.javalin.di.definition.SingletonDefinition
 import io.mzlnk.javalin.di.internal.utils.graph.Cycle
 
+/**
+ * Exception thrown when there are multiple candidates found for a given singleton definition.
+ */
 internal fun multipleCandidatesFoundException(
     identifier: SingletonDefinition.Identifier<*>
 ): JavalinDIException {
     return JavalinDIException("Multiple candidates found for $identifier")
 }
 
+/**
+ * Exception thrown when there are no candidates found for a given singleton definition.
+ */
 internal fun noCandidatesFoundException(
     identifier: SingletonDefinition.Identifier<*>
 ): JavalinDIException {
     return JavalinDIException("No candidates found for $identifier")
 }
 
+/**
+ * Exception thrown when a dependency cycle is found in the dependency graph.
+ */
 internal fun dependencyCycleFoundException(
     cycles: List<Cycle<SingletonDefinition<*>>>
 ): JavalinDIException {

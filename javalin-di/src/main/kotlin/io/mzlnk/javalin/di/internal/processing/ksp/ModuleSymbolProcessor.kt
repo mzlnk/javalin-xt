@@ -6,6 +6,10 @@ import io.mzlnk.javalin.di.internal.processing.DefaultSingletonDefinitionProcess
 import io.mzlnk.javalin.di.internal.processing.GeneratedFile
 import io.mzlnk.javalin.di.internal.processing.SingletonDefinitionProcessor
 
+/**
+ * Symbol processor that processes the project source code
+ * and generates all necessary files for the Javalin DI context using KSP API.
+ */
 internal class ModuleSymbolProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
@@ -34,6 +38,9 @@ internal class ModuleSymbolProcessor(
 
 }
 
+/**
+ * Provider for the [ModuleSymbolProcessor]. Required by KSP.
+ */
 internal class ModuleSymbolProcessorProvider(
     private val processor: SingletonDefinitionProcessor = DefaultSingletonDefinitionProcessor
 ) : SymbolProcessorProvider {

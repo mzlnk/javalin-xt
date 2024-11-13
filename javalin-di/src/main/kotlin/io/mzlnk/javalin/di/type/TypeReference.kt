@@ -6,6 +6,16 @@ import java.lang.reflect.Type
 /*
  * Concept taken from com.fasterxml.jackson.core.type.TypeReference
  */
+/**
+ * Helper component used to represent a reference to a generic type.
+ *
+ * This is a workaround for the fact that JVM does not retain generic type information at runtime
+ * known as type erasure.
+ *
+ * It works in the same way as TypeReference from Jackson library.
+ *
+ * @param T referenced type
+ */
 abstract class TypeReference<T> {
 
     val type: Type
