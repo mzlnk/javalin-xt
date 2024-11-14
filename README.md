@@ -286,11 +286,11 @@ There is an example project available in the `demo` directory.
 
 ## License 🎫
 
-Javalin DI is licensed under the Apache License, Version 2.0. See TBD for more information.
+Javalin DI is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for more information.
 
 ## Contributing 💪
 
-Contributions are welcome! Please see [LICENSE](LICENSE) for more information.
+Contributions are welcome! Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## Authors ⚗️
 
