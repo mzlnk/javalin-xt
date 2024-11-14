@@ -11,15 +11,13 @@
 
 Key features includes:
 
-- **Lightweight**: Javalin DI is designed to be as lightweight as possible. It does not introduce any additional
-  dependencies to your project. Just the most basic and useful features that can enhance working with Javalin.
-- **No reflection**: Javalin DI does not use reflection to inject dependencies. Everything is done at compile time.
-- **Enforced framework separation**: Javalin DI by default enforces separation between business logic and framework
-  code via the use of modules.
-- **Invisible**: Javalin DI can be considered as an extension to Javalin. Using it, you can still use Javalin as you
-  would normally do, but with the added benefit of dependency injection context acessible via Javalin `app`
-- **Dedicated to Javalin**: Javalin DI is specifically designed to work with Javalin which allows for a more
-  streamlined and efficient integration.
+| Feature                           | Description                                                                                                                                                                                                    |
+|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Lighweight**                    | Javalin DI is designed to be as lightweight as possible. It does not introduce any additional dependencies to your project. Just the most basic and useful features that can enhance working with Javalin.     |
+| **No reflection**                 | Javalin DI does not use reflection to inject dependencies. Everything is done at compile time.                                                                                                                 |
+| **Enforced framework separation** | Javalin DI by default enforces separation between business logic and framework code via the use of modules.                                                                                                    |
+| **Invisible**                     | Javalin DI can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the added benefit of dependency injection context acessible via Javalin  `app` |
+| **Dedicated to Javalin**          | Javalin DI is specifically designed to work with Javalin which allows for a more streamlined and efficient integration.                                                                                        |
 
 ## Notes 📄
 
