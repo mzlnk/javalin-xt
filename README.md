@@ -1,5 +1,12 @@
 # Javalin DI
 
+[![Licence: Apache 2.0](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](https://shields.io/)
+[![Open Source](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![Javalin](https://img.shields.io/badge/Javalin-6.3.0-008abb.svg)](https://javalin.io/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-purple.svg)](https://kotlinlang.org/)
+[![Java](https://img.shields.io/badge/Java-17-f5222f.svg)](https://www.java.com/)
+[![Gradle](https://img.shields.io/badge/Gradle-8.5-27c2b7.svg)](https://gradle.org/)
+
 **Javalin DI is a very lightweight dependency injection framework dedicated to [Javalin](https://javalin.io/).**
 
 Key features includes:
