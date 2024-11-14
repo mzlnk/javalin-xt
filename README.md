@@ -290,7 +290,7 @@ Javalin DI is licensed under the Apache License, Version 2.0. See TBD for more i
 
 ## Contributing 💪
 
-Contributions are welcome! Please see TBD for more information.
+Contributions are welcome! Please see [LICENSE](LICENSE) for more information.
 
 ## Authors ⚗️
 
