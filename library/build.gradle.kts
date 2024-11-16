@@ -74,11 +74,11 @@ idea {
 
 publishing {
     publications {
-        create<MavenPublication>("JavalinDI") {
+        create<MavenPublication>("JavalinEXT") {
             from(components["java"])
 
             groupId = "io.mzlnk"
-            artifactId = "javalin-di"
+            artifactId = "javalin-ext"
             version = "0.0.1"
         }
     }
@@ -132,6 +132,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 tasks.named<Jar>("jar") {
-    archiveBaseName.set("javalin-di")
+    archiveBaseName.set("javalin-ext")
     archiveVersion.set("")
 }
