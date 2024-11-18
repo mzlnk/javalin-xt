@@ -22,6 +22,7 @@ dependencies {
     // load javalin-di from local JAR located at `libs/` directory
     implementation(":javalin-ext")
     ksp(":javalin-ext")
+    ksp("com.squareup:kotlinpoet:2.0.0")
 
     implementation("io.javalin:javalin:6.3.0")
     implementation("ch.qos.logback:logback-classic:1.5.12")

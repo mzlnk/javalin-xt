@@ -1,7 +1,8 @@
 package io.mzlnk.javalin.ext.demo
 
-import io.mzlnk.javalin.di.Module
-import io.mzlnk.javalin.di.Singleton
+import io.mzlnk.javalin.ext.Module
+import io.mzlnk.javalin.ext.Singleton
+
 
 @Module
 class TestModule {

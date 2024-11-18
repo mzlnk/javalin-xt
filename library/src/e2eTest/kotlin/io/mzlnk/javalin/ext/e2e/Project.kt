@@ -6,7 +6,21 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.deleteRecursively
 
-class Project private constructor(val rootDirectory: Path) {
+/**
+ * Represents a file in the project
+ */
+data class ProjectFile(
+    /**
+     * Path to the file relative to the project root directory
+     */
+    val path: Path,
+    /**
+     * Content of the file
+     */
+    val content: String
+)
+
+class Project private constructor(private val rootDirectory: Path) {
 
     /**
      * Copies resources from host path into the project under the target path
@@ -22,12 +36,27 @@ class Project private constructor(val rootDirectory: Path) {
         Files.setPosixFilePermissions(rootDirectory.resolve(targetPath), permissions)
     }
 
+    /**
+     * Creates a file with the given content at the specified path relative to the project root directory
+     *
+     * @param path path to the file to create (e.g. src/main/resources/resource1.txt)
+     * @param content content of the file
+     */
+    fun createFile(file: ProjectFile) {
+        Files.createDirectories(rootDirectory.resolve(file.path).parent)
+        Files.writeString(rootDirectory.resolve(file.path), file.content)
+    }
+
     fun startApplication(): Application {
         val process = ProcessBuilder("./gradlew", "run")
             .directory(rootDirectory.toFile())
             .start()
 
         return Application.create(process)
+    }
+
+    fun path(child: Path): Path {
+        return rootDirectory.resolve(child)
     }
 
     @OptIn(ExperimentalPathApi::class)

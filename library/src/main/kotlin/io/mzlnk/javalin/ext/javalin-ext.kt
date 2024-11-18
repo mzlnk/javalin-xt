@@ -9,7 +9,7 @@ import io.mzlnk.javalin.ext.type.TypeReference
 import org.slf4j.LoggerFactory
 import kotlin.time.measureTimedValue
 
-private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.di")
+private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.ext")
 
 /**
  * Enables dependency injection for Javalin.
