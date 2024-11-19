@@ -183,6 +183,55 @@ class ResolverProjectLoaderTest {
     }
 
     @Test
+    fun `should load singleton with generic type details`() {
+        // given:
+        val moduleFile = SourceFile.kotlin(
+            name = "module.kt",
+            """
+            package test
+            
+            import io.mzlnk.javalin.ext.Module
+            import io.mzlnk.javalin.ext.Singleton
+            
+            @Module
+            class TestModule {
+                
+                @Singleton
+                fun provideTypeEA(depEB: TypeE<TypeB>): TypeE<TypeA> = TypeE()
+                
+            }
+            """
+        )
+
+        // when:
+        val project = process(annotationsFile, typesFile, moduleFile)
+
+        // then:
+        val module = project?.modules?.firstOrNull() ?: fail("Module not found")
+        val singleton = module.singletons.firstOrNull() ?: fail("Singleton not found")
+
+        assertThat(singleton.name).isEqualTo("provideTypeEA")
+        assertThat(singleton.returnType).isEqualTo(
+            Type(
+                packageName = "test",
+                name = "TypeE",
+                typeParameters = listOf(Type(packageName = "test", name = "TypeA"))
+            )
+        )
+        assertThat(singleton.parameters).hasSize(1)
+
+        val parameter = singleton.parameters.firstOrNull() ?: fail("Singleton parameter not found")
+        assertThat(parameter.type).isEqualTo(
+            Type(
+                packageName = "test",
+                name = "TypeE",
+                typeParameters = listOf(Type(packageName = "test", name = "TypeB"))
+            )
+        )
+        assertThat(parameter.name).isEqualTo("depEB")
+    }
+
+    @Test
     fun `should not load class not annotated with @Module`() {
         // given:
         val moduleFile = SourceFile.kotlin(
@@ -281,6 +330,8 @@ class ResolverProjectLoaderTest {
             class TypeB
             class TypeC
             class TypeD
+            
+            class TypeE<T>
             """
         )
 

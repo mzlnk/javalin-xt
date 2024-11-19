@@ -51,19 +51,30 @@ internal data class SingletonMethod(
  *
  * @param packageName package name of the type
  * @param name simple name of the type
+ * @param typeParameters list of generic types of the type
  */
 internal data class Type(
     val packageName: String,
-    val name: String
+    val name: String,
+    val typeParameters: List<Type> = emptyList()
 ) {
 
     /**
      * Returns the qualified name of the type.
-     * Example: `a.b.c.Type`
+     * Examples:
+     * - `a.b.c.Type`
+     * - `a.b.c.Type<e.f.GenericType>`
      *
      * @return qualified name of the type
      */
-    val qualifiedName: String = "$packageName.$name"
+    val qualifiedName: String = run {
+        val typeParameters = typeParameters
+            .takeIf { it.isNotEmpty() }
+            ?.joinToString(prefix = "<", postfix = ">") { it.toString() }
+            ?: ""
+
+        "$packageName.$name$typeParameters"
+    }
 
     override fun toString(): String = qualifiedName
 

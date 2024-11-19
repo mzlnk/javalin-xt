@@ -121,4 +121,87 @@ class SingletonDefinitionProcessorTest {
         )
     }
 
+    @Test
+    fun `should create singleton definition provider file for singleton with generic types`() {
+        // given:
+        val project = Project(
+            modules = listOf(
+                ModuleClass(
+                    type = Type(packageName = "a.b", name = "TestModule"),
+                    singletons = listOf(
+                        SingletonMethod(
+                            name = "providesType1",
+                            returnType = Type(
+                                packageName = "c.d",
+                                name = "Type1",
+                                typeParameters = listOf(Type(packageName = "e.f", name = "GenericType1"))
+                            ),
+                            parameters = listOf(
+                                Parameter(
+                                    name = "type2",
+                                    type = Type(
+                                        packageName = "g.h",
+                                        name = "Type2",
+                                        typeParameters = listOf(
+                                            Type(
+                                                packageName = "e.f",
+                                                name = "GenericType2A",
+                                                typeParameters = listOf(
+                                                    Type(packageName = "e.f", name = "GenericType2B")
+                                                )
+                                            ),
+                                            Type(packageName = "e.f", name = "GenericType3")
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+                    )
+                )
+            )
+        )
+
+        // when:
+        val generatedProject = DefaultSingletonDefinitionProcessor.process(project)
+
+        // then:
+        val providerFile = generatedProject.definitionProviders.find { it.name == "TestModuleSingletonDefinitionProvider" }
+            ?: fail("Definition provider file not found")
+
+        assertThat(providerFile.packageName).isEqualTo("a.b")
+        assertThat(providerFile.extension).isEqualTo("kt")
+        assertThat(providerFile.content).isEqualTo(
+            // language=kotlin
+            """
+            |package a.b
+            |
+            |import io.mzlnk.javalin.ext.definition.SingletonDefinition
+            |import io.mzlnk.javalin.ext.definition.SingletonDefinitionProvider
+            |import io.mzlnk.javalin.ext.type.TypeReference
+            |import kotlin.collections.List
+            |
+            |public class TestModuleSingletonDefinitionProvider : SingletonDefinitionProvider {
+            |  private val module: TestModule = TestModule()
+            |
+            |  override val definitions: List<SingletonDefinition<*>> = listOf(
+            |        SingletonDefinition(
+            |          identifier = SingletonDefinition.Identifier(
+            |            typeRef = object : TypeReference<c.d.Type1<e.f.GenericType1>>() {}
+            |          ),
+            |          dependencies = listOf(
+            |            SingletonDefinition.Identifier(typeRef = object : TypeReference<g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>>() {}),
+            |          ),
+            |          instanceProvider = {
+            |            module.providesType1(
+            |              it[0] as g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>
+            |            )
+            |          }
+            |        )
+            |      )
+            |}
+            |
+            """.trimMargin()
+        )
+    }
+
 }

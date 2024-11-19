@@ -34,10 +34,11 @@ internal object ResolverProjectLoader {
             return ModuleClass(
                 type = Type(
                     packageName = this.packageName.asString(),
-                    name = this.simpleName.asString()
+                    name = this.simpleName.asString(),
+                    typeParameters = emptyList() // not needed for now
                 ),
                 singletons = this.getDeclaredFunctions()
-                    .filter { it.annotations.any { annotation -> annotation.isTypeOf(io.mzlnk.javalin.ext.Singleton::class.java) } }
+                    .filter { it.annotations.any { annotation -> annotation.isTypeOf(Singleton::class.java) } }
                     .map { it.asSingleton }
                     .toList()
             )
@@ -49,7 +50,8 @@ internal object ResolverProjectLoader {
                 name = this.simpleName.asString(),
                 returnType = Type(
                     packageName = this.returnType?.resolve()?.declaration?.packageName?.asString() ?: "",
-                    name = this.returnType?.resolve()?.declaration?.simpleName?.asString() ?: ""
+                    name = this.returnType?.resolve()?.declaration?.simpleName?.asString() ?: "",
+                    typeParameters = this.returnType?.resolve()?.arguments?.map { it.asType } ?: emptyList()
                 ),
                 parameters = this.parameters.map { it.asParameter }.toList(),
             )
@@ -61,8 +63,18 @@ internal object ResolverProjectLoader {
                 name = this.name?.asString() ?: "",
                 type = Type(
                     packageName = this.type.resolve().declaration.packageName.asString(),
-                    name = this.type.resolve().declaration.simpleName.asString()
+                    name = this.type.resolve().declaration.simpleName.asString(),
+                    typeParameters = this.type.resolve().arguments.map { it.asType }
                 ),
+            )
+        }
+
+    private val KSTypeArgument.asType
+        get(): Type {
+            return Type(
+                packageName = this.type!!.resolve().declaration.packageName.asString(),
+                name = this.type!!.resolve().declaration.simpleName.asString(),
+                typeParameters = this.type!!.resolve().arguments.map { it.asType }
             )
         }
 
