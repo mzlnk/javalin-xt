@@ -1,4 +1,4 @@
-package io.mzlnk.javalin.ext.e2e.app
+package io.mzlnk.javalin.xt.e2e.app
 
 /**
  * This file consists of generic use components for E2E testing purposes.

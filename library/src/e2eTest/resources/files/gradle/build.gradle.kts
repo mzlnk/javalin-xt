@@ -20,8 +20,8 @@ repositories {
 
 dependencies {
     // load javalin-di from local JAR located at `libs/` directory
-    implementation(":javalin-ext")
-    ksp(":javalin-ext")
+    implementation(":javalin-xt")
+    ksp(":javalin-xt")
     ksp("com.squareup:kotlinpoet:2.0.0")
 
     implementation("io.javalin:javalin:6.3.0")
@@ -31,5 +31,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("io.mzlnk.javalin.ext.e2e.app.ApplicationKt")
+    mainClass.set("io.mzlnk.javalin.xt.e2e.app.ApplicationKt")
 }

@@ -78,7 +78,7 @@ publishing {
             from(components["java"])
 
             groupId = "io.mzlnk"
-            artifactId = "javalin-ext"
+            artifactId = "javalin-xt"
             version = "0.0.1"
         }
     }
@@ -132,6 +132,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 tasks.named<Jar>("jar") {
-    archiveBaseName.set("javalin-ext")
+    archiveBaseName.set("javalin-xt")
     archiveVersion.set("")
 }

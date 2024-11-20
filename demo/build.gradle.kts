@@ -17,8 +17,8 @@ repositories {
 
 dependencies {
     implementation("io.javalin:javalin:_")
-    implementation("io.mzlnk:javalin-ext:0.0.1")
-    ksp("io.mzlnk:javalin-ext:0.0.1")
+    implementation("io.mzlnk:javalin-xt:0.0.1")
+    ksp("io.mzlnk:javalin-xt:0.0.1")
     implementation("org.slf4j:slf4j-simple:2.0.16")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")

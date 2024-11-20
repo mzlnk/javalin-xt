@@ -1,10 +1,10 @@
-package io.mzlnk.javalin.ext.e2e.app
+package io.mzlnk.javalin.xt.e2e.app
 
 import io.javalin.Javalin
-import io.mzlnk.javalin.ext.enableEXT
+import io.mzlnk.javalin.xt.enableXt
 
 fun main(args: Array<String>) {
     Javalin.create()
-        .enableEXT()
+        .enableXt()
         .start(0) // 0 indicates that the server should start on a random port
 }
