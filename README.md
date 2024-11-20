@@ -9,7 +9,7 @@
 
 **javalin-xt is a very lightweight extension framework dedicated to [Javalin](https://javalin.io/).**
 
-Key concepts includes:
+### Key concepts
 
 | Concept                           | Description                                                                                                                                                                                          |
 |-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -19,7 +19,7 @@ Key concepts includes:
 | **Invisible**                     | Can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the added benefit of dependency injection context accessible via Javalin  `app` |
 | **Dedicated to Javalin**          | Specifically designed to work with Javalin which allows for a more streamlined and efficient integration.                                                                                            |
 
-Key features includes:
+### Key features
 
 | Feature                    | Description                                                                                                                                      |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
