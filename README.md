@@ -67,7 +67,7 @@ To enable javalin-xt, you just need to invoke `enableXt()` on your Javalin insta
 ```kotlin
 fun main(args: Array<String>) {
     val app = Javalin.create()
-        .enableDI()
+        .enableXt()
         .start(8080)
 }
 ```
