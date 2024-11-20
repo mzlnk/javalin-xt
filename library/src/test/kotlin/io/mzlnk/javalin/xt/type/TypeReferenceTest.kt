@@ -1,5 +1,6 @@
 package io.mzlnk.javalin.xt.type
 
+import io.mzlnk.javalin.xt.di.type.TypeReference
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

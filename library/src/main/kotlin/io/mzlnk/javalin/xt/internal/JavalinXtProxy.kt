@@ -15,7 +15,7 @@ import io.javalin.security.RouteRole
 import io.javalin.websocket.WsConfig
 import io.javalin.websocket.WsExceptionHandler
 import io.javalin.websocket.WsHandlerType
-import io.mzlnk.javalin.xt.internal.context.JavalinContext
+import io.mzlnk.javalin.xt.internal.di.context.JavalinContext
 import jakarta.servlet.Servlet
 import java.util.function.Consumer
 

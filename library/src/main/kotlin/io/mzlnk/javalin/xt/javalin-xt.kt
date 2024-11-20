@@ -1,11 +1,11 @@
 package io.mzlnk.javalin.xt
 
 import io.javalin.Javalin
-import io.mzlnk.javalin.xt.definition.SingletonDefinition
+import io.mzlnk.javalin.xt.di.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.internal.JavalinXtProxy
-import io.mzlnk.javalin.xt.internal.context.DefaultSingletonDefinitionSource
-import io.mzlnk.javalin.xt.internal.context.JavalinContext
-import io.mzlnk.javalin.xt.type.TypeReference
+import io.mzlnk.javalin.xt.internal.di.context.DefaultSingletonDefinitionSource
+import io.mzlnk.javalin.xt.internal.di.context.JavalinContext
+import io.mzlnk.javalin.xt.di.type.TypeReference
 import org.slf4j.LoggerFactory
 import kotlin.time.measureTimedValue
 

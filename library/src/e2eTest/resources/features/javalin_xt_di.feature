@@ -9,8 +9,8 @@ Feature: Javalin Xt - Dependency Injection
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.Module
-      import io.mzlnk.javalin.xt.Singleton
+      import io.mzlnk.javalin.xt.di.Module
+      import io.mzlnk.javalin.xt.di.Singleton
 
       class ComponentA
       class ComponentB(val componentA: ComponentA)
@@ -42,8 +42,8 @@ Feature: Javalin Xt - Dependency Injection
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.Module
-      import io.mzlnk.javalin.xt.Singleton
+      import io.mzlnk.javalin.xt.di.Module
+      import io.mzlnk.javalin.xt.di.Singleton
 
       open class ComponentA
       class ComponentA1 : ComponentA()
@@ -76,8 +76,8 @@ Feature: Javalin Xt - Dependency Injection
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.Module
-      import io.mzlnk.javalin.xt.Singleton
+      import io.mzlnk.javalin.xt.di.Module
+      import io.mzlnk.javalin.xt.di.Singleton
 
       interface TypeA
       class ComponentA : TypeA
@@ -110,8 +110,8 @@ Feature: Javalin Xt - Dependency Injection
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.Module
-      import io.mzlnk.javalin.xt.Singleton
+      import io.mzlnk.javalin.xt.di.Module
+      import io.mzlnk.javalin.xt.di.Singleton
 
       class ComponentA<T>
       class ComponentB<T>(val componentA: ComponentA<T>)
@@ -143,8 +143,8 @@ Feature: Javalin Xt - Dependency Injection
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.Module
-      import io.mzlnk.javalin.xt.Singleton
+      import io.mzlnk.javalin.xt.di.Module
+      import io.mzlnk.javalin.xt.di.Singleton
 
       class ComponentA
       class ComponentB(val components: List<ComponentA>)
@@ -179,8 +179,8 @@ Feature: Javalin Xt - Dependency Injection
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.Module
-      import io.mzlnk.javalin.xt.Singleton
+      import io.mzlnk.javalin.xt.di.Module
+      import io.mzlnk.javalin.xt.di.Singleton
 
       open class ComponentA
       class ComponentA1 : ComponentA()
@@ -217,8 +217,8 @@ Feature: Javalin Xt - Dependency Injection
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.Module
-      import io.mzlnk.javalin.xt.Singleton
+      import io.mzlnk.javalin.xt.di.Module
+      import io.mzlnk.javalin.xt.di.Singleton
 
       interface TypeA
       class ComponentA : TypeA
