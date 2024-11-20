@@ -60,7 +60,7 @@ dependencies {
 
 To be announced soon.
 
-### Enabling Javalin Xt 🔓
+### Enabling javalin-xt 🔓
 
 To enable javalin-xt, you just need to invoke `enableXt()` on your Javalin instance:
 
@@ -72,7 +72,7 @@ fun main(args: Array<String>) {
 }
 ```
 
-### Explore Javalin Xt features 🎯
+### Explore javalin-xt features 🎯
 
 Now you can start exploring javalin-xt features. All the features are described in details in
 the [Wiki](https://github.com/mzlnk/javalin-xt/wiki) section:
