@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     kotlin("jvm") version "_"
     `maven-publish`
+    signing
     jacoco
     idea
 }
@@ -74,12 +75,39 @@ idea {
 
 publishing {
     publications {
-        create<MavenPublication>("JavalinEXT") {
-            from(components["java"])
+        create<MavenPublication>("library") {
+            from(components["kotlin"])
 
             groupId = "io.mzlnk"
             artifactId = "javalin-xt"
             version = "0.0.1"
+
+            pom {
+                name.set("javalin-xt")
+                description.set("Simple and very lightweight extension framework dedicated to Javalin")
+                url.set("https://github.com/mzlnk/javalin-xt")
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("mzlnk")
+                        name.set("Marcin Zielonka")
+                        email.set("dev.zielonka.marcin@gmail.com")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/mzlnk/javalin-xt.git")
+                    developerConnection.set("scm:git:ssh://github.com/mzlnk/javalin-xt.git")
+                    url.set("https://github.com/mzlnk/javalin-xt")
+                }
+            }
         }
     }
 
@@ -88,7 +116,25 @@ publishing {
             name = "local"
             url = uri("${System.getProperty("user.home")}/.m2/repository")
         }
+        maven {
+            name = "central"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+
+            credentials {
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
+            }
+        }
     }
+}
+
+signing {
+    useInMemoryPgpKeys(
+        /* defaultKeyId = */ System.getenv("SIGNING_KEY_ID"),
+        /* defaultSecretKey = */ System.getenv("SIGNING_KEY"),
+        /* defaultPassword = */ System.getenv("SIGNING_PASSWORD")
+    )
+    sign(publishing.publications["library"])
 }
 
 jacoco {
