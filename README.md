@@ -9,7 +9,8 @@
 
 [![Version](https://img.shields.io/badge/version-0.0.1-397ee6)](https://central.sonatype.com/artifact/io.mzlnk/javalin-xt/overview)
 [![Build](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fjavalin-xt-bot%2F896b6842fd99039b5a14141bd2e80f41%2Fraw%2Fbuild.json)](#)
-[![Code coverage](https://gist.githubusercontent.com/javalin-xt-bot/896b6842fd99039b5a14141bd2e80f41/raw/code-coverage.json)](#)
+[![Code coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fjavalin-xt-bot%2F896b6842fd99039b5a14141bd2e80f41%2Fraw%2Fcode-coverage.json
+)](#)
 
 ## About 🌐
 **javalin-xt** is a very lightweight extension framework dedicated to [Javalin](https://javalin.io/).
