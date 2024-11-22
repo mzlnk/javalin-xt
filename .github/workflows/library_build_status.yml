@@ -70,16 +70,11 @@ jobs:
             -H "Authorization: token ${{ secrets.BOT_TOKEN_UPDATE_BADGE }}" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/gists/896b6842fd99039b5a14141bd2e80f41 \
-            -d "$(jq -n --arg message "$(cat build/coverage.txt)" \
-            '{
-            files: {
-              "code-coverage.json": {
-                content: {
-                  "schemaVersion": 1,
-                  "label": "code coverage",
-                  "message": $message,
-                  "color": "2aa353"
+            -d \
+            "{
+              \"files\": {
+                \"code-coverage.json\": {
+                  \"content\": \"{ \\\"schemaVersion\\\": 1, \\\"label\\\": \\\"code coverage\\\", \\\"message\\\": \\\"$(cat build/coverage.txt)%\\\", \\\"color\\\": \\\"2aa353\\\" }\"
                 }
               }
-            }
-          }')"
+            }"
