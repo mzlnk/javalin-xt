@@ -7,17 +7,32 @@
 [![Java](https://img.shields.io/badge/Java-17-f5222f.svg)](https://www.java.com/)
 [![Gradle](https://img.shields.io/badge/Gradle-8.5-27c2b7.svg)](https://gradle.org/)
 
-**javalin-xt is a very lightweight extension framework dedicated to [Javalin](https://javalin.io/).**
+## About 🌐
+**javalin-xt** is a very lightweight extension framework dedicated to [Javalin](https://javalin.io/).
 
 ### Key concepts
 
-| Concept                           | Description                                                                                                                                                                                          |
-|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Lightweight**                   | Designed to be as lightweight as possible. It does not introduce any additional dependencies to your project. Just the most basic and useful features that can enhance working with Javalin.         |
-| **No reflection**                 | Does not use reflection in its features. Everything is done at compile time.                                                                                                                         |
-| **Enforced framework separation** | By default enforces separation between business logic and framework code.                                                                                                                            |
-| **Invisible**                     | Can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the added benefit of dependency injection context accessible via Javalin  `app` |
-| **Dedicated to Javalin**          | Specifically designed to work with Javalin which allows for a more streamlined and efficient integration.                                                                                            |
+Key concepts of **javalin-xt** include:
+
+#### ▶ Lightweight
+
+Designed to be as lightweight as possible. It does not introduce any additional dependencies to your project. Just the most basic and useful features that can enhance working with Javalin.  
+
+#### ▶ No reflection
+
+No use of reflection in its features. Everything is done at compile time. 
+
+#### ▶ Enforced framework separation
+
+By default enforces separation between business logic and framework code.  
+
+#### ▶ Invisible
+
+Can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the added benefit of dependency injection context accessible via Javalin  `app`.
+
+#### ▶ Dedicated to Javalin
+
+Specifically designed to work with Javalin which allows for a more streamlined and efficient integration. 
 
 ### Key features
 
