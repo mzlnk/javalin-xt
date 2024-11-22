@@ -46,7 +46,7 @@ jobs:
                   "content": "{ \"schemaVersion\": 1, \"label\": \"build\", \"message\": \"failed\", \"color\": \"d94136\" }"
                 }
               }
-            }
+            }'
         
 
   library-update-build-status-notify-success:
@@ -67,4 +67,4 @@ jobs:
                   "content": "{ \"schemaVersion\": 1, \"label\": \"build\", \"message\": \"passing\", \"color\": \"36d974\" }"
                 }
               }
-            }
+            }'
