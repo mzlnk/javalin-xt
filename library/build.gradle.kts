@@ -73,6 +73,16 @@ idea {
     }
 }
 
+tasks.register<Jar>("sourcesJar") {
+    from(sourceSets["main"].allSource)  // Include all source files
+    archiveClassifier.set("sources")   // Name the JAR to be `your-artifact-id-sources.jar`
+}
+
+tasks.register<Jar>("javadocJar") {
+    from(tasks.getByName("javadoc")) // Include Javadoc task output
+    archiveClassifier.set("javadoc")  // Name the JAR to be `your-artifact-id-javadoc.jar`
+}
+
 publishing {
     publications {
         create<MavenPublication>("library") {
@@ -81,6 +91,9 @@ publishing {
             groupId = "io.mzlnk"
             artifactId = "javalin-xt"
             version = "0.0.1"
+
+            artifact(tasks.getByName("sourcesJar"))
+            artifact(tasks.getByName("javadocJar"))
 
             pom {
                 name.set("javalin-xt")
