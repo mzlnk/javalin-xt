@@ -1,4 +1,4 @@
-name: Javalin DI - CI
+name: "[library] CI"
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
       - '**' # Run on any branch with a PR
 
 jobs:
-  javalin-di-ci:
+  library-ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,9 +24,9 @@ jobs:
 
       - name: Run tests
         run: ./gradlew check
-        working-directory: ./javalin-di
+        working-directory: ./library
 
       - name: Run E2E tests
         run: ./gradlew e2eTest
-        working-directory: ./javalin-di
+        working-directory: ./library
 
