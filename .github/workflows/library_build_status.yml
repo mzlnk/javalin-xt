@@ -1,0 +1,70 @@
+name: "[library] update build status"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  library-update-build-status-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Run tests
+        run: ./gradlew check
+        working-directory: ./library
+
+      - name: Run E2E tests
+        run: ./gradlew e2eTest
+        working-directory: ./library
+
+  library-update-build-status-notify-failure:
+    runs-on: ubuntu-latest
+    needs: library-update-build-status-build
+    if: failure()
+
+    steps:
+      - name: Update build badge data
+        run: |
+          curl -X PATCH \
+            -H "Authorization: token ${{ secrets.BOT_TOKEN_UPDATE_BADGE }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/gists/896b6842fd99039b5a14141bd2e80f41 \
+            -d '{
+              "files": {
+                "build.json": {
+                  "content": "{ \"schemaVersion\": 1, \"label\": \"build\", \"message\": \"failed\", \"color\": \"d94136\" }"
+                }
+              }
+            }
+        
+
+  library-update-build-status-notify-success:
+    runs-on: ubuntu-latest
+    needs: library-update-build-status-build
+    if: success()
+
+    steps:
+      - name: Update build badge data
+        run: |
+          curl -X PATCH \
+            -H "Authorization: token ${{ secrets.BOT_TOKEN_UPDATE_BADGE }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/gists/896b6842fd99039b5a14141bd2e80f41 \
+            -d '{
+              "files": {
+                "build.json": {
+                  "content": "{ \"schemaVersion\": 1, \"label\": \"build\", \"message\": \"passing\", \"color\": \"36d974\" }"
+                }
+              }
+            }
