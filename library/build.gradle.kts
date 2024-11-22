@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import kotlin.math.floor
 
 plugins {
     kotlin("jvm") version "_"
@@ -164,6 +165,38 @@ tasks.jacocoTestReport {
 
     reports {
         html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+        csv.required.set(true)
+        csv.outputLocation.set(layout.buildDirectory.file("jacocoCsv/jacoco.csv"))
+        xml.required.set(true)
+        xml.outputLocation.set(layout.buildDirectory.file("jacocoXml/jacoco.xml"))
+    }
+}
+
+tasks.register("testCoverage") {
+    dependsOn("jacocoTestReport")
+
+    doLast {
+        val buildDir = layout.buildDirectory.asFile.get()
+        val reportFile = buildDir.resolve("jacocoCsv/jacoco.csv")
+        if (!reportFile.exists()) {
+            throw GradleException("Jacoco report file not found at ${reportFile.absolutePath}")
+        }
+
+        val (missed, covered) = reportFile
+            .readLines()
+            .drop(1) // drop headers
+            .map { it.split(",") }
+            .map { it[3].toInt() to it[4].toInt() }
+            .fold(0 to 0) { (totalMissed, totalCovered), (missed, covered) ->
+                totalMissed + missed to totalCovered + covered
+            }
+
+        val coverage = floor((covered.toDouble() / (missed + covered)) * 10000) / 100
+
+        val coverageFile = buildDir.resolve("coverage.txt")
+        coverageFile.writeText(coverage.toString())
+
+        println("Test coverage: $coverage%")
     }
 }
 

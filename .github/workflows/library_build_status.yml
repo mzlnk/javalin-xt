@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  library-update-build-status-build:
+  update-build-status:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,13 +28,12 @@ jobs:
         run: ./gradlew e2eTest
         working-directory: ./library
 
-  library-update-build-status-notify-failure:
-    runs-on: ubuntu-latest
-    needs: library-update-build-status-build
-    if: failure()
+      - name: Run test coverage
+        run: ./gradlew testCoverage
+        working-directory: ./library
 
-    steps:
-      - name: Update build badge data
+      - name: Update build badge data with failure status
+        if: failure()
         run: |
           curl -X PATCH \
             -H "Authorization: token ${{ secrets.BOT_TOKEN_UPDATE_BADGE }}" \
@@ -47,15 +46,9 @@ jobs:
                 }
               }
             }'
-        
 
-  library-update-build-status-notify-success:
-    runs-on: ubuntu-latest
-    needs: library-update-build-status-build
-    if: success()
-
-    steps:
-      - name: Update build badge data
+      - name: Update build badge data with success status
+        if: success()
         run: |
           curl -X PATCH \
             -H "Authorization: token ${{ secrets.BOT_TOKEN_UPDATE_BADGE }}" \
@@ -64,7 +57,29 @@ jobs:
             -d '{
               "files": {
                 "build.json": {
-                  "content": "{ \"schemaVersion\": 1, \"label\": \"build\", \"message\": \"passing\", \"color\": \"36d974\" }"
+                  "content": "{ \"schemaVersion\": 1, \"label\": \"build\", \"message\": \"passing\", \"color\": \"2aa353\" }"
                 }
               }
             }'
+
+      - name: Update code coverage badge
+        if: success()
+        working-directory: ./library
+        run: |
+          curl -X PATCH \
+            -H "Authorization: token ${{ secrets.BOT_TOKEN_UPDATE_BADGE }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/gists/896b6842fd99039b5a14141bd2e80f41 \
+            -d "$(jq -n --arg message "$(cat build/coverage.txt)" \
+            '{
+            files: {
+              "code-coverage.json": {
+                content: {
+                  "schemaVersion": 1,
+                  "label": "code coverage",
+                  "message": $message,
+                  "color": "2aa353"
+                }
+              }
+            }
+          }')"
