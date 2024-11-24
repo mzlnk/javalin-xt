@@ -54,7 +54,10 @@ dependencies {
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:_")
 
     testImplementation("org.assertj:assertj-core:_")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:_")
     testImplementation(kotlin("reflect"))
+
+    testImplementation("io.javalin:javalin:_")
 
     e2eTestImplementation("io.cucumber:cucumber-java:_")
     e2eTestImplementation("io.cucumber:cucumber-core:_")
