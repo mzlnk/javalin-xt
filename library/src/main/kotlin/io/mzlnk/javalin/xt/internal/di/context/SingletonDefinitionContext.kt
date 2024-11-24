@@ -5,18 +5,20 @@ import io.mzlnk.javalin.xt.internal.di.context.SingletonMatcher.Companion.matche
 import io.mzlnk.javalin.xt.di.type.TypeReference
 
 /**
- * Represents a context build by Javalin DI based on provided singleton definitions.
+ * Represents a context build by javalin-xt DI based on provided singleton definitions.
  */
-internal class JavalinContext {
+internal class SingletonDefinitionContext {
 
-    private val singletons: MutableList<Pair<SingletonDefinition.Identifier<*>, Any>> = mutableListOf()
+    private val _singletons: MutableList<Pair<SingletonDefinition.Identifier<*>, Any>> = mutableListOf()
+
+    val singletons: List<Pair<SingletonDefinition.Identifier<*>, Any>> get() = _singletons
 
     /**
      * Returns the number of singletons registered in the context.
      *
      * @return number of singletons
      */
-    fun size(): Int = singletons.size
+    fun size(): Int = _singletons.size
 
     /**
      * Register a singleton instance with given identifier in the context.
@@ -25,7 +27,7 @@ internal class JavalinContext {
      * @param instance instance of the singleton
      */
     fun <T : Any> registerSingleton(identifier: SingletonDefinition.Identifier<out T>, instance: T) {
-        singletons += (identifier to instance)
+        _singletons += (identifier to instance)
     }
 
     /**
@@ -45,7 +47,7 @@ internal class JavalinContext {
     fun <T : Any> findInstance(identifier: SingletonDefinition.Identifier<T>): T? {
         val matcher = matcherFor(identifier)
 
-        val matching = singletons.filter { (candidateIdentifier, _) ->
+        val matching = _singletons.filter { (candidateIdentifier, _) ->
             matcher.matches(candidateIdentifier)
         }
 
@@ -97,14 +99,14 @@ internal class JavalinContext {
          * @throws JavalinDIException if a dependency cycle is found
          * @throws JavalinDIException if no candidates are found for a dependency of a given singleton definition
          */
-        fun create(definitions: List<SingletonDefinition<*>>): JavalinContext {
+        fun create(definitions: List<SingletonDefinition<*>>): SingletonDefinitionContext {
             val dependencyGraph = DependencyGraphFactory.create(definitions)
 
             if (dependencyGraph.hasCycles) {
                 throw dependencyCycleFoundException(dependencyGraph.cycles)
             }
 
-            val context = JavalinContext()
+            val context = SingletonDefinitionContext()
             dependencyGraph.topologicalOrder.forEach { definition ->
                 context.registerSingleton(
                     identifier = definition.identifier,

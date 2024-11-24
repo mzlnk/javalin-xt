@@ -1,11 +1,11 @@
 package io.mzlnk.javalin.xt
 
 import io.javalin.Javalin
-import io.mzlnk.javalin.xt.di.definition.SingletonDefinition
+import io.mzlnk.javalin.xt.di.context.DefaultJavalinContext
+import io.mzlnk.javalin.xt.di.context.JavalinContext
 import io.mzlnk.javalin.xt.internal.JavalinXtProxy
 import io.mzlnk.javalin.xt.internal.di.context.DefaultSingletonDefinitionSource
-import io.mzlnk.javalin.xt.internal.di.context.JavalinContext
-import io.mzlnk.javalin.xt.di.type.TypeReference
+import io.mzlnk.javalin.xt.internal.di.context.SingletonDefinitionContext
 import org.slf4j.LoggerFactory
 import kotlin.time.measureTimedValue
 
@@ -17,40 +17,28 @@ private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.xt")
 fun Javalin.enableXt(): Javalin {
     val (context, elapsedTime) = measureTimedValue {
         val definitions = DefaultSingletonDefinitionSource.definitions()
-        JavalinContext.create(definitions)
+        SingletonDefinitionContext.create(definitions)
     }
 
     LOG.info("Loaded ${context.size()} singletons")
     LOG.info("Javalin DI enabled in $elapsedTime")
 
-    return JavalinXtProxy(this, context)
+    return JavalinXtProxy(
+        javalin = this,
+        context = DefaultJavalinContext.create(context)
+    )
 }
 
 /**
- * Gets an instance of the specified type from the DI context.
+ * Returns the context built by javalin-xt DI.
  *
- * @param type the type of the instance to get
- * @return the instance if exists
- *
- * @throws IllegalStateException if the DI context has not been enabled
- * @throws IllegalStateException if no instance found for the specified type
+ * @return the context
  */
-fun <T : Any> Javalin.getInstance(type: Class<T>): T = getInstance(object : TypeReference<T>() {})
+val Javalin.context: JavalinContext
+    get() {
+        if (this !is JavalinXtProxy) {
+            throw IllegalStateException("This is javalin-xt feature which has not been enabled. Call Javalin.enableXt() first.")
+        }
 
-/**
- * Gets an instance of the specified type from the DI context.
- *
- * @param type the type of the instance to get
- * @return the instance if exists
- *
- * @throws IllegalStateException if the DI context has not been enabled
- * @throws IllegalStateException if no instance found for the specified type
- */
-fun <T : Any> Javalin.getInstance(type: TypeReference<T>): T {
-    if (this !is JavalinXtProxy) {
-        throw IllegalStateException("Javalin DI has not been enabled. Call Javalin.enableDI() first.")
+        return this.context
     }
-
-    val identifier = SingletonDefinition.Identifier(typeRef = type)
-    return this.context.findInstance(identifier) ?: throw IllegalStateException("No instance found for $identifier")
-}

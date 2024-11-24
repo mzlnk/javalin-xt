@@ -15,7 +15,7 @@ import io.javalin.security.RouteRole
 import io.javalin.websocket.WsConfig
 import io.javalin.websocket.WsExceptionHandler
 import io.javalin.websocket.WsHandlerType
-import io.mzlnk.javalin.xt.internal.di.context.JavalinContext
+import io.mzlnk.javalin.xt.di.context.JavalinContext
 import jakarta.servlet.Servlet
 import java.util.function.Consumer
 
@@ -26,9 +26,11 @@ import java.util.function.Consumer
  * @param context attached context provided by Javalin DI
  */
 internal class JavalinXtProxy(
-    private var _delegate: Javalin,
+    javalin: Javalin,
     val context: JavalinContext
 ) : Javalin(null) {
+
+    private var _delegate: Javalin = javalin
 
     internal val delegate: Javalin get() = _delegate
 
