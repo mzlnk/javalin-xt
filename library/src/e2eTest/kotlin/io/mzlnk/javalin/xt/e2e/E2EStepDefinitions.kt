@@ -22,28 +22,17 @@ class E2EStepDefinitions {
 
     @Given("project is set up")
     fun `gradle project is set up`() {
-        println("thread: ${Thread.currentThread().name}")
         this.project = Project.initialize()
     }
 
-    @Given("application with Xt enabled is created")
-    fun `application with Xt enabled is created`() {
-        project.copyResource(
-            hostPath = Path.of("src/e2eTest/resources/files/kotlin/Application.kt"),
-            targetPath = Path.of("./src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/Application.kt")
-        )
+    @Given("class {word} is created with content")
+    fun `class classQualifiedName is created with content`(classQualifiedName: String, content: DocString) {
+        val packageName = classQualifiedName.substringBeforeLast(".")
+        val className = classQualifiedName.substringAfterLast(".")
 
-        project.copyResource(
-            hostPath = Path.of("src/e2eTest/resources/files/resources/logback.xml"),
-            targetPath = Path.of("./src/main/resources/logback.xml")
-        )
-    }
-
-    @Given("file {word} is created with content")
-    fun `file filePath is created with content`(filePath: String, content: DocString) {
         project.createFile(
             ProjectFile(
-                path = Path.of(filePath),
+                path = Path.of("src/main/kotlin/${packageName.replace(".", "/")}/$className.kt"),
                 content = content.content
             )
         )
@@ -75,9 +64,11 @@ class E2EStepDefinitions {
         assertThat(result.isSuccess).isTrue()
     }
 
-    @Then("there are {int} components registered in DI context")
-    fun `there are componentsCount components registered in DI context`(componentsCount: Int) {
-        assertThat(application.loadedSingletons).isEqualTo(componentsCount)
+    @Then("no assertions failed")
+    fun `no assertions failed`() {
+        assertThat(application.assertionFailures)
+            .withFailMessage("There were assertion failures:\n${application.assertionFailures.joinToString("\n")}")
+            .isEmpty()
     }
 
     @After

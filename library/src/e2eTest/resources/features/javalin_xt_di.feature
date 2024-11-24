@@ -1,10 +1,8 @@
-Feature: Javalin Xt - Dependency Injection
+Feature: javalin-xt - DI
   Scenario: DI with simple types
     Given project is set up
 
-    And application with Xt enabled is created
-
-    And file src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/AppModule.kt is created with content
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule is created with content
       # language=kotlin
       """
       package io.mzlnk.javalin.xt.e2e.app
@@ -26,18 +24,41 @@ Feature: Javalin Xt - Dependency Injection
       }
       """
 
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          assert(app.context.size() == 2)
+
+          val componentA = app.context.findInstance(ComponentA::class.java)
+          val componentB = app.context.findInstance(ComponentB::class.java)
+
+          assert(componentA != null) { "componentA - expected: not null, actual: null" }
+          assert(componentB != null) { "componentB - expected: not null, actual: null" }
+          assert(componentB?.componentA === componentA) { "componentB.componentA - expected: ${componentA}, actual: ${componentB?.componentA}" }
+      }
+      """
+
     When run the application
 
     Then application starts successfully
-    Then there are 2 components registered in DI context
+    And no assertions failed
 
 
   Scenario: DI with super types
     Given project is set up
 
-    And application with Xt enabled is created
-
-    And file src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/AppModule.kt is created with content
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
       # language=kotlin
       """
       package io.mzlnk.javalin.xt.e2e.app
@@ -60,18 +81,41 @@ Feature: Javalin Xt - Dependency Injection
       }
       """
 
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          assert(app.context.size() == 2)
+
+          val componentA = app.context.findInstance(ComponentA::class.java)
+          val componentB = app.context.findInstance(ComponentB::class.java)
+
+          assert(componentA != null) { "componentA - expected: not null, actual: null" }
+          assert(componentB != null) { "componentB - expected: not null, actual: null" }
+          assert(componentB?.componentA === componentA) { "componentB.componentA - expected: ${componentA}, actual: ${componentB?.componentA}" }
+      }
+      """
+
     When run the application
 
     Then application starts successfully
-    Then there are 2 components registered in DI context
+    And no assertions failed
 
 
   Scenario: DI with interface types
     Given project is set up
 
-    And application with Xt enabled is created
-
-    And file src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/AppModule.kt is created with content
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
       # language=kotlin
       """
       package io.mzlnk.javalin.xt.e2e.app
@@ -94,18 +138,41 @@ Feature: Javalin Xt - Dependency Injection
       }
       """
 
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          assert(app.context.size() == 2)
+
+          val typeA = app.context.findInstance(TypeA::class.java)
+          val componentB = app.context.findInstance(ComponentB::class.java)
+
+          assert(typeA != null) { "typeA - expected: not null, actual: null" }
+          assert(componentB != null) { "componentB - expected: not null, actual: null" }
+          assert(componentB?.typeA === typeA) { "componentB.typeA - expected: ${typeA}, actual: ${componentB?.typeA}" }
+      }
+      """
+
     When run the application
 
     Then application starts successfully
-    Then there are 2 components registered in DI context
+    And no assertions failed
 
 
   Scenario: DI with generic types
     Given project is set up
 
-    And application with Xt enabled is created
-
-    And file src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/AppModule.kt is created with content
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
       # language=kotlin
       """
       package io.mzlnk.javalin.xt.e2e.app
@@ -127,18 +194,42 @@ Feature: Javalin Xt - Dependency Injection
       }
       """
 
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          assert(app.context.size() == 2) { "size - expected: 2, actual: ${app.context.size()}" }
+
+          val componentA = app.context.findInstance(object : TypeReference<ComponentA<String>>() {})
+          val componentB = app.context.findInstance(object : TypeReference<ComponentB<String>>() {})
+
+          assert(componentA != null) { "componentA - expected: not null, actual: null" }
+          assert(componentB != null) { "componentB - expected: not null, actual: null" }
+          assert(componentB?.componentA === componentA) { "componentB.componentA - expected: ${componentA}, actual: ${componentB?.componentA}" }
+      }
+      """
+
     When run the application
 
     Then application starts successfully
-    Then there are 2 components registered in DI context
+    And no assertions failed
 
 
   Scenario: DI with list types
     Given project is set up
 
-    And application with Xt enabled is created
-
-    And file src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/AppModule.kt is created with content
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
       # language=kotlin
       """
       package io.mzlnk.javalin.xt.e2e.app
@@ -163,18 +254,44 @@ Feature: Javalin Xt - Dependency Injection
       }
       """
 
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          assert(app.context.size() == 3) { "size - expected: 3, actual: ${app.context.size()}" }
+
+          val componentsAs = app.context.findInstance(object : TypeReference<List<ComponentA>>() {})
+          val componentB = app.context.findInstance(ComponentB::class.java)
+
+          assert(componentsAs != null) { "componentsAs - expected: not null, actual: null" }
+          assert(componentsAs?.size == 2) { "componentsAs.size - expected: 2, actual: ${componentsAs?.size}" }
+
+          assert(componentB != null) { "componentB - expected: not null, actual: null" }
+          assert(componentB?.components == componentsAs) { "componentB.components - expected: ${componentsAs}, actual: ${componentB?.components}" }
+      }
+      """
+
     When run the application
 
     Then application starts successfully
-    Then there are 3 components registered in DI context
+    And no assertions failed
 
 
   Scenario: DI with list types using super types
     Given project is set up
 
-    And application with Xt enabled is created
-
-    And file src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/AppModule.kt is created with content
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
       # language=kotlin
       """
       package io.mzlnk.javalin.xt.e2e.app
@@ -201,18 +318,44 @@ Feature: Javalin Xt - Dependency Injection
       }
       """
 
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          assert(app.context.size() == 3) { "size - expected: 3, actual: ${app.context.size()}" }
+
+          val componentsAs = app.context.findInstance(object : TypeReference<List<ComponentA>>() {})
+          val componentB = app.context.findInstance(ComponentB::class.java)
+
+          assert(componentsAs != null) { "componentsAs - expected: not null, actual: null" }
+          assert(componentsAs?.size == 2) { "componentsAs.size - expected: 2, actual: ${componentsAs?.size}" }
+
+          assert(componentB != null) { "componentB - expected: not null, actual: null" }
+          assert(componentB?.components == componentsAs) { "componentB.components - expected: ${componentsAs}, actual: ${componentB?.components}" }
+      }
+      """
+
     When run the application
 
     Then application starts successfully
-    Then there are 3 components registered in DI context
+    And no assertions failed
 
 
   Scenario: DI with list types using interface types
     Given project is set up
 
-    And application with Xt enabled is created
-
-    And file src/main/kotlin/io/mzlnk/javalin/xt/e2e/app/AppModule.kt is created with content
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
       # language=kotlin
       """
       package io.mzlnk.javalin.xt.e2e.app
@@ -238,7 +381,35 @@ Feature: Javalin Xt - Dependency Injection
       }
       """
 
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          assert(app.context.size() == 3) { "size - expected: 3, actual: ${app.context.size()}" }
+
+          val typesAs = app.context.findInstance(object : TypeReference<List<TypeA>>() {})
+          val componentB = app.context.findInstance(ComponentB::class.java)
+
+          assert(typesAs != null) { "typesAs - expected: not null, actual: null" }
+          assert(typesAs?.size == 2) { "typesAs.size - expected: 2, actual: ${typesAs?.size}" }
+
+          assert(componentB != null) { "componentB - expected: not null, actual: null" }
+          assert(componentB?.components == typesAs) { "componentB.components - expected: ${typesAs}, actual: ${componentB?.components}" }
+      }
+      """
+
     When run the application
 
     Then application starts successfully
-    Then there are 3 components registered in DI context
+    And no assertions failed

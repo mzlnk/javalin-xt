@@ -35,10 +35,9 @@ class Application private constructor(private val process: Process) {
     val isStarted: Boolean get() = _logs.any { it.matches(APPLICATION_STARTED_REGEX) }
     val isRunning: Boolean get() = process.isAlive
 
-    val loadedSingletons: Int get() = _logs.find { it.matches(LOADED_SINGLETONS_REGEX) }
-        ?.let { LOADED_SINGLETONS_REGEX.matchEntire(it)?.groups?.get("count")?.value }
-        ?.toInt()
-        ?: throw IllegalStateException("No information about loaded singletons found")
+    val assertionFailures: List<String>
+        get() = _logs.filter { it.matches(ASSERTION_FAILURE_REGEX) }
+            .map { ASSERTION_FAILURE_REGEX.matchEntire(it)?.groups?.get("error")?.value ?: "" }
 
     fun stop() {
         process.destroy()
@@ -55,7 +54,7 @@ class Application private constructor(private val process: Process) {
     companion object {
 
         private val APPLICATION_STARTED_REGEX = Regex(".*Javalin started in [0-9]+ms \\\\o/")
-        private val LOADED_SINGLETONS_REGEX = Regex(".*Loaded (?<count>[0-9]+) singletons")
+        private val ASSERTION_FAILURE_REGEX = Regex(".*java.lang.AssertionError: (?<error>.*)")
 
         fun create(process: Process): Application {
             return Application(process)

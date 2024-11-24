@@ -33,3 +33,8 @@ dependencies {
 application {
     mainClass.set("io.mzlnk.javalin.xt.e2e.app.ApplicationKt")
 }
+
+tasks.named<JavaExec>("run") {
+    // enable assertions used in E2E test scenarios
+    jvmArgs = listOf("-ea")
+}
