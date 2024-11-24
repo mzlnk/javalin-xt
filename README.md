@@ -13,7 +13,7 @@
 )](#)
 
 ## About 🌐
-**javalin-xt** is a very lightweight extension framework dedicated to [Javalin](https://javalin.io/).
+**javalin-xt** is a very lightweight set of extension features dedicated to [Javalin](https://javalin.io/).
 
 ### Key concepts
 
