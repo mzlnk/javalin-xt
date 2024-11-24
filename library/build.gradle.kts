@@ -146,6 +146,9 @@ publishing {
 }
 
 signing {
+    // only sign when publishing to maven central
+    setRequired(!isSigningForMavenLocal)
+
     useInMemoryPgpKeys(
         /* defaultKeyId = */ System.getenv("SIGNING_KEY_ID"),
         /* defaultSecretKey = */ System.getenv("SIGNING_KEY"),
@@ -153,6 +156,9 @@ signing {
     )
     sign(publishing.publications["library"])
 }
+
+private val isSigningForMavenLocal
+    get() : Boolean = gradle.startParameter.taskNames.any { it.contains("publishToMavenLocal") }
 
 jacoco {
     toolVersion = "0.8.12"

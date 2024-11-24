@@ -1,7 +1,7 @@
 package io.mzlnk.javalin.xt.demo
 
-import io.mzlnk.javalin.xt.Module
-import io.mzlnk.javalin.xt.Singleton
+import io.mzlnk.javalin.xt.di.Module
+import io.mzlnk.javalin.xt.di.Singleton
 
 
 @Module
@@ -25,10 +25,12 @@ class TestModule {
 
 }
 
-class ComponentA
+// @formatter:off
+class ComponentA { override fun toString(): String  = "A" }
 
-class ComponentB
+class ComponentB { override fun toString(): String  = "B" }
 
-class ComponentC
+class ComponentC { override fun toString(): String  = "C" }
 
-class ComponentD
+class ComponentD { override fun toString(): String  = "D" }
+// @formatter:on
