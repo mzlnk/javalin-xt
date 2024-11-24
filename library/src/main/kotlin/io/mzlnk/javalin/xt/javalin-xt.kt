@@ -3,6 +3,7 @@ package io.mzlnk.javalin.xt
 import io.javalin.Javalin
 import io.mzlnk.javalin.xt.di.context.DefaultJavalinContext
 import io.mzlnk.javalin.xt.di.context.JavalinContext
+import io.mzlnk.javalin.xt.di.context.NoOpJavalinContext
 import io.mzlnk.javalin.xt.internal.JavalinXtProxy
 import io.mzlnk.javalin.xt.internal.di.context.DefaultSingletonDefinitionSource
 import io.mzlnk.javalin.xt.internal.di.context.SingletonDefinitionContext
@@ -14,19 +15,26 @@ private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.xt")
 /**
  * Enables javalin-xt features.
  */
-fun Javalin.enableXt(): Javalin {
+fun Javalin.xt(init: JavalinXtConfiguration.() -> Unit = {}): Javalin {
+    val config = JavalinXtConfiguration().apply(init)
+
+    val context = if (config.di.enabled) defaultDiContext() else NoOpJavalinContext
+
+    return JavalinXtProxy(
+        javalin = this,
+        context = context
+    )
+}
+
+private fun defaultDiContext(): JavalinContext {
     val (context, elapsedTime) = measureTimedValue {
         val definitions = DefaultSingletonDefinitionSource.definitions()
         SingletonDefinitionContext.create(definitions)
     }
 
-    LOG.info("Loaded ${context.size()} singletons")
-    LOG.info("Javalin DI enabled in $elapsedTime")
+    LOG.info("DI context created in $elapsedTime \\o/. Loaded ${context.size()} singletons")
 
-    return JavalinXtProxy(
-        javalin = this,
-        context = DefaultJavalinContext.create(context)
-    )
+    return DefaultJavalinContext.create(context)
 }
 
 /**
@@ -37,7 +45,7 @@ fun Javalin.enableXt(): Javalin {
 val Javalin.context: JavalinContext
     get() {
         if (this !is JavalinXtProxy) {
-            throw IllegalStateException("This is javalin-xt feature which has not been enabled. Call Javalin.enableXt() first.")
+            throw IllegalStateException("This is javalin-xt feature which has not been enabled. Call Javalin.xt() first.")
         }
 
         return this.context

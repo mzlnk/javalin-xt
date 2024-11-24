@@ -19,7 +19,7 @@ dependencies {
     implementation("io.javalin:javalin:_")
     implementation("io.mzlnk:javalin-xt:0.0.1")
     ksp("io.mzlnk:javalin-xt:0.0.1")
-    implementation("org.slf4j:slf4j-simple:2.0.16")
+    implementation("ch.qos.logback:logback-classic:1.5.12")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
