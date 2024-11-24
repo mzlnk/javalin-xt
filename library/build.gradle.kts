@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.mzlnk"
-version = "0.0.1"
+version = "0.1.0"
 
 kotlin {
     jvmToolchain(17)
@@ -94,7 +94,7 @@ publishing {
 
             groupId = "io.mzlnk"
             artifactId = "javalin-xt"
-            version = "0.0.1"
+            version = "0.1.0"
 
             artifact(tasks.getByName("sourcesJar"))
             artifact(tasks.getByName("javadocJar"))
@@ -147,7 +147,7 @@ publishing {
 
 signing {
     // only sign when publishing to maven central
-    setRequired(!isSigningForMavenLocal)
+//    setRequired(!isSigningForMavenLocal)
 
     useInMemoryPgpKeys(
         /* defaultKeyId = */ System.getenv("SIGNING_KEY_ID"),
