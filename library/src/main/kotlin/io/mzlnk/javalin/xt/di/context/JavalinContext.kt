@@ -1,6 +1,5 @@
 package io.mzlnk.javalin.xt.di.context
 
-import io.javalin.Javalin
 import io.mzlnk.javalin.xt.di.type.TypeReference
 
 /**
@@ -21,7 +20,7 @@ interface JavalinContext {
      * @param type the type of the instance to get
      * @return instance of the singleton if found, null otherwise
      */
-    fun <T : Any> Javalin.findInstance(type: TypeReference<T>): T?
+    fun <T : Any> findInstance(type: TypeReference<T>): T?
 
     /**
      * Gets an instance of the specified type from the context.
@@ -29,7 +28,7 @@ interface JavalinContext {
      * @param type the type of the instance to get
      * @return instance of the singleton if found, null otherwise
      */
-    fun <T : Any> Javalin.findInstance(type: Class<T>): T? =
+    fun <T : Any> findInstance(type: Class<T>): T? =
         findInstance(object : TypeReference<T>() {})
 
     /**
@@ -40,7 +39,7 @@ interface JavalinContext {
      *
      * @throws IllegalStateException if no instance found for the specified type
      */
-    fun <T : Any> Javalin.getInstance(type: TypeReference<T>): T =
+    fun <T : Any> getInstance(type: TypeReference<T>): T =
         findInstance(type) ?: throw IllegalStateException("No instance found for $type")
 
     /**
@@ -51,7 +50,7 @@ interface JavalinContext {
      *
      * @throws IllegalStateException if no instance found for the specified type
      */
-    fun <T : Any> Javalin.getInstance(type: Class<T>): T =
+    fun <T : Any> getInstance(type: Class<T>): T =
         getInstance(object : TypeReference<T>() {})
 
 }
