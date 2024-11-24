@@ -1,6 +1,5 @@
 package io.mzlnk.javalin.xt.di.context
 
-import io.javalin.Javalin
 import io.mzlnk.javalin.xt.di.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.di.type.TypeReference
 import io.mzlnk.javalin.xt.internal.di.context.SingletonDefinitionContext
@@ -14,7 +13,7 @@ internal class DefaultJavalinContext private constructor(
 
     override fun size(): Int = definitionsContext.size()
 
-    override fun <T : Any> Javalin.findInstance(type: TypeReference<T>): T? {
+    override fun <T : Any> findInstance(type: TypeReference<T>): T? {
         val identifier = SingletonDefinition.Identifier(typeRef = type)
         return definitionsContext.findInstance(identifier)
     }

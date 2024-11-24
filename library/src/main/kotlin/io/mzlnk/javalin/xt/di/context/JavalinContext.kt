@@ -29,7 +29,7 @@ interface JavalinContext {
      * @return instance of the singleton if found, null otherwise
      */
     fun <T : Any> findInstance(type: Class<T>): T? =
-        findInstance(object : TypeReference<T>() {})
+        findInstance(object : TypeReference<T>(type) {})
 
     /**
      * Gets an instance of the specified type from the context.
