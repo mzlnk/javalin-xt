@@ -23,17 +23,18 @@ Key concepts of **javalin-xt** include:
 
 Designed to be as lightweight as possible. It does not introduce any additional dependencies to your project. Just the most basic and useful features that can enhance working with Javalin.  
 
-#### ▶ No reflection
+#### ▶ No reflection 
 
-No use of reflection in its features. Everything is done at compile time. 
+No use of reflection in its features. Everything is done at compile time.
 
-#### ▶ Enforced framework separation
+#### ▶ Not over-engineered
 
-By default enforces separation between business logic and framework code.  
+No heavy use of proxies, annotations, or other complex mechanisms under the hood. Everything is kept simple in order to make 
+any potential debugging or troubleshooting easier.
 
 #### ▶ Invisible
 
-Can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the added benefit of dependency injection context accessible via Javalin  `app`.
+Can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the added benefit of javalin-xt features accessible via Javalin  `app`.
 
 #### ▶ Dedicated to Javalin
 
@@ -41,11 +42,11 @@ Specifically designed to work with Javalin which allows for a more streamlined a
 
 ### Key features
 
-| Feature                    | Description                                                                                                                                      |
-|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Dependency injection**   | Simple and lightweight dependency injection (DI) framework that allows you to define modules and singletons and access them from the DI context. |
-| **Application properties** | Simple engine to read and access application properties in a Spring Boot-like way via application.yml stored in your resources                   |
-| **Declarative routing**    | Simple  way to define routes and handlers in a declarative way using annotations.                                                                |
+| Feature                    | Description                                                                                                                           |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| **Dependency injection**   | Simple and lightweight dependency injection (DI) framework that uses no reflection                                                    |
+| **Application properties** | Simple engine to read and access application properties in a Spring Boot-like way via application.yml stored in your resources. (TBA) |
+| **Declarative routing**    | Simple way to define routes and handlers in a declarative way using annotations. (TBA)                                                |
 
 ## Notes 📄
 
@@ -71,7 +72,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.mzlnk:javalin-xt:0.1.0")
+    implementation("io.mzlnk:javalin-xt:0.0.1")
     ksp("io.mzlnk:javalin-xt:0.0.1")
 }
 ```
@@ -82,12 +83,12 @@ To be announced soon.
 
 ### Enabling javalin-xt 🔓
 
-To enable javalin-xt, you just need to invoke `enableXt()` on your Javalin instance:
+To enable javalin-xt, you just need to invoke `xt()` extension function on your Javalin instance:
 
 ```kotlin
 fun main(args: Array<String>) {
     val app = Javalin.create()
-        .enableXt()
+        .xt()
         .start(8080)
 }
 ```
