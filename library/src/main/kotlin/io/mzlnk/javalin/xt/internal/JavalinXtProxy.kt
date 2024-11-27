@@ -16,6 +16,7 @@ import io.javalin.websocket.WsConfig
 import io.javalin.websocket.WsExceptionHandler
 import io.javalin.websocket.WsHandlerType
 import io.mzlnk.javalin.xt.di.context.JavalinContext
+import io.mzlnk.javalin.xt.properties.ApplicationProperties
 import jakarta.servlet.Servlet
 import java.util.function.Consumer
 
@@ -27,7 +28,8 @@ import java.util.function.Consumer
  */
 internal class JavalinXtProxy(
     javalin: Javalin,
-    val context: JavalinContext
+    val context: JavalinContext,
+    val properties: ApplicationProperties
 ) : Javalin(null) {
 
     private var _delegate: Javalin = javalin

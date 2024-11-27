@@ -17,9 +17,12 @@ repositories {
 
 dependencies {
     implementation("io.javalin:javalin:_")
-    implementation("io.mzlnk:javalin-xt:0.1.0")
-    ksp("io.mzlnk:javalin-xt:0.1.0")
+    implementation("io.mzlnk:javalin-xt:0.2.0")
+    ksp("io.mzlnk:javalin-xt:0.2.0")
     implementation("ch.qos.logback:logback-classic:1.5.12")
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:_")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:_")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
