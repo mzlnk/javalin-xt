@@ -46,6 +46,8 @@ dependencies {
     implementation("com.squareup:kotlinpoet:_")
 
     compileOnly("io.javalin:javalin:_")
+    compileOnly("com.fasterxml.jackson.core:jackson-databind:_")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:_")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:_")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:_")
@@ -147,7 +149,7 @@ publishing {
 
 signing {
     // only sign when publishing to maven central
-//    setRequired(!isSigningForMavenLocal)
+    setRequired(!isSigningForMavenLocal)
 
     useInMemoryPgpKeys(
         /* defaultKeyId = */ System.getenv("SIGNING_KEY_ID"),
@@ -158,7 +160,7 @@ signing {
 }
 
 private val isSigningForMavenLocal
-    get() : Boolean = gradle.startParameter.taskNames.any { it.contains("publishToMavenLocal") }
+    get() : Boolean = gradle.startParameter.taskNames.any { it.contains("ToMavenLocal") }
 
 jacoco {
     toolVersion = "0.8.12"

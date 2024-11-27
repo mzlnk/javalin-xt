@@ -38,6 +38,21 @@ class E2EStepDefinitions {
         )
     }
 
+    @Given("resource {word} is created with content")
+    fun `resource resourceName is created with content`(resourceName: String, content: DocString) {
+        project.createFile(
+            ProjectFile(
+                path = Path.of("src/main/resources/$resourceName"),
+                content = content.content
+            )
+        )
+    }
+
+    @Given("environment variable {word} is set to {word}")
+    fun `environment variable envVarName is set to value`(envVarName: String, value: String) {
+        project.setEnvironmentVariable(envVarName, value)
+    }
+
     @When("run the application")
     fun `run the application`() {
         this.application = project.startApplication()

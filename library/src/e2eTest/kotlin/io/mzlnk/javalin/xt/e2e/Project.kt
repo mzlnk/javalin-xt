@@ -22,6 +22,8 @@ data class ProjectFile(
 
 class Project private constructor(private val rootDirectory: Path) {
 
+    private val environmentVariables = mutableMapOf<String, String>()
+
     /**
      * Copies resources from host path into the project under the target path
      * relative to the project root directory
@@ -47,8 +49,19 @@ class Project private constructor(private val rootDirectory: Path) {
         Files.writeString(rootDirectory.resolve(file.path), file.content)
     }
 
+    /**
+     * Sets an environment variable with the given name and value that will be accessible within the project
+     *
+     * @param name name of the environment variable
+     * @param value value of the environment variable
+     */
+    fun setEnvironmentVariable(name: String, value: String) {
+        environmentVariables[name] = value
+    }
+
     fun startApplication(): Application {
         val process = ProcessBuilder("./gradlew", "run")
+            .apply { environment().putAll(environmentVariables) }
             .directory(rootDirectory.toFile())
             .start()
 

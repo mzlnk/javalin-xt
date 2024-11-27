@@ -1,0 +1,18 @@
+property1: 1
+property2: 1.5
+property3: true
+property4: "stringA"
+property5: stringB
+property6:
+  - 1
+  - 2
+  - 3
+property7:
+  property8:
+    - true
+    - false
+    - true
+  property9:
+    - "true"
+    - "false"
+    - "true"
