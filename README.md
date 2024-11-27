@@ -42,11 +42,11 @@ Specifically designed to work with Javalin which allows for a more streamlined a
 
 ### Key features
 
-| Feature                    | Description                                                                                                                           |
-|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| **Dependency injection**   | Simple and lightweight dependency injection (DI) framework that uses no reflection                                                    |
-| **Application properties** | Simple engine to read and access application properties in a Spring Boot-like way via application.yml stored in your resources. (TBA) |
-| **Declarative routing**    | Simple way to define routes and handlers in a declarative way using annotations. (TBA)                                                |
+| Feature                    | Description                                                                                                                     |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| **Dependency injection**   | Simple and lightweight dependency injection (DI) framework that uses no reflection.                                             |
+| **Application properties** | Simple engine to read and access application properties in a Spring Boot-like way via application.yml stored in your resources. |
+| **Declarative routing**    | Simple way to define routes and handlers in a declarative way using annotations. (TBA)                                          |
 
 ## Notes 📄
 
@@ -99,7 +99,7 @@ Now you can start exploring javalin-xt features. All the features are described 
 the [Wiki](https://github.com/mzlnk/javalin-xt/wiki) section:
 
 - [Dependency injection](https://github.com/mzlnk/javalin-xt/wiki/Dependency-injection)
-- Application properties (TBA)
+- [Application properties](https://github.com/mzlnk/javalin-xt/wiki/Application-properties)
 - Declarative routing (TBA)
 
 ## Examples 📂

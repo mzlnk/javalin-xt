@@ -7,6 +7,8 @@ import io.mzlnk.javalin.xt.di.context.NoOpJavalinContext
 import io.mzlnk.javalin.xt.internal.JavalinXtProxy
 import io.mzlnk.javalin.xt.internal.di.context.DefaultSingletonDefinitionSource
 import io.mzlnk.javalin.xt.internal.di.context.SingletonDefinitionContext
+import io.mzlnk.javalin.xt.internal.properties.ApplicationPropertiesFactory
+import io.mzlnk.javalin.xt.properties.ApplicationProperties
 import org.slf4j.LoggerFactory
 import kotlin.time.measureTimedValue
 
@@ -18,11 +20,17 @@ private val LOG = LoggerFactory.getLogger("io.mzlnk.javalin.xt")
 fun Javalin.xt(init: JavalinXtConfiguration.() -> Unit = {}): Javalin {
     val config = JavalinXtConfiguration().apply(init)
 
-    val context = if (config.di.enabled) defaultDiContext() else NoOpJavalinContext
+    val context = config.di
+        .takeIf { it.enabled }
+        ?.let { defaultDiContext() }
+        ?: NoOpJavalinContext
+
+    val properties = ApplicationPropertiesFactory().create(config.properties)
 
     return JavalinXtProxy(
         javalin = this,
-        context = context
+        context = context,
+        properties = properties
     )
 }
 
@@ -37,6 +45,7 @@ private fun defaultDiContext(): JavalinContext {
     return DefaultJavalinContext.create(context)
 }
 
+
 /**
  * Returns the context built by javalin-xt DI.
  *
@@ -49,4 +58,18 @@ val Javalin.context: JavalinContext
         }
 
         return this.context
+    }
+
+/**
+ * Returns the application properties read by javalin-xt from resources.
+ *
+ * @return the properties
+ */
+val Javalin.properties: ApplicationProperties
+    get() {
+        if (this !is JavalinXtProxy) {
+            throw IllegalStateException("This is javalin-xt feature which has not been enabled. Call Javalin.xt() first.")
+        }
+
+        return this.properties
     }
