@@ -16,6 +16,7 @@ import io.javalin.websocket.WsConfig
 import io.javalin.websocket.WsExceptionHandler
 import io.javalin.websocket.WsHandlerType
 import io.mzlnk.javalin.xt.di.context.JavalinContext
+import io.mzlnk.javalin.xt.properties.ApplicationProperties
 import jakarta.servlet.Servlet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -29,7 +30,8 @@ class JavalinXtProxyTest {
 
     private val javalin: Javalin = mock()
     private val context: JavalinContext = mock()
-    private val proxy = JavalinXtProxy(javalin, context)
+    private val properties: ApplicationProperties = mock()
+    private val proxy = JavalinXtProxy(javalin, context, properties)
 
     private val updatedJavalin: Javalin = mock()
 
@@ -851,10 +853,12 @@ class JavalinXtProxyTest {
         val javalin = mock<Javalin>()
         val context1 = mock<JavalinContext>()
         val context2 = mock<JavalinContext>()
+        val properties1 = mock<ApplicationProperties>()
+        val properties2 = mock<ApplicationProperties>()
 
         // and:
-        val proxy1 = JavalinXtProxy(javalin, context1)
-        val proxy2 = JavalinXtProxy(javalin, context2)
+        val proxy1 = JavalinXtProxy(javalin, context1, properties1)
+        val proxy2 = JavalinXtProxy(javalin, context2, properties2)
 
         // expect:
         assertThat(proxy1 == proxy2).isTrue()
@@ -865,9 +869,10 @@ class JavalinXtProxyTest {
         // given:
         val javalin = mock<Javalin>()
         val context = mock<JavalinContext>()
+        val properties = mock<ApplicationProperties>()
 
         // and:
-        val proxy = JavalinXtProxy(javalin, context)
+        val proxy = JavalinXtProxy(javalin, context, properties)
 
         // expect:
         assertThat(proxy == javalin).isTrue()
@@ -880,10 +885,12 @@ class JavalinXtProxyTest {
         val javalin2 = mock<Javalin>()
         val context1 = mock<JavalinContext>()
         val context2 = mock<JavalinContext>()
+        val properties1 = mock<ApplicationProperties>()
+        val properties2 = mock<ApplicationProperties>()
 
         // and:
-        val proxy1 = JavalinXtProxy(javalin1, context1)
-        val proxy2 = JavalinXtProxy(javalin2, context2)
+        val proxy1 = JavalinXtProxy(javalin1, context1, properties1)
+        val proxy2 = JavalinXtProxy(javalin2, context2, properties2)
 
         // expect:
         assertThat(proxy1 == proxy2).isFalse()
@@ -894,7 +901,8 @@ class JavalinXtProxyTest {
         // given:
         val javalin = mock<Javalin>()
         val context = mock<JavalinContext>()
-        val proxy = JavalinXtProxy(javalin, context)
+        val properties = mock<ApplicationProperties>()
+        val proxy = JavalinXtProxy(javalin, context, properties)
 
         // expect:
         assertThat(proxy.hashCode()).isEqualTo(javalin.hashCode())
@@ -905,7 +913,8 @@ class JavalinXtProxyTest {
         // given:
         val javalin = mock<Javalin> { on(it.toString()) doReturn "javalin" }
         val context = mock<JavalinContext>()
-        val proxy = JavalinXtProxy(javalin, context)
+        val properties = mock<ApplicationProperties>()
+        val proxy = JavalinXtProxy(javalin, context, properties)
 
         // expect:
         assertThat(proxy.toString()).isEqualTo(javalin.toString())

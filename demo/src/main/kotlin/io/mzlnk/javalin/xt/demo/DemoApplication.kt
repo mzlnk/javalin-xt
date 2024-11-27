@@ -2,6 +2,7 @@ package io.mzlnk.javalin.xt.demo
 
 import io.javalin.Javalin
 import io.mzlnk.javalin.xt.context
+import io.mzlnk.javalin.xt.properties
 import io.mzlnk.javalin.xt.xt
 
 fun main(args: Array<String>) {
@@ -15,4 +16,6 @@ fun main(args: Array<String>) {
 
     val componentA = app.context.findInstance(ComponentA::class.java)
     println(componentA)
+
+    app.properties["property6"]
 }
