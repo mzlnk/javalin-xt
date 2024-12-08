@@ -135,13 +135,28 @@ publishing {
             name = "local"
             url = uri("${System.getProperty("user.home")}/.m2/repository")
         }
-        maven {
-            name = "central"
-            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
 
-            credentials {
-                username = System.getenv("OSSRH_USERNAME")
-                password = System.getenv("OSSRH_PASSWORD")
+        if(!project.version.toString().endsWith("-SNAPSHOT")) {
+            maven {
+                name = "releases"
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+
+                credentials {
+                    username = System.getenv("OSSRH_USERNAME")
+                    password = System.getenv("OSSRH_PASSWORD")
+                }
+            }
+        }
+
+        if(project.version.toString().endsWith("-SNAPSHOT")) {
+            maven {
+                name = "snapshots"
+                url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+
+                credentials {
+                    username = System.getenv("OSSRH_USERNAME")
+                    password = System.getenv("OSSRH_PASSWORD")
+                }
             }
         }
     }
