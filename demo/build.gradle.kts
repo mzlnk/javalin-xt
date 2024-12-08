@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "2.0.21"
-    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
+    id("io.mzlnk.javalin-xt") version "0.1.0"
 }
 
 group = "io.mzlnk"
@@ -17,8 +17,6 @@ repositories {
 
 dependencies {
     implementation("io.javalin:javalin:_")
-    implementation("io.mzlnk:javalin-xt:0.1.0")
-    ksp("io.mzlnk:javalin-xt:0.1.0")
     implementation("ch.qos.logback:logback-classic:1.5.12")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:_")
