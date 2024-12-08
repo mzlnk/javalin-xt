@@ -1,4 +1,4 @@
- plugins {
+plugins {
     id("com.gradle.plugin-publish") version "1.3.0"
     `kotlin-dsl`
     `maven-publish`
@@ -6,7 +6,7 @@
 }
 
 group = "io.mzlnk"
-version = "0.1.0-SNAPSHOT"
+version = "0.2.0"
 
 repositories {
     mavenCentral()
@@ -52,7 +52,7 @@ publishing {
 
             groupId = "io.mzlnk"
             artifactId = "javalin-xt-gradle-plugin"
-            version = "0.1.0"
+            version = "0.2.0"
 
             artifact(tasks.getByName("sourcesJar"))
             artifact(tasks.getByName("javadocJar"))
@@ -91,7 +91,7 @@ publishing {
             name = "local"
             url = uri("${System.getProperty("user.home")}/.m2/repository")
         }
-        if(project.version.toString().endsWith("SNAPSHOT")) {
+        if (project.version.toString().endsWith("SNAPSHOT")) {
             maven {
                 name = "snapshots"
                 url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
@@ -102,7 +102,7 @@ publishing {
                 }
             }
         }
-        if(!project.version.toString().endsWith("SNAPSHOT")) {
+        if (!project.version.toString().endsWith("SNAPSHOT")) {
             maven {
                 name = "releases"
                 url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
@@ -128,5 +128,11 @@ signing {
     sign(publishing.publications["plugin"])
 }
 
+
 private val isSigningForMavenLocal
     get() : Boolean = gradle.startParameter.taskNames.any { it.contains("ToMavenLocal") }
+
+tasks.named<Jar>("jar") {
+    archiveBaseName.set("javalin-xt-gradle-plugin")
+    archiveVersion.set("")
+}
