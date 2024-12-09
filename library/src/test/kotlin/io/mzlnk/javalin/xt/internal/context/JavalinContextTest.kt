@@ -1,12 +1,15 @@
 package io.mzlnk.javalin.xt.internal.context
 
+import io.mzlnk.javalin.xt.JavalinXtConfiguration
 import io.mzlnk.javalin.xt.context.ApplicationContextException
-import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.context.TypeReference
+import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
-class SingletonDefinitionContextTest {
+class JavalinContextTest {
 
     @Test
     fun `should create context for dependent components`() {
@@ -32,16 +35,18 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(2)
+        assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
+        val componentA =
+            context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        val componentB =
+            context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
 
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
     }
 
     @Test
@@ -74,18 +79,18 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(3)
+        assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: Assertions.fail("Component C not found")
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        val componentC = context.findInstance(ComponentC::class.java) ?: Assertions.fail("Component C not found")
 
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
-        Assertions.assertThat(componentB.components["C"]).isEqualTo(componentC)
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
+        assertThat(componentB.components["C"]).isEqualTo(componentC)
     }
 
     @Test
@@ -125,19 +130,19 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(4)
+        assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: Assertions.fail("Component C not found")
-        val componentD = context.findInstance(identifier(ComponentD::class.java)) ?: Assertions.fail("Component D not found")
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        val componentC = context.findInstance(ComponentC::class.java) ?: Assertions.fail("Component C not found")
+        val componentD = context.findInstance(ComponentD::class.java) ?: Assertions.fail("Component D not found")
 
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
-        Assertions.assertThat(componentC.components["D"]).isEqualTo(componentD)
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
+        assertThat(componentC.components["D"]).isEqualTo(componentD)
     }
 
     @Test
@@ -170,18 +175,18 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(3)
+        assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: Assertions.fail("Component C not found")
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        val componentC = context.findInstance(ComponentC::class.java) ?: Assertions.fail("Component C not found")
 
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
-        Assertions.assertThat(componentA.components["C"]).isEqualTo(componentC)
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
+        assertThat(componentA.components["C"]).isEqualTo(componentC)
     }
 
     @Test
@@ -214,18 +219,18 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB, singletonC)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(3)
+        assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: Assertions.fail("Component C not found")
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        val componentC = context.findInstance(ComponentC::class.java) ?: Assertions.fail("Component C not found")
 
-        Assertions.assertThat(componentB.components["A"]).isEqualTo(componentA)
-        Assertions.assertThat(componentC.components["A"]).isEqualTo(componentA)
+        assertThat(componentB.components["A"]).isEqualTo(componentA)
+        assertThat(componentC.components["A"]).isEqualTo(componentA)
     }
 
     @Test
@@ -273,22 +278,22 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD, singletonE)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(5)
+        assertThat(context.size()).isEqualTo(5)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: Assertions.fail("Component C not found")
-        val componentD = context.findInstance(identifier(ComponentD::class.java)) ?: Assertions.fail("Component D not found")
-        val componentE = context.findInstance(identifier(ComponentE::class.java)) ?: Assertions.fail("Component E not found")
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        val componentC = context.findInstance(ComponentC::class.java) ?: Assertions.fail("Component C not found")
+        val componentD = context.findInstance(ComponentD::class.java) ?: Assertions.fail("Component D not found")
+        val componentE = context.findInstance(ComponentE::class.java) ?: Assertions.fail("Component E not found")
 
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
-        Assertions.assertThat(componentA.components["C"]).isEqualTo(componentC)
-        Assertions.assertThat(componentB.components["D"]).isEqualTo(componentD)
-        Assertions.assertThat(componentB.components["E"]).isEqualTo(componentE)
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
+        assertThat(componentA.components["C"]).isEqualTo(componentC)
+        assertThat(componentB.components["D"]).isEqualTo(componentD)
+        assertThat(componentB.components["E"]).isEqualTo(componentE)
     }
 
     @Test
@@ -329,21 +334,21 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB, singletonC, singletonD)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(4)
+        assertThat(context.size()).isEqualTo(4)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        val componentC = context.findInstance(identifier(ComponentC::class.java)) ?: Assertions.fail("Component C not found")
-        val componentD = context.findInstance(identifier(ComponentD::class.java)) ?: Assertions.fail("Component D not found")
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        val componentC = context.findInstance(ComponentC::class.java) ?: Assertions.fail("Component C not found")
+        val componentD = context.findInstance(ComponentD::class.java) ?: Assertions.fail("Component D not found")
 
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
-        Assertions.assertThat(componentA.components["C"]).isEqualTo(componentC)
-        Assertions.assertThat(componentB.components["D"]).isEqualTo(componentD)
-        Assertions.assertThat(componentC.components["D"]).isEqualTo(componentD)
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
+        assertThat(componentA.components["C"]).isEqualTo(componentC)
+        assertThat(componentB.components["D"]).isEqualTo(componentD)
+        assertThat(componentC.components["D"]).isEqualTo(componentD)
     }
 
     @Test
@@ -373,11 +378,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
     }
 
     @Test
@@ -406,14 +411,14 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB1)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(2)
+        assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB1)
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        assertThat(componentA.components["B"]).isEqualTo(componentB1)
     }
 
     @Test
@@ -442,14 +447,14 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(2)
+        assertThat(context.size()).isEqualTo(2)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        Assertions.assertThat(componentA.components["B"]).isEqualTo(componentB)
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        assertThat(componentA.components["B"]).isEqualTo(componentB)
     }
 
     @Test
@@ -486,14 +491,14 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB1, singletonB2)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.size()).isEqualTo(3)
+        assertThat(context.size()).isEqualTo(3)
 
         // and:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        Assertions.assertThat(componentA.components["Bs"] as List<ComponentB>)
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        assertThat(componentA.components["Bs"] as List<ComponentB>)
             .containsExactlyInAnyOrder(componentB1, componentB2)
     }
 
@@ -531,11 +536,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB1, singletonB2)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        Assertions.assertThat(componentA.components["Bs"] as List<ComponentB>)
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        assertThat(componentA.components["Bs"] as List<ComponentB>)
             .containsExactlyInAnyOrder(componentB1, componentB2)
     }
 
@@ -574,11 +579,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA, singletonB1, singletonB2)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        Assertions.assertThat(componentA.components["Bs"] as List<ComponentB>)
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        assertThat(componentA.components["Bs"] as List<ComponentB>)
             .containsExactlyInAnyOrder(componentB1, componentB2)
     }
 
@@ -600,11 +605,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val componentA = context.findInstance(identifier(ComponentA::class.java)) ?: Assertions.fail("Component A not found")
-        Assertions.assertThat(componentA.components["Bs"] as List<ComponentB>).isEmpty()
+        val componentA = context.findInstance(ComponentA::class.java) ?: Assertions.fail("Component A not found")
+        assertThat(componentA.components["Bs"] as List<ComponentB>).isEmpty()
     }
 
     @Test
@@ -630,11 +635,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonsA1A2, singletonB)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        Assertions.assertThat(componentB.components["As"] as List<ComponentA>)
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        assertThat(componentB.components["As"] as List<ComponentA>)
             .containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
@@ -677,11 +682,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA1, singletonA2, singletonsA3A4, singletonB)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val componentB = context.findInstance(identifier(ComponentB::class.java)) ?: Assertions.fail("Component B not found")
-        Assertions.assertThat(componentB.components["As"] as List<ComponentA>)
+        val componentB = context.findInstance(ComponentB::class.java) ?: Assertions.fail("Component B not found")
+        assertThat(componentB.components["As"] as List<ComponentA>)
             .containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
@@ -699,10 +704,10 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.findInstance(identifier(ComponentA::class.java))).isEqualTo(componentA)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA)
     }
 
     @Test
@@ -721,12 +726,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonG)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.findInstance(identifier(object : TypeReference<ComponentG<String>>() {}))).isEqualTo(
-            componentG
-        )
+        assertThat(context.findInstance(object : TypeReference<ComponentG<String>>() {}))
+            .isEqualTo(componentG)
     }
 
     @Test
@@ -745,10 +749,10 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA1)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.findInstance(identifier(ComponentA::class.java))).isEqualTo(componentA1)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
     }
 
     @Test
@@ -767,10 +771,10 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonB)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.findInstance(identifier(TypeB::class.java))).isEqualTo(componentB)
+        assertThat(context.findInstance(TypeB::class.java)).isEqualTo(componentB)
     }
 
     @Test
@@ -782,10 +786,10 @@ class SingletonDefinitionContextTest {
         val definitions = emptyList<SingletonDefinition<*>>()
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        Assertions.assertThat(context.findInstance(identifier(ComponentA::class.java))).isNull()
+        assertThat(context.findInstance(ComponentA::class.java)).isNull()
     }
 
     @Test
@@ -811,13 +815,13 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA1, singletonA2)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
+        val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
             ?: Assertions.fail("Components not found")
 
-        Assertions.assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
@@ -843,13 +847,13 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA1, singletonA2)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
+        val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
             ?: Assertions.fail("Components not found")
 
-        Assertions.assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
@@ -875,13 +879,13 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA1, singletonA2)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val components = context.findInstance(identifier(object : TypeReference<List<TypeA>>() {}))
+        val components = context.findInstance(object : TypeReference<List<TypeA>>() {})
             ?: Assertions.fail("Components not found")
 
-        Assertions.assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
@@ -893,13 +897,13 @@ class SingletonDefinitionContextTest {
         val definitions = emptyList<SingletonDefinition<*>>()
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
+        val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
             ?: Assertions.fail("Components not found")
 
-        Assertions.assertThat(components).isEmpty()
+        assertThat(components).isEmpty()
     }
 
     @Test
@@ -919,11 +923,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonsA1A2)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
-        Assertions.assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+        val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
@@ -959,11 +963,11 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA1, singletonA2, singletonsA3A4)
 
         // when:
-        val context = SingletonDefinitionContext.create(definitions)
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
 
         // then:
-        val components = context.findInstance(identifier(object : TypeReference<List<ComponentA>>() {}))
-        Assertions.assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
+        val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
+        assertThat(components).containsExactlyInAnyOrder(componentA1, componentA2)
     }
 
     @Test
@@ -991,8 +995,8 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonsA1A2, singletonsA3A4, singletonB)
 
         // when:
-        val exception = Assertions.assertThatThrownBy {
-            SingletonDefinitionContext.create(definitions)
+        val exception = assertThatThrownBy {
+            ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
         }
 
         // then:
@@ -1026,8 +1030,8 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonA1, singletonA2, singletonB)
 
         // when:
-        val exception = Assertions.assertThatThrownBy {
-            SingletonDefinitionContext.create(definitions)
+        val exception = assertThatThrownBy {
+            ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
         }
 
         // then:
@@ -1050,8 +1054,8 @@ class SingletonDefinitionContextTest {
         val definitions = listOf(singletonB)
 
         // when:
-        val exception = Assertions.assertThatThrownBy {
-            SingletonDefinitionContext.create(definitions)
+        val exception = assertThatThrownBy {
+            ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
         }
 
         // then:
@@ -1087,8 +1091,8 @@ class SingletonDefinitionContextTest {
         )
 
         // when:
-        val exception = Assertions.assertThatThrownBy {
-            SingletonDefinitionContext.create(definitions)
+        val exception = assertThatThrownBy {
+            ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = true })
         }
 
         // then:
@@ -1103,6 +1107,26 @@ class SingletonDefinitionContextTest {
         )
     }
 
+    @Test
+    fun `should create empty context when disabled`() {
+        // given:
+        val singletonA = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentA() }
+        )
+
+        // and:
+        val definitions = listOf(singletonA)
+
+        // when:
+        val context = ApplicationContextFactory(definitionProvider = { definitions }).create(config { enabled = false })
+
+        // then:
+        assertThat(context.size()).isEqualTo(0)
+        assertThat(context.findInstance(ComponentA::class.java)).isNull()
+    }
+
     private companion object {
 
         inline fun <reified T : Any> identifier(type: Class<T>): SingletonDefinition.Identifier<T> =
@@ -1113,6 +1137,9 @@ class SingletonDefinitionContextTest {
     }
 
 }
+
+private fun config(init: JavalinXtConfiguration.Context.() -> Unit = {}): JavalinXtConfiguration.Context =
+    JavalinXtConfiguration.Context().apply(init)
 
 // general purpose types for testing
 private interface TypeA
