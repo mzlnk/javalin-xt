@@ -4,17 +4,16 @@ import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinitionProvider
 import java.util.*
 
-// TODO: refactor it
+internal fun interface SingletonDefinitionProvider {
 
-internal fun interface SingletonDefinitionSource {
-
-    fun definitions(): List<SingletonDefinition<*>>
+    fun get(): List<SingletonDefinition<*>>
 
 }
 
-internal object DefaultSingletonDefinitionSource : SingletonDefinitionSource {
+internal object DefaultSingletonDefinitionProvider :
+    io.mzlnk.javalin.xt.internal.context.SingletonDefinitionProvider {
 
-    override fun definitions(): List<SingletonDefinition<*>> {
+    override fun get(): List<SingletonDefinition<*>> {
         val providers = ServiceLoader.load(SingletonDefinitionProvider::class.java).toList()
         return providers.flatMap { it.definitions }
     }
