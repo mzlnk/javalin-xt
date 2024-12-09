@@ -7,8 +7,8 @@ Feature: javalin-xt - DI
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.di.Module
-      import io.mzlnk.javalin.xt.di.Singleton
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
 
       class ComponentA
       class ComponentB(val componentA: ComponentA)
@@ -63,8 +63,8 @@ Feature: javalin-xt - DI
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.di.Module
-      import io.mzlnk.javalin.xt.di.Singleton
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
 
       open class ComponentA
       class ComponentA1 : ComponentA()
@@ -120,8 +120,8 @@ Feature: javalin-xt - DI
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.di.Module
-      import io.mzlnk.javalin.xt.di.Singleton
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
 
       interface TypeA
       class ComponentA : TypeA
@@ -177,8 +177,8 @@ Feature: javalin-xt - DI
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.di.Module
-      import io.mzlnk.javalin.xt.di.Singleton
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
 
       class ComponentA<T>
       class ComponentB<T>(val componentA: ComponentA<T>)
@@ -201,7 +201,7 @@ Feature: javalin-xt - DI
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
-      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.context.TypeReference
       import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {
@@ -234,8 +234,8 @@ Feature: javalin-xt - DI
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.di.Module
-      import io.mzlnk.javalin.xt.di.Singleton
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
 
       class ComponentA
       class ComponentB(val components: List<ComponentA>)
@@ -261,7 +261,7 @@ Feature: javalin-xt - DI
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
-      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.context.TypeReference
       import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {
@@ -296,8 +296,8 @@ Feature: javalin-xt - DI
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.di.Module
-      import io.mzlnk.javalin.xt.di.Singleton
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
 
       open class ComponentA
       class ComponentA1 : ComponentA()
@@ -325,7 +325,7 @@ Feature: javalin-xt - DI
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
-      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.context.TypeReference
       import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {
@@ -360,8 +360,8 @@ Feature: javalin-xt - DI
       """
       package io.mzlnk.javalin.xt.e2e.app
 
-      import io.mzlnk.javalin.xt.di.Module
-      import io.mzlnk.javalin.xt.di.Singleton
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
 
       interface TypeA
       class ComponentA : TypeA
@@ -388,7 +388,7 @@ Feature: javalin-xt - DI
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
-      import io.mzlnk.javalin.xt.di.type.TypeReference
+      import io.mzlnk.javalin.xt.context.TypeReference
       import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {

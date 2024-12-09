@@ -1,1 +1,1 @@
-io.mzlnk.javalin.xt.internal.di.processing.ksp.ModuleSymbolProcessorProvider
+io.mzlnk.javalin.xt.internal.context.processing.ksp.ModuleSymbolProcessorProvider
