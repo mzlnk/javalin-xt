@@ -1,9 +1,11 @@
 package io.mzlnk.javalin.xt.internal.context
 
 import io.mzlnk.javalin.xt.context.ApplicationContext
-import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
-import io.mzlnk.javalin.xt.internal.context.SingletonMatcher.Companion.matcherFor
 import io.mzlnk.javalin.xt.context.TypeReference
+import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
+import io.mzlnk.javalin.xt.context.definition.SingletonDefinition.DependencyIdentifier
+import io.mzlnk.javalin.xt.internal.context.SingletonMatcher.Companion.matcherFor
+import io.mzlnk.javalin.xt.properties.ApplicationProperties
 
 /**
  * Represents a default context build by javalin-xt based on provided singleton definitions.
@@ -64,10 +66,7 @@ internal class DefaultApplicationContext : ApplicationContext {
             matching
                 .filter { identifier.typeRef == it.first.typeRef }
                 .takeIf { it.isNotEmpty() }
-                ?.also { if (it.size > 1) throw multipleCandidatesFoundException(
-                    identifier
-                )
-                }
+                ?.also { if (it.size > 1) throw multipleCandidatesFoundException(identifier) }
                 ?.firstOrNull()
                 ?.let { return it.second as T }
 
@@ -76,10 +75,7 @@ internal class DefaultApplicationContext : ApplicationContext {
         }
 
         return matching
-            .also { if (matching.size > 1) throw multipleCandidatesFoundException(
-                identifier
-            )
-            }
+            .also { if (matching.size > 1) throw multipleCandidatesFoundException(identifier) }
             .firstOrNull()
             ?.second as? T
     }
@@ -92,13 +88,17 @@ internal class DefaultApplicationContext : ApplicationContext {
          * It uses a dependency graph to determine the order of singleton creation.
          *
          * @param definitions list of singleton definitions
+         * @param properties application properties
          *
          * @return new context
          *
          * @throws JavalinDIException if a dependency cycle is found
          * @throws JavalinDIException if no candidates are found for a dependency of a given singleton definition
          */
-        fun create(definitions: List<SingletonDefinition<*>>): DefaultApplicationContext {
+        fun create(
+            definitions: List<SingletonDefinition<*>>,
+            properties: ApplicationProperties
+        ): DefaultApplicationContext {
             val dependencyGraph = DependencyGraphFactory.create(definitions)
 
             if (dependencyGraph.hasCycles) {
@@ -111,9 +111,32 @@ internal class DefaultApplicationContext : ApplicationContext {
                     identifier = definition.identifier,
                     instance = definition.instanceProvider.invoke(
                         definition.dependencies.map { dependency ->
-                            context.findInstance(dependency) ?: throw noCandidatesFoundException(
-                                dependency
-                            )
+                            when (dependency) {
+                                is DependencyIdentifier.Singleton<*> -> dependency
+                                    .let { SingletonDefinition.Identifier(typeRef = it.typeRef) }
+                                    .let { context.findInstance(it) ?: throw noCandidatesFoundException(it) }
+
+                                is DependencyIdentifier.Property -> {
+                                    val property = properties.getOrNull(dependency.key)
+
+                                    if (dependency.required && property == null) {
+                                        throw propertyNotFound(
+                                            singletonIdentifier = definition.identifier,
+                                            dependencyIdentifier = dependency
+                                        )
+                                    }
+
+                                    property
+                                        ?.runCatching { dependency.valueProvider.invoke(this) }
+                                        ?.onFailure {
+                                            throw invalidPropertyType(
+                                                singletonIdentifier = definition.identifier,
+                                                dependencyIdentifier = dependency
+                                            )
+                                        }?.getOrNull()
+                                }
+                            }
+
                         }
                     )
                 )

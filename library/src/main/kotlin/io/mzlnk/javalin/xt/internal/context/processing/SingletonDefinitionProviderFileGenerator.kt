@@ -2,9 +2,10 @@ package io.mzlnk.javalin.xt.internal.context.processing
 
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinitionProvider
-import io.mzlnk.javalin.xt.context.TypeReference
+import io.mzlnk.javalin.xt.properties.Property
 
 // TODO: refactor it
 /**
@@ -125,12 +126,37 @@ internal object SingletonDefinitionProviderFileGenerator {
                         add("listOf(\n")
                         indent()
                         method.parameters.forEach { parameter ->
-                            add(
-                                "%T(typeRef = object : %T<%L>() {}),\n",
-                                SingletonDefinition.Identifier::class.java,
-                                TypeReference::class.java,
-                                parameter.type.qualifiedName
-                            )
+                            if (parameter.isMarkedAsProperty) {
+                                add(
+                                    "%T(key = \"%L\", valueProvider = %T::as%L, required = %L),\n",
+                                    SingletonDefinition.DependencyIdentifier.Property::class.java,
+                                    parameter.annotations
+                                        .first { it.type.qualifiedName == "io.mzlnk.javalin.xt.context.Property" }
+                                        .parameters["key"] as String,
+                                    Property::class.java,
+                                    when (parameter.type.qualifiedName.substringBefore("?")) {
+                                        "kotlin.String" -> "String"
+                                        "kotlin.Int" -> "Int"
+                                        "kotlin.Double" -> "Double"
+                                        "kotlin.Float" -> "Float"
+                                        "kotlin.Boolean" -> "Boolean"
+                                        "kotlin.collections.List<kotlin.String>" -> "StringList"
+                                        "kotlin.collections.List<kotlin.Int>" -> "IntList"
+                                        "kotlin.collections.List<kotlin.Double>" -> "DoubleList"
+                                        "kotlin.collections.List<kotlin.Float>" -> "FloatList"
+                                        "kotlin.collections.List<kotlin.Boolean>" -> "BooleanList"
+                                        else -> throw IllegalArgumentException("Unsupported property type: ${parameter.type.qualifiedName}")
+                                    },
+                                    !parameter.type.nullable
+                                )
+                            } else {
+                                add(
+                                    "%T(typeRef = object : %T<%L>() {}),\n",
+                                    SingletonDefinition.DependencyIdentifier.Singleton::class.java,
+                                    TypeReference::class.java,
+                                    parameter.type.qualifiedName
+                                )
+                            }
                         }
                         unindent()
                         add("),\n")
@@ -158,4 +184,7 @@ internal object SingletonDefinitionProviderFileGenerator {
             .add("}\n")
             .unindent()
             .add(")")
+
+    private val SingletonMethod.Parameter.isMarkedAsProperty: Boolean
+        get() = annotations.any { it.type.qualifiedName == "io.mzlnk.javalin.xt.context.Property" }
 }

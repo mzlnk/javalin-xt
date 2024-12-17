@@ -37,6 +37,7 @@ internal object ResolverProjectLoader {
                 type = Type(
                     packageName = this.packageName.asString(),
                     name = this.simpleName.asString(),
+                    nullable = false,
                     typeParameters = emptyList() // not needed for now
                 ),
                 singletons = this.getDeclaredFunctions()
@@ -53,6 +54,7 @@ internal object ResolverProjectLoader {
                 returnType = Type(
                     packageName = this.returnType?.resolve()?.declaration?.packageName?.asString() ?: "",
                     name = this.returnType?.resolve()?.declaration?.simpleName?.asString() ?: "",
+                    nullable = this.returnType?.resolve()?.isMarkedNullable ?: false,
                     typeParameters = this.returnType?.resolve()?.arguments?.map { it.asType } ?: emptyList()
                 ),
                 parameters = this.parameters.map { it.asParameter }.toList(),
@@ -66,16 +68,33 @@ internal object ResolverProjectLoader {
                 type = Type(
                     packageName = this.type.resolve().declaration.packageName.asString(),
                     name = this.type.resolve().declaration.simpleName.asString(),
+                    nullable = this.type.resolve().isMarkedNullable,
                     typeParameters = this.type.resolve().arguments.map { it.asType }
                 ),
+                annotations = this.annotations.map { it.asAnnotation }.toList()
             )
         }
+
+    private val KSAnnotation.asAnnotation
+        get(): io.mzlnk.javalin.xt.internal.context.processing.Annotation {
+            return io.mzlnk.javalin.xt.internal.context.processing.Annotation(
+                type = Type(
+                    packageName = this.annotationType.resolve().declaration.packageName.asString(),
+                    name = this.annotationType.resolve().declaration.simpleName.asString(),
+                    nullable = this.annotationType.resolve().isMarkedNullable,
+                    typeParameters = emptyList() // not needed for now
+                ),
+                parameters = this.arguments.associate { it.name!!.asString() to it.value }
+            )
+        }
+
 
     private val KSTypeArgument.asType
         get(): Type {
             return Type(
                 packageName = this.type!!.resolve().declaration.packageName.asString(),
                 name = this.type!!.resolve().declaration.simpleName.asString(),
+                nullable = this.type!!.resolve().isMarkedNullable,
                 typeParameters = this.type!!.resolve().arguments.map { it.asType }
             )
         }
