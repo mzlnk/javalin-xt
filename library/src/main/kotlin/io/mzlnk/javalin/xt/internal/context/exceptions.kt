@@ -2,6 +2,7 @@ package io.mzlnk.javalin.xt.internal.context
 
 import io.mzlnk.javalin.xt.context.ApplicationContextException
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
+import io.mzlnk.javalin.xt.context.definition.SingletonDefinition.DependencyIdentifier
 import io.mzlnk.javalin.xt.internal.utils.graph.Cycle
 
 /**
@@ -40,4 +41,18 @@ internal fun dependencyCycleFoundException(
         .toString()
 
     return ApplicationContextException(message)
+}
+
+internal fun propertyNotFound(
+    singletonIdentifier: SingletonDefinition.Identifier<*>,
+    dependencyIdentifier: DependencyIdentifier.Property<*>
+): ApplicationContextException {
+    return ApplicationContextException("Failed to create singleton `$singletonIdentifier`. Property `${dependencyIdentifier.key}` not found.")
+}
+
+internal fun invalidPropertyType(
+    singletonIdentifier: SingletonDefinition.Identifier<*>,
+    dependencyIdentifier: DependencyIdentifier.Property<*>,
+): ApplicationContextException {
+    return ApplicationContextException("Failed to create singleton `$singletonIdentifier`. Property `${dependencyIdentifier.key}` has invalid type.")
 }

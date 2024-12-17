@@ -13,8 +13,9 @@ import io.mzlnk.javalin.xt.properties.ApplicationProperties
 fun Javalin.xt(init: JavalinXtConfiguration.() -> Unit = {}): Javalin {
     val config = JavalinXtConfiguration().apply(init)
 
-    val context = ApplicationContextFactory().create(config.context)
     val properties = ApplicationPropertiesFactory().create(config.properties)
+    val context = ApplicationContextFactory(propertiesSource = { properties }).create(config.context)
+
 
     return JavalinXtProxy(
         javalin = this,
