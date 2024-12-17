@@ -13,11 +13,11 @@ class SingletonDefinitionProcessorTest {
         val project = Project(
             modules = listOf(
                 ModuleClass(
-                    type = Type(packageName = "a.b", name = "TestModule1"),
+                    type = Type(packageName = "a.b", name = "TestModule1", nullable = false),
                     singletons = emptyList()
                 ),
                 ModuleClass(
-                    type = Type(packageName = "c.d", name = "TestModule2"),
+                    type = Type(packageName = "c.d", name = "TestModule2", nullable = false),
                     singletons = emptyList()
                 )
             )
@@ -42,24 +42,85 @@ class SingletonDefinitionProcessorTest {
     }
 
     @Test
-    fun `should create singleton definition provider file`() {
+    fun `should create singleton definition provider file for singleton with no dependencies`() {
         // given:
         val project = Project(
             modules = listOf(
                 ModuleClass(
-                    type = Type(packageName = "a.b", name = "TestModule"),
+                    type = Type(packageName = "a.b", name = "TestModule", nullable = false),
+                    singletons = listOf(
+                        SingletonMethod(
+                            name = "providesType",
+                            returnType = Type(packageName = "c.d", name = "Type", nullable = false),
+                            parameters = emptyList()
+                        ),
+                    )
+                )
+            )
+        )
+
+        // when:
+        val generatedProject = DefaultSingletonDefinitionProcessor.process(project)
+
+        // then:
+        val providerFile =
+            generatedProject.definitionProviders.find { it.name == "TestModuleSingletonDefinitionProvider" }
+                ?: fail("Definition provider file not found")
+
+        assertThat(providerFile.packageName).isEqualTo("a.b")
+        assertThat(providerFile.extension).isEqualTo("kt")
+        assertThat(providerFile.content).isEqualTo(
+            // language=kotlin
+            """
+            |package a.b
+            |
+            |import io.mzlnk.javalin.xt.context.TypeReference
+            |import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
+            |import io.mzlnk.javalin.xt.context.definition.SingletonDefinitionProvider
+            |import kotlin.collections.List
+            |
+            |public class TestModuleSingletonDefinitionProvider : SingletonDefinitionProvider {
+            |  private val module: TestModule = TestModule()
+            |
+            |  override val definitions: List<SingletonDefinition<*>> = listOf(
+            |        SingletonDefinition(
+            |          identifier = SingletonDefinition.Identifier(
+            |            typeRef = object : TypeReference<c.d.Type>() {}
+            |          ),
+            |          dependencies = emptyList(),
+            |          instanceProvider = {
+            |            module.providesType()
+            |          }
+            |        )
+            |      )
+            |}
+            |
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `should create singleton definition provider file for singleton with singleton dependencies`() {
+        // given:
+        val project = Project(
+            modules = listOf(
+                ModuleClass(
+                    type = Type(packageName = "a.b", name = "TestModule", nullable = false),
                     singletons = listOf(
                         SingletonMethod(
                             name = "providesType1",
-                            returnType = Type(packageName = "c.d", name = "Type1"),
-                            parameters = emptyList()
-                        ),
-                        SingletonMethod(
-                            name = "providesType2",
-                            returnType = Type(packageName = "e.f", name = "Type2"),
+                            returnType = Type(packageName = "c.d", name = "Type1", nullable = false),
                             parameters = listOf(
-                                Parameter(name = "type3", type = Type(packageName = "g.h", name = "Type3")),
-                                Parameter(name = "type4", type = Type(packageName = "i.j", name = "Type4"))
+                                Parameter(
+                                    name = "type2",
+                                    type = Type(packageName = "e.f", name = "Type2", nullable = false),
+                                    annotations = emptyList()
+                                ),
+                                Parameter(
+                                    name = "type3",
+                                    type = Type(packageName = "g.h", name = "Type3", nullable = false),
+                                    annotations = emptyList()
+                                )
                             )
                         )
                     )
@@ -95,23 +156,14 @@ class SingletonDefinitionProcessorTest {
             |          identifier = SingletonDefinition.Identifier(
             |            typeRef = object : TypeReference<c.d.Type1>() {}
             |          ),
-            |          dependencies = emptyList(),
-            |          instanceProvider = {
-            |            module.providesType1()
-            |          }
-            |        ),
-            |        SingletonDefinition(
-            |          identifier = SingletonDefinition.Identifier(
-            |            typeRef = object : TypeReference<e.f.Type2>() {}
-            |          ),
             |          dependencies = listOf(
-            |            SingletonDefinition.Identifier(typeRef = object : TypeReference<g.h.Type3>() {}),
-            |            SingletonDefinition.Identifier(typeRef = object : TypeReference<i.j.Type4>() {}),
+            |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<e.f.Type2>() {}),
+            |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<g.h.Type3>() {}),
             |          ),
             |          instanceProvider = {
-            |            module.providesType2(
-            |              it[0] as g.h.Type3,
-            |              it[1] as i.j.Type4
+            |            module.providesType1(
+            |              it[0] as e.f.Type2,
+            |              it[1] as g.h.Type3
             |            )
             |          }
             |        )
@@ -123,19 +175,26 @@ class SingletonDefinitionProcessorTest {
     }
 
     @Test
-    fun `should create singleton definition provider file for singleton with generic types`() {
+    fun `should create singleton definition provider file for singleton with singleton dependencies with generic types`() {
         // given:
         val project = Project(
             modules = listOf(
                 ModuleClass(
-                    type = Type(packageName = "a.b", name = "TestModule"),
+                    type = Type(packageName = "a.b", name = "TestModule", nullable = false),
                     singletons = listOf(
                         SingletonMethod(
                             name = "providesType1",
                             returnType = Type(
                                 packageName = "c.d",
                                 name = "Type1",
-                                typeParameters = listOf(Type(packageName = "e.f", name = "GenericType1"))
+                                nullable = false,
+                                typeParameters = listOf(
+                                    Type(
+                                        packageName = "e.f",
+                                        name = "GenericType1",
+                                        nullable = false
+                                    )
+                                )
                             ),
                             parameters = listOf(
                                 Parameter(
@@ -143,17 +202,20 @@ class SingletonDefinitionProcessorTest {
                                     type = Type(
                                         packageName = "g.h",
                                         name = "Type2",
+                                        nullable = false,
                                         typeParameters = listOf(
                                             Type(
                                                 packageName = "e.f",
                                                 name = "GenericType2A",
+                                                nullable = false,
                                                 typeParameters = listOf(
-                                                    Type(packageName = "e.f", name = "GenericType2B")
+                                                    Type(packageName = "e.f", name = "GenericType2B", nullable = false)
                                                 )
                                             ),
-                                            Type(packageName = "e.f", name = "GenericType3")
+                                            Type(packageName = "e.f", name = "GenericType3", nullable = false)
                                         )
-                                    )
+                                    ),
+                                    annotations = emptyList()
                                 )
                             )
                         ),
@@ -191,11 +253,109 @@ class SingletonDefinitionProcessorTest {
             |            typeRef = object : TypeReference<c.d.Type1<e.f.GenericType1>>() {}
             |          ),
             |          dependencies = listOf(
-            |            SingletonDefinition.Identifier(typeRef = object : TypeReference<g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>>() {}),
+            |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>>() {}),
             |          ),
             |          instanceProvider = {
             |            module.providesType1(
             |              it[0] as g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>
+            |            )
+            |          }
+            |        )
+            |      )
+            |}
+            |
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `should create singleton definition provider file for singleton with property dependencies`() {
+        // given:
+        val project = Project(
+            modules = listOf(
+                ModuleClass(
+                    type = Type(packageName = "a.b", name = "TestModule", nullable = false),
+                    singletons = listOf(
+                        SingletonMethod(
+                            name = "providesType1",
+                            returnType = Type(packageName = "c.d", name = "Type1", nullable = false),
+                            parameters = listOf(
+                                Parameter(
+                                    name = "propertyA",
+                                    type = Type(packageName = "kotlin", name = "String", nullable = false),
+                                    annotations = listOf(
+                                        Annotation(
+                                            type = Type(
+                                                packageName = "io.mzlnk.javalin.xt.context",
+                                                name = "Property",
+                                                nullable = false
+                                            ),
+                                            parameters = mapOf(
+                                                "key" to "propertyA"
+                                            )
+                                        )
+                                    )
+                                ),
+                                Parameter(
+                                    name = "propertyA",
+                                    type = Type(packageName = "kotlin", name = "Int", nullable = true),
+                                    annotations = listOf(
+                                        Annotation(
+                                            type = Type(
+                                                packageName = "io.mzlnk.javalin.xt.context",
+                                                name = "Property",
+                                                nullable = false
+                                            ),
+                                            parameters = mapOf(
+                                                "key" to "propertyB"
+                                            )
+                                        )
+                                    )
+                                ),
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // when:
+        val generatedProject = DefaultSingletonDefinitionProcessor.process(project)
+
+        // then:
+        val providerFile =
+            generatedProject.definitionProviders.find { it.name == "TestModuleSingletonDefinitionProvider" }
+                ?: fail("Definition provider file not found")
+
+        assertThat(providerFile.packageName).isEqualTo("a.b")
+        assertThat(providerFile.extension).isEqualTo("kt")
+        assertThat(providerFile.content).isEqualTo(
+            // language=kotlin
+            """
+            |package a.b
+            |
+            |import io.mzlnk.javalin.xt.context.TypeReference
+            |import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
+            |import io.mzlnk.javalin.xt.context.definition.SingletonDefinitionProvider
+            |import io.mzlnk.javalin.xt.properties.Property
+            |import kotlin.collections.List
+            |
+            |public class TestModuleSingletonDefinitionProvider : SingletonDefinitionProvider {
+            |  private val module: TestModule = TestModule()
+            |
+            |  override val definitions: List<SingletonDefinition<*>> = listOf(
+            |        SingletonDefinition(
+            |          identifier = SingletonDefinition.Identifier(
+            |            typeRef = object : TypeReference<c.d.Type1>() {}
+            |          ),
+            |          dependencies = listOf(
+            |            SingletonDefinition.DependencyIdentifier.Property(key = "propertyA", valueProvider = Property::asString, required = true),
+            |            SingletonDefinition.DependencyIdentifier.Property(key = "propertyB", valueProvider = Property::asInt, required = false),
+            |          ),
+            |          instanceProvider = {
+            |            module.providesType1(
+            |              it[0] as kotlin.String,
+            |              it[1] as kotlin.Int?
             |            )
             |          }
             |        )

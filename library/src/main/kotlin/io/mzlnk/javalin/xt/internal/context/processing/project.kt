@@ -38,10 +38,12 @@ internal data class SingletonMethod(
      *
      * @param name name of the parameter
      * @param type information about the type of the parameter
+     * @param annotations list of annotations of the parameter
      */
     internal data class Parameter(
         val name: String,
-        val type: Type
+        val type: Type,
+        val annotations: List<Annotation>,
     )
 
 }
@@ -52,11 +54,13 @@ internal data class SingletonMethod(
  * @param packageName package name of the type
  * @param name simple name of the type
  * @param typeParameters list of generic types of the type
+ * @param nullable whether the type is nullable
  */
 internal data class Type(
     val packageName: String,
     val name: String,
-    val typeParameters: List<Type> = emptyList()
+    val nullable: Boolean,
+    val typeParameters: List<Type> = emptyList(),
 ) {
 
     /**
@@ -73,9 +77,22 @@ internal data class Type(
             ?.joinToString(prefix = "<", postfix = ">") { it.toString() }
             ?: ""
 
-        "$packageName.$name$typeParameters"
+        val nullableMarker = if (nullable) "?" else ""
+
+        "$packageName.$name$typeParameters$nullableMarker"
     }
 
     override fun toString(): String = qualifiedName
 
 }
+
+/**
+ * Represents an annotation.
+ *
+ * @param type information about the annotation type
+ * @param parameters map of annotation parameters
+ */
+internal data class Annotation(
+    val type: Type,
+    val parameters: Map<String, Any?>
+)

@@ -413,3 +413,59 @@ Feature: javalin-xt - DI
 
     Then application starts successfully
     And no assertions failed
+
+
+  Scenario: Di with application properties support
+    Given project is set up
+
+    And resource application.yml is created with content
+      # language=yaml
+      """
+      property1:
+        property2: test-value
+      """
+
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
+      import io.mzlnk.javalin.xt.context.Property
+
+      class Component(val property: String)
+
+      @Module
+      class AppModule {
+
+          @Singleton
+          fun component(@Property("property1.property2") property: String): Component = Component(property)
+
+      }
+      """
+
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.context.TypeReference
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          val component = app.context.getInstance(Component::class.java)
+          assert(component.property == "test-value") { "component.property - expected: test-value, actual: ${component.property}" }
+      }
+      """
+
+    When run the application
+
+    Then application starts successfully
+    And no assertions failed

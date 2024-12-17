@@ -1,7 +1,8 @@
 package io.mzlnk.javalin.xt.demo
 
-import io.mzlnk.javalin.xt.di.Module
-import io.mzlnk.javalin.xt.di.Singleton
+import io.mzlnk.javalin.xt.context.Module
+import io.mzlnk.javalin.xt.context.Property
+import io.mzlnk.javalin.xt.context.Singleton
 
 
 @Module
@@ -23,6 +24,9 @@ class TestModule {
         componentC: ComponentC
     ): ComponentD = ComponentD()
 
+    @Singleton
+    fun componentE(@Property("property10") value: String): ComponentE = ComponentE(value)
+
 }
 
 // @formatter:off
@@ -33,4 +37,7 @@ class ComponentB { override fun toString(): String  = "B" }
 class ComponentC { override fun toString(): String  = "C" }
 
 class ComponentD { override fun toString(): String  = "D" }
+
+class ComponentE(val value: String) { override fun toString(): String  = "E[value=$value]" }
 // @formatter:on
+

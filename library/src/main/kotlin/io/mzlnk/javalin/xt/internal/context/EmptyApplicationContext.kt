@@ -3,7 +3,10 @@ package io.mzlnk.javalin.xt.internal.context
 import io.mzlnk.javalin.xt.context.ApplicationContext
 import io.mzlnk.javalin.xt.context.TypeReference
 
-internal object NoOpApplicationContext : ApplicationContext {
+/**
+ * Represents an empty application context.
+ */
+internal object EmptyApplicationContext : ApplicationContext {
 
     override fun size(): Int  = 0
 

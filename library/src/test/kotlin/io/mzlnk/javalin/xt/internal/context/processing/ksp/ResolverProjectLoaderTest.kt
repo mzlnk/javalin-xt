@@ -141,12 +141,12 @@ class ResolverProjectLoaderTest {
 
         // then:
         val module = project?.modules?.firstOrNull() ?: fail("Module not found")
-        assertThat(module.type).isEqualTo(Type(packageName = "test", name = "TestModule"))
+        assertThat(module.type).isEqualTo(Type(packageName = "test", name = "TestModule", nullable = false))
         assertThat(module.singletons).hasSize(2)
     }
 
     @Test
-    fun `should load singleton details`() {
+    fun `should load details of singleton definition with singleton dependencies`() {
         // given:
         val moduleFile = SourceFile.kotlin(
             name = "module.kt",
@@ -174,16 +174,73 @@ class ResolverProjectLoaderTest {
         val singleton = module.singletons.firstOrNull { it.name == "provideTypeA" } ?: fail("Singleton not found")
 
         assertThat(singleton.name).isEqualTo("provideTypeA")
-        assertThat(singleton.returnType).isEqualTo(Type(packageName = "test", name = "TypeA"))
+        assertThat(singleton.returnType).isEqualTo(Type(packageName = "test", name = "TypeA", nullable = false))
         assertThat(singleton.parameters).hasSize(1)
 
         val parameter = singleton.parameters.firstOrNull() ?: fail("Singleton parameter not found")
-        assertThat(parameter.type).isEqualTo(Type(packageName = "test", name = "TypeB"))
+        assertThat(parameter.type).isEqualTo(Type(packageName = "test", name = "TypeB", nullable = false))
         assertThat(parameter.name).isEqualTo("depB")
     }
 
     @Test
-    fun `should load singleton with generic type details`() {
+    fun `should load details of singleton definition with property dependencies`() {
+        // given:
+        val moduleFile = SourceFile.kotlin(
+            name = "module.kt",
+            """
+            package test
+            
+            import io.mzlnk.javalin.xt.context.Module
+            import io.mzlnk.javalin.xt.context.Singleton
+            import io.mzlnk.javalin.xt.context.Property
+            
+            @Module
+            class TestModule {
+                
+                @Singleton
+                fun provideTypeC(
+                    @Property("propertyA") propertyA: TypeA,
+                    @Property("propertyB") propertyB: TypeB?
+                ): TypeC = TypeC()
+                
+            }
+            """
+        )
+
+        // when:
+        val project = process(annotationsFile, typesFile, moduleFile)
+
+        // then:
+        val module = project?.modules?.firstOrNull() ?: fail("Module not found")
+        val singleton = module.singletons.firstOrNull { it.name == "provideTypeC" } ?: fail("Singleton not found")
+
+        assertThat(singleton.name).isEqualTo("provideTypeC")
+        assertThat(singleton.returnType).isEqualTo(Type(packageName = "test", name = "TypeC", nullable = false))
+        assertThat(singleton.parameters).hasSize(2)
+
+        val parameterA = singleton.parameters.firstOrNull { it.name == "propertyA" } ?: fail("Parameter not found")
+        assertThat(parameterA.type).isEqualTo(Type(packageName = "test", name = "TypeA", nullable = false))
+        assertThat(parameterA.name).isEqualTo("propertyA")
+        assertThat(parameterA.annotations).containsExactly(
+            io.mzlnk.javalin.xt.internal.context.processing.Annotation(
+                type = Type(packageName = "io.mzlnk.javalin.xt.context", name = "Property", nullable = false),
+                parameters = mapOf("key" to "propertyA")
+            )
+        )
+
+        val parameterB = singleton.parameters.firstOrNull { it.name == "propertyB" } ?: fail("Parameter not found")
+        assertThat(parameterB.type).isEqualTo(Type(packageName = "test", name = "TypeB", nullable = true))
+        assertThat(parameterB.name).isEqualTo("propertyB")
+        assertThat(parameterB.annotations).containsExactly(
+            io.mzlnk.javalin.xt.internal.context.processing.Annotation(
+                type = Type(packageName = "io.mzlnk.javalin.xt.context", name = "Property", nullable = false),
+                parameters = mapOf("key" to "propertyB")
+            )
+        )
+    }
+
+    @Test
+    fun `should load details of singleton with generic type details`() {
         // given:
         val moduleFile = SourceFile.kotlin(
             name = "module.kt",
@@ -215,7 +272,8 @@ class ResolverProjectLoaderTest {
             Type(
                 packageName = "test",
                 name = "TypeE",
-                typeParameters = listOf(Type(packageName = "test", name = "TypeA"))
+                nullable = false,
+                typeParameters = listOf(Type(packageName = "test", name = "TypeA", nullable = false))
             )
         )
         assertThat(singleton.parameters).hasSize(1)
@@ -225,7 +283,8 @@ class ResolverProjectLoaderTest {
             Type(
                 packageName = "test",
                 name = "TypeE",
-                typeParameters = listOf(Type(packageName = "test", name = "TypeB"))
+                nullable = false,
+                typeParameters = listOf(Type(packageName = "test", name = "TypeB", nullable = false))
             )
         )
         assertThat(parameter.name).isEqualTo("depEB")
@@ -318,6 +377,7 @@ class ResolverProjectLoaderTest {
 
             annotation class Module
             annotation class Singleton
+            annotation class Property(val key: String)
             """
         )
 

@@ -48,7 +48,6 @@ interface ApplicationContext {
      *
      * @throws IllegalStateException if no instance found for the specified type
      */
-    fun <T : Any> getInstance(type: Class<T>): T =
-        getInstance(object : TypeReference<T>() {})
+    fun <T : Any> getInstance(type: Class<T>): T = getInstance(object : TypeReference<T>(clazz = type) {})
 
 }

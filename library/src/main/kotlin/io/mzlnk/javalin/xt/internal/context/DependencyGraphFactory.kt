@@ -1,9 +1,9 @@
 package io.mzlnk.javalin.xt.internal.context
 
+import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.internal.context.SingletonMatcher.Companion.matcherFor
 import io.mzlnk.javalin.xt.internal.utils.graph.Graph
-import io.mzlnk.javalin.xt.context.TypeReference
 import java.util.*
 
 /**
@@ -31,24 +31,31 @@ internal object DependencyGraphFactory {
             .associate { it }
 
         nodes.forEach { node ->
-            node.dependencies.forEach { dependency ->
-                val matcher = if(dependency.typeRef.isList()) {
-                    matcherFor(SingletonDefinition.Identifier((dependency.typeRef as TypeReference<List<Any>>).elementType))
-                } else {
-                    matcherFor(dependency)
-                }
-
-                nodes
-                    // skip the node itself
-                    .filter { candidate -> candidate.id != node.id }
-                    // apply filters:
-                    .filter { candidate -> matcher.matches(candidate.identifier) }
-                    // set corresponding edges
-                    .forEach { candidate ->
-                        edges[nodeIdxsByIds[candidate.id]!!][nodeIdxsByIds[node.id]!!] = true
+            node.dependencies
+                /*
+                 * There is no need to create edges for property dependencies
+                 * because application properties are provided externally
+                 * and they are available for all singleton definitions
+                 */
+                .filterIsInstance<SingletonDefinition.DependencyIdentifier.Singleton<*>>()
+                .forEach { dependency ->
+                    val matcher = if (dependency.typeRef.isList()) {
+                        matcherFor(SingletonDefinition.Identifier((dependency.typeRef as TypeReference<List<Any>>).elementType))
+                    } else {
+                        matcherFor(SingletonDefinition.Identifier(dependency.typeRef))
                     }
 
-            }
+                    nodes
+                        // skip the node itself
+                        .filter { candidate -> candidate.id != node.id }
+                        // apply filters:
+                        .filter { candidate -> matcher.matches(candidate.identifier) }
+                        // set corresponding edges
+                        .forEach { candidate ->
+                            edges[nodeIdxsByIds[candidate.id]!!][nodeIdxsByIds[node.id]!!] = true
+                        }
+
+                }
         }
 
         return Graph(
