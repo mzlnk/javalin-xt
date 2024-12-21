@@ -64,7 +64,12 @@ class E2EStepDefinitions {
             runCatching {
                 withTimeout(30.seconds) {
                     while (true) {
-                        if (application.isStarted) break
+                        if (application.isStarted) {
+                            // TODO: fix this
+                            // wait additional 200ms to make sure the application is fully started
+                            delay(200.milliseconds)
+                            break
+                        }
                         if (!application.isRunning) throw IllegalStateException("Application failed to start")
                         delay(200.milliseconds)
                     }
@@ -81,6 +86,10 @@ class E2EStepDefinitions {
 
     @Then("no assertions failed")
     fun `no assertions failed`() {
+        assertThat(application.exceptionsInMain)
+            .withFailMessage("There were exceptions in main thread:\n${application.exceptionsInMain.joinToString("\n")}")
+            .isEmpty()
+
         assertThat(application.assertionFailures)
             .withFailMessage("There were assertion failures:\n${application.assertionFailures.joinToString("\n")}")
             .isEmpty()
@@ -95,6 +104,11 @@ class E2EStepDefinitions {
                 .filter { it.isFile }
                 .forEach { println("${it.absolutePath}:\n${it.readText().prependLineNumbers()}") }
         }
+    }
+
+    @After
+    fun `print out logs`() {
+        application.printLogs()
     }
 
     @After

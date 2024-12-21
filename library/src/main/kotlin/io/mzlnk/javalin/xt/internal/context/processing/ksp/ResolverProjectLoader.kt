@@ -58,6 +58,7 @@ internal object ResolverProjectLoader {
                     typeParameters = this.returnType?.resolve()?.arguments?.map { it.asType } ?: emptyList()
                 ),
                 parameters = this.parameters.map { it.asParameter }.toList(),
+                annotations = this.annotations.map { it.asAnnotation }.toList()
             )
         }
 
@@ -80,7 +81,7 @@ internal object ResolverProjectLoader {
             return io.mzlnk.javalin.xt.internal.context.processing.Annotation(
                 type = Type(
                     packageName = this.annotationType.resolve().declaration.packageName.asString(),
-                    name = this.annotationType.resolve().declaration.simpleName.asString(),
+                    name = (this.annotationType.resolve().declaration as KSClassDeclaration).className,
                     nullable = this.annotationType.resolve().isMarkedNullable,
                     typeParameters = emptyList() // not needed for now
                 ),
@@ -100,6 +101,14 @@ internal object ResolverProjectLoader {
         }
 
 }
+
+private val KSClassDeclaration.className: String
+    get() =
+        generateSequence(seed = this) { it.parentDeclaration as? KSClassDeclaration }
+            .map { it.simpleName.asString() }
+            .toList()
+            .reversed()
+            .joinToString(separator = ".") { it }
 
 private fun KSAnnotation.isTypeOf(type: Class<*>): Boolean {
     return this.annotationType.resolve().declaration.qualifiedName?.asString() == type.canonicalName

@@ -1,5 +1,6 @@
 package io.mzlnk.javalin.xt.demo
 
+import io.mzlnk.javalin.xt.context.Conditional
 import io.mzlnk.javalin.xt.context.Module
 import io.mzlnk.javalin.xt.context.Property
 import io.mzlnk.javalin.xt.context.Singleton
@@ -25,6 +26,7 @@ class TestModule {
     ): ComponentD = ComponentD()
 
     @Singleton
+    @Conditional.OnProperty(property = "property10", havingValue = "value10")
     fun componentE(@Property("property10") value: String): ComponentE = ComponentE(value)
 
 }
