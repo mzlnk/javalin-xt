@@ -46,6 +46,8 @@ internal data class NumberProperty(private val value: Number) : AbstractProperty
     override val asLong: Long get() = value.toLong()
     override val asFloat: Float get() = value.toFloat()
     override val asDouble: Double get() = value.toDouble()
+
+    override fun toString(): String = value.toString()
 }
 
 /**
@@ -56,6 +58,8 @@ internal data class NumberProperty(private val value: Number) : AbstractProperty
 internal data class StringProperty(private val value: String) : AbstractProperty() {
 
     override val asString: String get() = value
+
+    override fun toString(): String = value
 }
 
 /**
@@ -66,6 +70,8 @@ internal data class StringProperty(private val value: String) : AbstractProperty
 internal data class BooleanProperty(private val value: Boolean) : AbstractProperty() {
 
     override val asBoolean: Boolean get() = value
+
+    override fun toString(): String = value.toString()
 }
 
 /**
@@ -87,6 +93,8 @@ internal data class NumberListProperty(private val value: List<Number>) : Abstra
     override val asLongList: List<Long> get() = value.map { it.toLong() }
     override val asFloatList: List<Float> get() = value.map { it.toFloat() }
     override val asDoubleList: List<Double> get() = value.map { it.toDouble() }
+
+    override fun toString(): String = value.toString()
 }
 
 /**
@@ -97,6 +105,8 @@ internal data class NumberListProperty(private val value: List<Number>) : Abstra
 internal data class StringListProperty(private val value: List<String>) : AbstractProperty() {
 
     override val asStringList: List<String> get() = value
+
+    override fun toString(): String = value.toString()
 }
 
 /**
@@ -107,6 +117,8 @@ internal data class StringListProperty(private val value: List<String>) : Abstra
 internal data class BooleanListProperty(private val value: List<Boolean>) : AbstractProperty() {
 
     override val asBooleanList: List<Boolean> get() = value
+
+    override fun toString(): String = value.toString()
 }
 
 /**

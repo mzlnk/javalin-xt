@@ -1727,6 +1727,39 @@ class ApplicationContextTest {
     }
 
     @Test
+    fun `should throw exception if there are multiple candidates for requested component`() {
+        // given:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentA() }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            instanceProvider = { ComponentA() }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create(config { enabled = true })
+
+        // then:
+        val exception = assertThatThrownBy {
+            context.findInstance(ComponentA::class.java)
+        }
+
+        exception.isInstanceOf(ApplicationContextException::class.java)
+        exception.hasMessage("Multiple candidates found for io.mzlnk.javalin.xt.internal.context.ComponentA")
+    }
+
+    @Test
     fun `should create empty context when disabled`() {
         // given:
         val singletonA = SingletonDefinition(
@@ -1747,6 +1780,276 @@ class ApplicationContextTest {
         // then:
         assertThat(context.size()).isEqualTo(0)
         assertThat(context.findInstance(ComponentA::class.java)).isNull()
+    }
+
+    @Test
+    fun `should create context for singleton conditional on string property`() {
+        // given:
+        val properties = TestApplicationProperties(
+            "property" to StringProperty("A1")
+        )
+
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+
+        // and:
+        val singletonA = SingletonDefinition(
+            identifier = identifier(ComponentA1::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(SingletonDefinition.Condition.OnProperty(property = "property", havingValue = "A1")),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentA2::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(SingletonDefinition.Condition.OnProperty(property = "property", havingValue = "A2")),
+            instanceProvider = { componentA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA, singletonB)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { properties }
+        ).create(config { enabled = true })
+
+        // then:
+        assertThat(context.size()).isEqualTo(1)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
+    }
+
+    @Test
+    fun `should create context for singleton conditional on number property`() {
+        // given:
+        val properties = TestApplicationProperties(
+            "property" to NumberProperty(1)
+        )
+
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(SingletonDefinition.Condition.OnProperty(property = "property", havingValue = "1")),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA2::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(SingletonDefinition.Condition.OnProperty(property = "property", havingValue = "2")),
+            instanceProvider = { componentA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { properties }
+        ).create(config { enabled = true })
+
+        // then:
+        assertThat(context.size()).isEqualTo(1)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
+    }
+
+    @Test
+    fun `should create context for singleton conditional on boolean property`() {
+        // given:
+        val properties = TestApplicationProperties(
+            "property" to BooleanProperty(true)
+        )
+
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(SingletonDefinition.Condition.OnProperty(property = "property", havingValue = "true")),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA2::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(SingletonDefinition.Condition.OnProperty(property = "property", havingValue = "false")),
+            instanceProvider = { componentA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { properties }
+        ).create(config { enabled = true })
+
+        // then:
+        assertThat(context.size()).isEqualTo(1)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
+    }
+
+    @Test
+    fun `should create context for singleton conditional on number list property`() {
+        // given:
+        val properties = TestApplicationProperties(
+            "property" to NumberListProperty(listOf(1, 2))
+        )
+
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(
+                SingletonDefinition.Condition.OnProperty(
+                    property = "property",
+                    havingValue = "[1, 2]"
+                )
+            ),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA2::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(
+                SingletonDefinition.Condition.OnProperty(
+                    property = "property",
+                    havingValue = "[2, 3]"
+                )
+            ),
+            instanceProvider = { componentA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { properties }
+        ).create(config { enabled = true })
+
+        // then:
+        assertThat(context.size()).isEqualTo(1)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
+    }
+
+    @Test
+    fun `should create context for singleton conditional on string list property`() {
+        // given:
+        val properties = TestApplicationProperties(
+            "property" to StringListProperty(listOf("A", "B"))
+        )
+
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(
+                SingletonDefinition.Condition.OnProperty(
+                    property = "property",
+                    havingValue = "[A, B]"
+                )
+            ),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA2::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(
+                SingletonDefinition.Condition.OnProperty(
+                    property = "property",
+                    havingValue = "[B, C]"
+                )
+            ),
+            instanceProvider = { componentA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { properties }
+        ).create(config { enabled = true })
+
+        // then:
+        assertThat(context.size()).isEqualTo(1)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
+    }
+
+    @Test
+    fun `should create context for singleton conditional on boolean list property`() {
+        // given:
+        val properties = TestApplicationProperties(
+            "property" to BooleanListProperty(listOf(true, false))
+        )
+
+        // and:
+        val componentA1 = ComponentA1()
+        val componentA2 = ComponentA2()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(
+                SingletonDefinition.Condition.OnProperty(
+                    property = "property",
+                    havingValue = "[true, false]"
+                )
+            ),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA2::class.java),
+            dependencies = emptyList(),
+            conditions = listOf(
+                SingletonDefinition.Condition.OnProperty(
+                    property = "property",
+                    havingValue = "[false, true]"
+                )
+            ),
+            instanceProvider = { componentA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { properties }
+        ).create(config { enabled = true })
+
+        // then:
+        assertThat(context.size()).isEqualTo(1)
+        assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
     }
 
     private companion object {

@@ -87,6 +87,7 @@ class SingletonDefinitionProcessorTest {
             |          identifier = SingletonDefinition.Identifier(
             |            typeRef = object : TypeReference<c.d.Type>() {}
             |          ),
+            |          conditions = emptyList(),
             |          dependencies = emptyList(),
             |          instanceProvider = {
             |            module.providesType()
@@ -156,6 +157,7 @@ class SingletonDefinitionProcessorTest {
             |          identifier = SingletonDefinition.Identifier(
             |            typeRef = object : TypeReference<c.d.Type1>() {}
             |          ),
+            |          conditions = emptyList(),
             |          dependencies = listOf(
             |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<e.f.Type2>() {}),
             |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<g.h.Type3>() {}),
@@ -252,6 +254,7 @@ class SingletonDefinitionProcessorTest {
             |          identifier = SingletonDefinition.Identifier(
             |            typeRef = object : TypeReference<c.d.Type1<e.f.GenericType1>>() {}
             |          ),
+            |          conditions = emptyList(),
             |          dependencies = listOf(
             |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>>() {}),
             |          ),
@@ -348,6 +351,7 @@ class SingletonDefinitionProcessorTest {
             |          identifier = SingletonDefinition.Identifier(
             |            typeRef = object : TypeReference<c.d.Type1>() {}
             |          ),
+            |          conditions = emptyList(),
             |          dependencies = listOf(
             |            SingletonDefinition.DependencyIdentifier.Property(key = "propertyA", valueProvider = Property::asString, required = true),
             |            SingletonDefinition.DependencyIdentifier.Property(key = "propertyB", valueProvider = Property::asInt, required = false),
@@ -357,6 +361,80 @@ class SingletonDefinitionProcessorTest {
             |              it[0] as kotlin.String,
             |              it[1] as kotlin.Int?
             |            )
+            |          }
+            |        )
+            |      )
+            |}
+            |
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `should create singleton definition provider file for conditional singleton`() {
+        // given:
+        val project = Project(
+            modules = listOf(
+                ModuleClass(
+                    type = Type(packageName = "a.b", name = "TestModule", nullable = false),
+                    singletons = listOf(
+                        SingletonMethod(
+                            name = "providesType1",
+                            returnType = Type(packageName = "c.d", name = "Type1", nullable = false),
+                            parameters = emptyList(),
+                            annotations = listOf(
+                                Annotation(
+                                    type = Type(
+                                        packageName = "io.mzlnk.javalin.xt.context",
+                                        name = "Conditional.OnProperty",
+                                        nullable = false
+                                    ),
+                                    parameters = mapOf(
+                                        "property" to "propertyA",
+                                        "havingValue" to "valueA"
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // when:
+        val generatedProject = DefaultSingletonDefinitionProcessor.process(project)
+
+        // then:
+        val providerFile =
+            generatedProject.definitionProviders.find { it.name == "TestModuleSingletonDefinitionProvider" }
+                ?: fail("Definition provider file not found")
+
+        assertThat(providerFile.packageName).isEqualTo("a.b")
+        assertThat(providerFile.extension).isEqualTo("kt")
+        assertThat(providerFile.content).isEqualTo(
+            // language=kotlin
+            """
+            |package a.b
+            |
+            |import io.mzlnk.javalin.xt.context.TypeReference
+            |import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
+            |import io.mzlnk.javalin.xt.context.definition.SingletonDefinitionProvider
+            |import kotlin.collections.List
+            |
+            |public class TestModuleSingletonDefinitionProvider : SingletonDefinitionProvider {
+            |  private val module: TestModule = TestModule()
+            |
+            |  override val definitions: List<SingletonDefinition<*>> = listOf(
+            |        SingletonDefinition(
+            |          identifier = SingletonDefinition.Identifier(
+            |            typeRef = object : TypeReference<c.d.Type1>() {}
+            |          ),
+            |          conditions = listOf(
+            |            SingletonDefinition.Condition.OnProperty(property = "propertyA", havingValue = "valueA"),
+            |          ),
+            |          dependencies = emptyList(),
+            |          instanceProvider = {
+            |            module.providesType1()
             |          }
             |        )
             |      )

@@ -164,4 +164,58 @@ class PropertyTest {
         assertThat(property.asIntList).containsExactly(10, 20, 30)
     }
 
+    @Test
+    fun `should get string representation of number property`() {
+        // given:
+        val property = NumberProperty(10)
+
+        // expect:
+        assertThat(property.toString()).isEqualTo("10")
+    }
+
+    @Test
+    fun `should get string representation of string property`() {
+        // given:
+        val property = StringProperty("test")
+
+        // expect:
+        assertThat(property.toString()).isEqualTo("test")
+    }
+
+    @Test
+    fun `should get string representation of boolean property`() {
+        // given:
+        val property = BooleanProperty(true)
+
+        // expect:
+        assertThat(property.toString()).isEqualTo("true")
+    }
+
+    @Test
+    fun `should get string representation of number list property`() {
+        // given:
+        val property = NumberListProperty(listOf(1, 2, 3))
+
+        // expect:
+        assertThat(property.toString()).isEqualTo("[1, 2, 3]")
+    }
+
+    @Test
+    fun `should get string representation of string list property`() {
+        // given:
+        val property = StringListProperty(listOf("test", "test2"))
+
+        // expect:
+        assertThat(property.toString()).isEqualTo("[test, test2]")
+    }
+
+    @Test
+    fun `should get string representation of boolean list property`() {
+        // given:
+        val property = BooleanListProperty(listOf(true, false))
+
+        // expect:
+        assertThat(property.toString()).isEqualTo("[true, false]")
+    }
+
 }
