@@ -118,6 +118,28 @@ internal object SingletonDefinitionProviderFileGenerator {
             .add("typeRef = object : %T<%L>() {}\n", TypeReference::class.java, method.returnType.qualifiedName)
             .unindent()
             .add("),\n")
+            .add("conditions = ")
+            .apply {
+                method.annotations
+                    // TODO: refactor it to add support for different conditions
+                    .filter { it.type.qualifiedName == "io.mzlnk.javalin.xt.context.Conditional.OnProperty" }
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { annotations ->
+                        add("listOf(\n")
+                        indent()
+                        annotations.forEach {
+                            add(
+                                "%T(property = \"%L\", havingValue = \"%L\"),\n",
+                                SingletonDefinition.Condition.OnProperty::class.java,
+                                it.parameters["property"] as String,
+                                it.parameters["havingValue"] as String
+                            )
+                        }
+                        unindent()
+                        add("),\n")
+                    }
+                    ?: add("emptyList(),\n")
+            }
             .add("dependencies = ")
             .apply {
                 method.parameters

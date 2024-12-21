@@ -240,6 +240,47 @@ class ResolverProjectLoaderTest {
     }
 
     @Test
+    fun `should load details of singleton definition with conditions`() {
+        // given:
+        val moduleFile = SourceFile.kotlin(
+            name = "module.kt",
+            """
+            package test
+            
+            import io.mzlnk.javalin.xt.context.Conditional
+            import io.mzlnk.javalin.xt.context.Module
+            import io.mzlnk.javalin.xt.context.Singleton
+            import io.mzlnk.javalin.xt.context.Property
+            
+            
+            @Module
+            class TestModule {
+                
+                @Singleton
+                @Conditional.OnProperty(property = "property", havingValue = "value")
+                fun provideTypeA(): TypeA = TypeA()
+                
+            }
+            """
+        )
+
+        // when:
+        val project = process(annotationsFile, typesFile, moduleFile)
+
+        // then:
+        val module = project?.modules?.firstOrNull() ?: fail("Module not found")
+        val singleton = module.singletons.firstOrNull { it.name == "provideTypeA" } ?: fail("Singleton not found")
+
+        assertThat(singleton.annotations).contains(
+            io.mzlnk.javalin.xt.internal.context.processing.Annotation(
+                type = Type(packageName = "io.mzlnk.javalin.xt.context", name = "Conditional.OnProperty", nullable = false),
+                parameters = mapOf("property" to "property", "havingValue" to "value")
+            )
+        )
+
+    }
+
+    @Test
     fun `should load details of singleton with generic type details`() {
         // given:
         val moduleFile = SourceFile.kotlin(
@@ -378,6 +419,9 @@ class ResolverProjectLoaderTest {
             annotation class Module
             annotation class Singleton
             annotation class Property(val key: String)
+            annotation class Conditional {
+                annotation class OnProperty(val property: String, val havingValue: String)
+            }
             """
         )
 

@@ -30,7 +30,8 @@ internal data class ModuleClass(
 internal data class SingletonMethod(
     val name: String,
     val returnType: Type,
-    val parameters: List<Parameter> = emptyList()
+    val parameters: List<Parameter> = emptyList(),
+    val annotations: List<Annotation> = emptyList(),
 ) {
 
     /**

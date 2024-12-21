@@ -1,10 +1,13 @@
 package io.mzlnk.javalin.xt.internal.context
 
 import io.mzlnk.javalin.xt.context.ApplicationContext
+import io.mzlnk.javalin.xt.context.Conditional
 import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition.DependencyIdentifier
 import io.mzlnk.javalin.xt.internal.context.SingletonMatcher.Companion.matcherFor
+import io.mzlnk.javalin.xt.internal.properties.NumberProperty
+import io.mzlnk.javalin.xt.internal.properties.StringProperty
 import io.mzlnk.javalin.xt.properties.ApplicationProperties
 
 /**
@@ -99,7 +102,12 @@ internal class DefaultApplicationContext : ApplicationContext {
             definitions: List<SingletonDefinition<*>>,
             properties: ApplicationProperties
         ): DefaultApplicationContext {
-            val dependencyGraph = DependencyGraphFactory.create(definitions)
+            val filteredDefinitions = definitions
+                .filter { definition ->
+                    definition.conditions.all { it.matches(properties) }
+                }
+
+            val dependencyGraph = DependencyGraphFactory.create(filteredDefinitions)
 
             if (dependencyGraph.hasCycles) {
                 throw dependencyCycleFoundException(dependencyGraph.cycles)
@@ -143,6 +151,15 @@ internal class DefaultApplicationContext : ApplicationContext {
             }
 
             return context
+        }
+
+        private fun SingletonDefinition.Condition.matches(properties: ApplicationProperties): Boolean {
+            // Currently there is only one implementation of Condition
+            this as SingletonDefinition.Condition.OnProperty
+
+            return properties.getOrNull(this.property)?.toString()
+                ?.let { it == this.havingValue }
+                ?: false
         }
 
     }

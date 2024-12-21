@@ -39,6 +39,10 @@ class Application private constructor(private val process: Process) {
         get() = _logs.filter { it.matches(ASSERTION_FAILURE_REGEX) }
             .map { ASSERTION_FAILURE_REGEX.matchEntire(it)?.groups?.get("error")?.value ?: "" }
 
+    val exceptionsInMain: List<String>
+        get() = _logs.filter { it.matches(EXCEPTION_IN_MAIN_REGEX) }
+            .map { EXCEPTION_IN_MAIN_REGEX.matchEntire(it)?.value ?: "" }
+
     fun stop() {
         process.destroy()
     }
@@ -55,6 +59,7 @@ class Application private constructor(private val process: Process) {
 
         private val APPLICATION_STARTED_REGEX = Regex(".*Javalin started in [0-9]+ms \\\\o/")
         private val ASSERTION_FAILURE_REGEX = Regex(".*java.lang.AssertionError: (?<error>.*)")
+        private val EXCEPTION_IN_MAIN_REGEX = Regex(".*Exception in thread \"main\".*")
 
         fun create(process: Process): Application {
             return Application(process)

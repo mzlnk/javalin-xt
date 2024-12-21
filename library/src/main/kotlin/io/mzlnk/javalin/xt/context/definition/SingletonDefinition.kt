@@ -14,7 +14,8 @@ import java.util.*
  */
 data class SingletonDefinition<T>(
     val identifier: Identifier<T>,
-    val dependencies: List<DependencyIdentifier<*>>,
+    val dependencies: List<DependencyIdentifier<*>> = emptyList(),
+    val conditions: List<Condition> = emptyList(),
     val instanceProvider: (args: List<out Any?>) -> T
 ) where T : Any {
 
@@ -70,6 +71,25 @@ data class SingletonDefinition<T>(
             val valueProvider: (io.mzlnk.javalin.xt.properties.Property) -> T,
             val required: Boolean
         ) : DependencyIdentifier<T>
+
+    }
+
+    /**
+     * Represents a condition that must be met in order to create the singleton.
+     */
+    sealed interface Condition {
+
+        /**
+         * Represents a condition that must be met in order to create the singleton
+         * where a certain property must be present and have a specific value.
+         *
+         * @param property name of the property
+         * @param havingValue value of the property
+         */
+        data class OnProperty(
+            val property: String,
+            val havingValue: String
+        ) : Condition
 
     }
 
