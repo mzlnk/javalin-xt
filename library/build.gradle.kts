@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.mzlnk"
-version = "0.3.0-SNAPSHOT"
+version = "0.3.0"
 
 kotlin {
     jvmToolchain(17)
@@ -96,14 +96,14 @@ publishing {
 
             groupId = "io.mzlnk"
             artifactId = "javalin-xt"
-            version = "0.3.0-SNAPSHOT"
+            version = "0.3.0"
 
             artifact(tasks.getByName("sourcesJar"))
             artifact(tasks.getByName("javadocJar"))
 
             pom {
                 name.set("javalin-xt")
-                description.set("Simple and very lightweight extension framework dedicated to Javalin")
+                description.set("Simple and very lightweight set of extension features dedicated to Javalin")
                 url.set("https://github.com/mzlnk/javalin-xt")
 
                 licenses {
