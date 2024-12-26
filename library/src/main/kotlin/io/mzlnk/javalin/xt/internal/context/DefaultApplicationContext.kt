@@ -1,13 +1,10 @@
 package io.mzlnk.javalin.xt.internal.context
 
 import io.mzlnk.javalin.xt.context.ApplicationContext
-import io.mzlnk.javalin.xt.context.Conditional
 import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition.DependencyIdentifier
 import io.mzlnk.javalin.xt.internal.context.SingletonMatcher.Companion.matcherFor
-import io.mzlnk.javalin.xt.internal.properties.NumberProperty
-import io.mzlnk.javalin.xt.internal.properties.StringProperty
 import io.mzlnk.javalin.xt.properties.ApplicationProperties
 
 /**
@@ -19,9 +16,30 @@ internal class DefaultApplicationContext : ApplicationContext {
 
     override fun size(): Int = _singletons.size
 
-    override fun <T : Any> findInstance(type: TypeReference<T>): T? {
-        val identifier = SingletonDefinition.Identifier(typeRef = type)
-        return findInstance(identifier)
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> findInstance(type: TypeReference<T>, name: String?): T? {
+        val singletonToMatch = if(type.isList()) {
+            type as TypeReference<List<T>>
+            SingletonToMatch.List(
+                typeRef = type,
+                name = name,
+            )
+        } else {
+            SingletonToMatch.Singular(
+                typeRef = type,
+                name = name
+            )
+        } as SingletonToMatch<T>
+        return findInstance(singletonToMatch)
+    }
+
+    override fun <T : Any> findInstance(type: TypeReference<List<T>>, name: String?, elementName: String?): List<T>? {
+        val singletonToMatch = SingletonToMatch.List(
+            typeRef = type,
+            name = name,
+            elementName = elementName
+        )
+        return findInstance(singletonToMatch)
     }
 
     /**
@@ -48,15 +66,15 @@ internal class DefaultApplicationContext : ApplicationContext {
      * @return instance of the singleton if found, null otherwise
      */
     @Suppress("UNCHECKED_CAST")
-    private fun <T : Any> findInstance(identifier: SingletonDefinition.Identifier<T>): T? {
-        val matcher = matcherFor(identifier)
+    private fun <T : Any> findInstance(singletonToMatch: SingletonToMatch<T>): T? {
+        val matcher = matcherFor(singletonToMatch)
 
         val matching = _singletons.filter { (candidateIdentifier, _) ->
             matcher.matches(candidateIdentifier)
         }
 
-        if (identifier.typeRef.isList()) {
-            val elementType = (identifier.typeRef as TypeReference<List<Any>>).elementType
+        if (singletonToMatch is SingletonToMatch.List<*>) {
+            val elementType = singletonToMatch.typeRef.elementType
 
             // return components defined one by one first
             matching
@@ -67,9 +85,9 @@ internal class DefaultApplicationContext : ApplicationContext {
 
             // if no components defined one by one, return components defined explicitly as list
             matching
-                .filter { identifier.typeRef == it.first.typeRef }
+                .filter { singletonToMatch.typeRef == it.first.typeRef }
                 .takeIf { it.isNotEmpty() }
-                ?.also { if (it.size > 1) throw multipleCandidatesFoundException(identifier) }
+                ?.also { if (it.size > 1) throw multipleCandidatesFoundException(singletonToMatch) }
                 ?.firstOrNull()
                 ?.let { return it.second as T }
 
@@ -78,7 +96,7 @@ internal class DefaultApplicationContext : ApplicationContext {
         }
 
         return matching
-            .also { if (matching.size > 1) throw multipleCandidatesFoundException(identifier) }
+            .also { if (matching.size > 1) throw multipleCandidatesFoundException(singletonToMatch) }
             .firstOrNull()
             ?.second as? T
     }
@@ -121,7 +139,21 @@ internal class DefaultApplicationContext : ApplicationContext {
                         definition.dependencies.map { dependency ->
                             when (dependency) {
                                 is DependencyIdentifier.Singleton<*> -> dependency
-                                    .let { SingletonDefinition.Identifier(typeRef = it.typeRef) }
+                                    .let {
+                                        when (dependency) {
+                                            is DependencyIdentifier.Singleton.Singular<*> ->
+                                                SingletonToMatch.Singular(
+                                                    typeRef = dependency.typeRef,
+                                                    name = dependency.name
+                                                )
+                                            is DependencyIdentifier.Singleton.List<*> ->
+                                                SingletonToMatch.List(
+                                                    typeRef = dependency.typeRef,
+                                                    name = dependency.name,
+                                                    elementName = dependency.elementName
+                                                )
+                                        }
+                                    }
                                     .let { context.findInstance(it) ?: throw noCandidatesFoundException(it) }
 
                                 is DependencyIdentifier.Property -> {

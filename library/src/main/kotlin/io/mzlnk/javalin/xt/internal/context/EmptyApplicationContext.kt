@@ -8,8 +8,17 @@ import io.mzlnk.javalin.xt.context.TypeReference
  */
 internal object EmptyApplicationContext : ApplicationContext {
 
-    override fun size(): Int  = 0
+    override fun size(): Int = 0
 
-    override fun <T : Any> findInstance(type: TypeReference<T>): T? = null
+    override fun <T : Any> findInstance(
+        type: TypeReference<T>,
+        name: String?
+    ): T? = null
+
+    override fun <T : Any> findInstance(
+        type: TypeReference<List<T>>,
+        name: String?,
+        elementName: String?
+    ): List<T>? = null
 
 }

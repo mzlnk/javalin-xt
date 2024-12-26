@@ -40,9 +40,13 @@ internal object DependencyGraphFactory {
                 .filterIsInstance<SingletonDefinition.DependencyIdentifier.Singleton<*>>()
                 .forEach { dependency ->
                     val matcher = if (dependency.typeRef.isList()) {
-                        matcherFor(SingletonDefinition.Identifier((dependency.typeRef as TypeReference<List<Any>>).elementType))
+                        matcherFor(
+                            SingletonToMatch.List(
+                                typeRef = dependency.typeRef as TypeReference<List<Any>>,
+                            )
+                        )
                     } else {
-                        matcherFor(SingletonDefinition.Identifier(dependency.typeRef))
+                        matcherFor(SingletonToMatch.Singular(typeRef = dependency.typeRef))
                     }
 
                     nodes

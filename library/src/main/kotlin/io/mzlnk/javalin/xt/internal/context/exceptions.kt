@@ -9,18 +9,18 @@ import io.mzlnk.javalin.xt.internal.utils.graph.Cycle
  * Exception thrown when there are multiple candidates found for a given singleton definition.
  */
 internal fun multipleCandidatesFoundException(
-    identifier: SingletonDefinition.Identifier<*>
+    singletonToMatch: SingletonToMatch<*>
 ): ApplicationContextException {
-    return ApplicationContextException("Multiple candidates found for $identifier")
+    return ApplicationContextException("Multiple candidates found for $singletonToMatch")
 }
 
 /**
  * Exception thrown when there are no candidates found for a given singleton definition.
  */
 internal fun noCandidatesFoundException(
-    identifier: SingletonDefinition.Identifier<*>
+    singletonToMatch: SingletonToMatch<*>
 ): ApplicationContextException {
-    return ApplicationContextException("No candidates found for $identifier")
+    return ApplicationContextException("No candidates found for $singletonToMatch")
 }
 
 /**

@@ -5,4 +5,4 @@ import java.util.stream.Stream
 
 fun testCases(vararg arguments: Arguments) = Stream.of(*arguments)
 
-fun testCase(vararg parameters: Any) = Arguments.of(*parameters)
+fun testCase(vararg parameters: Any?) = Arguments.of(*parameters)
