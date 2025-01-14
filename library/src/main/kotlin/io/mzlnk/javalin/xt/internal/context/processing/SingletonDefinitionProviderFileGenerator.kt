@@ -53,7 +53,7 @@ internal object SingletonDefinitionProviderFileGenerator {
      *
      * @return generated file representing a singleton definition provider class file
      */
-    fun generate(module: ModuleClass): GeneratedFile {
+    fun generate(module: Module): GeneratedFile {
         val file = FileSpec.builder(
             packageName = module.type.packageName,
             fileName = "${module.type.name}SingletonDefinitionProvider"
@@ -75,7 +75,7 @@ internal object SingletonDefinitionProviderFileGenerator {
         )
     }
 
-    private fun moduleProperty(module: ModuleClass): PropertySpec =
+    private fun moduleProperty(module: Module): PropertySpec =
         PropertySpec.builder(
             name = "module",
             type = ClassName(module.type.packageName, module.type.name),
@@ -84,7 +84,7 @@ internal object SingletonDefinitionProviderFileGenerator {
             .initializer("%T()", ClassName(module.type.packageName, module.type.name))
             .build()
 
-    private fun definitionsProperty(module: ModuleClass): PropertySpec =
+    private fun definitionsProperty(module: Module): PropertySpec =
         PropertySpec.builder(
             name = "definitions",
             type = List::class
@@ -109,31 +109,33 @@ internal object SingletonDefinitionProviderFileGenerator {
             )
             .build()
 
-    private fun CodeBlock.Builder.addSingletonDefinitionInstance(method: SingletonMethod) =
+    private fun CodeBlock.Builder.addSingletonDefinitionInstance(method: Singleton) =
         this
             .add("%T(\n", SingletonDefinition::class)
             .indent()
             .add("identifier = %T(\n", SingletonDefinition.Identifier::class)
             .indent()
-            .add("typeRef = object : %T<%L>() {}\n", TypeReference::class.java, method.returnType.qualifiedName)
+            .add("typeRef = object : %T<%L>() {}\n", TypeReference::class.java, method.type.qualifiedName)
             .unindent()
             .add("),\n")
             .add("conditions = ")
             .apply {
-                method.annotations
-                    // TODO: refactor it to add support for different conditions
-                    .filter { it.type.qualifiedName == "io.mzlnk.javalin.xt.context.Conditional.OnProperty" }
+                method.conditionals
                     .takeIf { it.isNotEmpty() }
-                    ?.let { annotations ->
+                    ?.let {
                         add("listOf(\n")
                         indent()
-                        annotations.forEach {
-                            add(
-                                "%T(property = \"%L\", havingValue = \"%L\"),\n",
-                                SingletonDefinition.Condition.OnProperty::class.java,
-                                it.parameters["property"] as String,
-                                it.parameters["havingValue"] as String
-                            )
+                        method.conditionals.forEach { conditional ->
+                            when (conditional) {
+                                is Singleton.Conditional.OnProperty -> {
+                                    add(
+                                        "%T(property = \"%L\", havingValue = \"%L\"),\n",
+                                        SingletonDefinition.Condition.OnProperty::class.java,
+                                        conditional.key,
+                                        conditional.havingValue
+                                    )
+                                }
+                            }
                         }
                         unindent()
                         add("),\n")
@@ -142,42 +144,43 @@ internal object SingletonDefinitionProviderFileGenerator {
             }
             .add("dependencies = ")
             .apply {
-                method.parameters
+                method.dependencies
                     .takeIf { it.isNotEmpty() }
                     ?.let {
                         add("listOf(\n")
                         indent()
-                        method.parameters.forEach { parameter ->
-                            if (parameter.isMarkedAsProperty) {
-                                add(
-                                    "%T(key = \"%L\", valueProvider = %T::as%L, required = %L),\n",
-                                    SingletonDefinition.DependencyIdentifier.Property::class.java,
-                                    parameter.annotations
-                                        .first { it.type.qualifiedName == "io.mzlnk.javalin.xt.context.Property" }
-                                        .parameters["key"] as String,
-                                    Property::class.java,
-                                    when (parameter.type.qualifiedName.substringBefore("?")) {
-                                        "kotlin.String" -> "String"
-                                        "kotlin.Int" -> "Int"
-                                        "kotlin.Double" -> "Double"
-                                        "kotlin.Float" -> "Float"
-                                        "kotlin.Boolean" -> "Boolean"
-                                        "kotlin.collections.List<kotlin.String>" -> "StringList"
-                                        "kotlin.collections.List<kotlin.Int>" -> "IntList"
-                                        "kotlin.collections.List<kotlin.Double>" -> "DoubleList"
-                                        "kotlin.collections.List<kotlin.Float>" -> "FloatList"
-                                        "kotlin.collections.List<kotlin.Boolean>" -> "BooleanList"
-                                        else -> throw IllegalArgumentException("Unsupported property type: ${parameter.type.qualifiedName}")
-                                    },
-                                    !parameter.type.nullable
-                                )
-                            } else {
-                                add(
-                                    "%T(typeRef = object : %T<%L>() {}),\n",
-                                    SingletonDefinition.DependencyIdentifier.Singleton::class.java,
-                                    TypeReference::class.java,
-                                    parameter.type.qualifiedName
-                                )
+                        method.dependencies.forEach { dependency ->
+                            when(dependency) {
+                                is Singleton.Dependency.Singleton -> {
+                                    add(
+                                        "%T(typeRef = object : %T<%L>() {}),\n",
+                                        SingletonDefinition.DependencyIdentifier.Singleton::class.java,
+                                        TypeReference::class.java,
+                                        dependency.type.qualifiedName
+                                    )
+                                }
+                                is Singleton.Dependency.Property -> {
+                                    add(
+                                        "%T(key = \"%L\", valueProvider = %T::as%L, required = %L),\n",
+                                        SingletonDefinition.DependencyIdentifier.Property::class.java,
+                                        dependency.key,
+                                        Property::class.java,
+                                        when (dependency.type.qualifiedName.substringBefore("?")) {
+                                            "kotlin.String" -> "String"
+                                            "kotlin.Int" -> "Int"
+                                            "kotlin.Double" -> "Double"
+                                            "kotlin.Float" -> "Float"
+                                            "kotlin.Boolean" -> "Boolean"
+                                            "kotlin.collections.List<kotlin.String>" -> "StringList"
+                                            "kotlin.collections.List<kotlin.Int>" -> "IntList"
+                                            "kotlin.collections.List<kotlin.Double>" -> "DoubleList"
+                                            "kotlin.collections.List<kotlin.Float>" -> "FloatList"
+                                            "kotlin.collections.List<kotlin.Boolean>" -> "BooleanList"
+                                            else -> throw IllegalArgumentException("Unsupported property type: ${dependency.type.qualifiedName}")
+                                        },
+                                        dependency.required
+                                    )
+                                }
                             }
                         }
                         unindent()
@@ -187,26 +190,24 @@ internal object SingletonDefinitionProviderFileGenerator {
             }
             .add("instanceProvider = {\n")
             .indent()
-            .add("module.%L(", method.name)
+            .add("module.%L(", method.methodName)
             .indent()
             .apply {
-                method.parameters.forEachIndexed { index, parameter ->
+                method.dependencies.forEachIndexed { index, parameter ->
                     add(
                         "\nit[%L] as %L",
                         index,
                         parameter.type.qualifiedName
                     )
-                    if (index < method.parameters.size - 1) add(",")
+                    if (index < method.dependencies.size - 1) add(",")
                 }
             }
             .unindent()
-            .apply { if (method.parameters.isNotEmpty()) add("\n") }
+            .apply { if (method.dependencies.isNotEmpty()) add("\n") }
             .add(")\n")
             .unindent()
             .add("}\n")
             .unindent()
             .add(")")
 
-    private val SingletonMethod.Parameter.isMarkedAsProperty: Boolean
-        get() = annotations.any { it.type.qualifiedName == "io.mzlnk.javalin.xt.context.Property" }
 }

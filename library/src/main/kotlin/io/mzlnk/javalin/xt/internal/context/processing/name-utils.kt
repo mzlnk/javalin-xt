@@ -8,7 +8,7 @@ package io.mzlnk.javalin.xt.internal.context.processing
  *
  * @return qualified name of the singleton definition provider
  */
-internal fun singletonDefinitionProviderQualifiedName(module: ModuleClass): String {
+internal fun singletonDefinitionProviderQualifiedName(module: Module): String {
     return "${module.type.qualifiedName}SingletonDefinitionProvider"
 }
 
@@ -20,6 +20,6 @@ internal fun singletonDefinitionProviderQualifiedName(module: ModuleClass): Stri
  *
  * @return simple name of the singleton definition provider
  */
-internal fun singletonDefinitionProviderSimpleName(module: ModuleClass): String {
+internal fun singletonDefinitionProviderSimpleName(module: Module): String {
     return "${module.type.name}SingletonDefinitionProvider"
 }
