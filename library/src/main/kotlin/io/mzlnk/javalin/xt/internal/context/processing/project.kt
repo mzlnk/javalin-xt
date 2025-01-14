@@ -6,7 +6,7 @@ package io.mzlnk.javalin.xt.internal.context.processing
  * @param modules list of classes annotated with [io.mzlnk.javalin.di.Module] in the project
  */
 internal data class Project(
-    val modules: List<ModuleClass>
+    val modules: List<Module>
 )
 
 /**
@@ -15,24 +15,33 @@ internal data class Project(
  * @param type information about the module class
  * @param singletons list of singletons defined in the module
  */
-internal data class ModuleClass(
+internal data class Module(
     val type: Type,
-    val singletons: List<SingletonMethod>
+    val singletons: List<Singleton>
 )
 
 /**
  * Represents a singleton method defined in a module class.
  *
- * @param name name of the method
- * @param returnType information about return type of the method
- * @param parameters list of parameters of the method
+ * @param methodName name of the method
+ * @param type information about return type of the method
+ * @param dependencies list of parameters of the method
  */
-internal data class SingletonMethod(
-    val name: String,
-    val returnType: Type,
-    val parameters: List<Parameter> = emptyList(),
-    val annotations: List<Annotation> = emptyList(),
+internal data class Singleton(
+    val methodName: String,
+    val type: Type,
+    val conditionals: List<Conditional> = emptyList(),
+    val dependencies: List<Dependency> = emptyList(),
 ) {
+    
+    internal interface Conditional {
+        
+        data class OnProperty(
+            val key: String,
+            val havingValue: String,
+        ) : Conditional
+        
+    }
 
     /**
      * Represents a parameter of a singleton method.
@@ -41,11 +50,19 @@ internal data class SingletonMethod(
      * @param type information about the type of the parameter
      * @param annotations list of annotations of the parameter
      */
-    internal data class Parameter(
-        val name: String,
-        val type: Type,
-        val annotations: List<Annotation>,
-    )
+    internal interface Dependency {
+        
+        val type: Type
+        
+        data class Singleton(override val type: Type) : Dependency
+
+        data class Property(
+            override val type: Type,
+            val key: String,
+            val required: Boolean
+        ) : Dependency
+        
+    }
 
 }
 
@@ -86,14 +103,3 @@ internal data class Type(
     override fun toString(): String = qualifiedName
 
 }
-
-/**
- * Represents an annotation.
- *
- * @param type information about the annotation type
- * @param parameters map of annotation parameters
- */
-internal data class Annotation(
-    val type: Type,
-    val parameters: Map<String, Any?>
-)

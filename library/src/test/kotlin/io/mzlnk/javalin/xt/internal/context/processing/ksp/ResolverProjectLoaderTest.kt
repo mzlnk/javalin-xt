@@ -9,6 +9,7 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import io.mzlnk.javalin.xt.internal.context.processing.Project
+import io.mzlnk.javalin.xt.internal.context.processing.Singleton
 import io.mzlnk.javalin.xt.internal.context.processing.Type
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
@@ -171,15 +172,14 @@ class ResolverProjectLoaderTest {
 
         // then:
         val module = project?.modules?.firstOrNull() ?: fail("Module not found")
-        val singleton = module.singletons.firstOrNull { it.name == "provideTypeA" } ?: fail("Singleton not found")
+        val singleton = module.singletons.firstOrNull { it.methodName == "provideTypeA" } ?: fail("Singleton not found")
 
-        assertThat(singleton.name).isEqualTo("provideTypeA")
-        assertThat(singleton.returnType).isEqualTo(Type(packageName = "test", name = "TypeA", nullable = false))
-        assertThat(singleton.parameters).hasSize(1)
+        assertThat(singleton.methodName).isEqualTo("provideTypeA")
+        assertThat(singleton.type).isEqualTo(Type(packageName = "test", name = "TypeA", nullable = false))
+        assertThat(singleton.dependencies).hasSize(1)
 
-        val parameter = singleton.parameters.firstOrNull() ?: fail("Singleton parameter not found")
+        val parameter = singleton.dependencies.firstOrNull() ?: fail("Singleton parameter not found")
         assertThat(parameter.type).isEqualTo(Type(packageName = "test", name = "TypeB", nullable = false))
-        assertThat(parameter.name).isEqualTo("depB")
     }
 
     @Test
@@ -212,31 +212,23 @@ class ResolverProjectLoaderTest {
 
         // then:
         val module = project?.modules?.firstOrNull() ?: fail("Module not found")
-        val singleton = module.singletons.firstOrNull { it.name == "provideTypeC" } ?: fail("Singleton not found")
+        val singleton = module.singletons.firstOrNull { it.methodName == "provideTypeC" } ?: fail("Singleton not found")
 
-        assertThat(singleton.name).isEqualTo("provideTypeC")
-        assertThat(singleton.returnType).isEqualTo(Type(packageName = "test", name = "TypeC", nullable = false))
-        assertThat(singleton.parameters).hasSize(2)
+        assertThat(singleton.methodName).isEqualTo("provideTypeC")
+        assertThat(singleton.type).isEqualTo(Type(packageName = "test", name = "TypeC", nullable = false))
+        assertThat(singleton.dependencies).hasSize(2)
 
-        val parameterA = singleton.parameters.firstOrNull { it.name == "propertyA" } ?: fail("Parameter not found")
-        assertThat(parameterA.type).isEqualTo(Type(packageName = "test", name = "TypeA", nullable = false))
-        assertThat(parameterA.name).isEqualTo("propertyA")
-        assertThat(parameterA.annotations).containsExactly(
-            io.mzlnk.javalin.xt.internal.context.processing.Annotation(
-                type = Type(packageName = "io.mzlnk.javalin.xt.context", name = "Property", nullable = false),
-                parameters = mapOf("key" to "propertyA")
-            )
-        )
+        val dependencyA = singleton.dependencies.firstOrNull { it.type.name == "TypeA" } ?: fail("Dependency not found")
+        dependencyA as Singleton.Dependency.Property
+        assertThat(dependencyA.type).isEqualTo(Type(packageName = "test", name = "TypeA", nullable = false))
+        assertThat(dependencyA.key).isEqualTo("propertyA")
+        assertThat(dependencyA.required).isEqualTo(true)
 
-        val parameterB = singleton.parameters.firstOrNull { it.name == "propertyB" } ?: fail("Parameter not found")
-        assertThat(parameterB.type).isEqualTo(Type(packageName = "test", name = "TypeB", nullable = true))
-        assertThat(parameterB.name).isEqualTo("propertyB")
-        assertThat(parameterB.annotations).containsExactly(
-            io.mzlnk.javalin.xt.internal.context.processing.Annotation(
-                type = Type(packageName = "io.mzlnk.javalin.xt.context", name = "Property", nullable = false),
-                parameters = mapOf("key" to "propertyB")
-            )
-        )
+        val dependencyB = singleton.dependencies.firstOrNull { it.type.name == "TypeB" } ?: fail("Dependency not found")
+        dependencyB as Singleton.Dependency.Property
+        assertThat(dependencyB.type).isEqualTo(Type(packageName = "test", name = "TypeB", nullable = true))
+        assertThat(dependencyB.key).isEqualTo("propertyB")
+        assertThat(dependencyB.required).isEqualTo(false)
     }
 
     @Test
@@ -269,15 +261,14 @@ class ResolverProjectLoaderTest {
 
         // then:
         val module = project?.modules?.firstOrNull() ?: fail("Module not found")
-        val singleton = module.singletons.firstOrNull { it.name == "provideTypeA" } ?: fail("Singleton not found")
+        val singleton = module.singletons.firstOrNull { it.methodName == "provideTypeA" } ?: fail("Singleton not found")
 
-        assertThat(singleton.annotations).contains(
-            io.mzlnk.javalin.xt.internal.context.processing.Annotation(
-                type = Type(packageName = "io.mzlnk.javalin.xt.context", name = "Conditional.OnProperty", nullable = false),
-                parameters = mapOf("property" to "property", "havingValue" to "value")
+        assertThat(singleton.conditionals).containsExactly(
+            Singleton.Conditional.OnProperty(
+                key = "property",
+                havingValue = "value"
             )
         )
-
     }
 
     @Test
@@ -308,8 +299,8 @@ class ResolverProjectLoaderTest {
         val module = project?.modules?.firstOrNull() ?: fail("Module not found")
         val singleton = module.singletons.firstOrNull() ?: fail("Singleton not found")
 
-        assertThat(singleton.name).isEqualTo("provideTypeEA")
-        assertThat(singleton.returnType).isEqualTo(
+        assertThat(singleton.methodName).isEqualTo("provideTypeEA")
+        assertThat(singleton.type).isEqualTo(
             Type(
                 packageName = "test",
                 name = "TypeE",
@@ -317,9 +308,9 @@ class ResolverProjectLoaderTest {
                 typeParameters = listOf(Type(packageName = "test", name = "TypeA", nullable = false))
             )
         )
-        assertThat(singleton.parameters).hasSize(1)
+        assertThat(singleton.dependencies).hasSize(1)
 
-        val parameter = singleton.parameters.firstOrNull() ?: fail("Singleton parameter not found")
+        val parameter = singleton.dependencies.firstOrNull() ?: fail("Singleton parameter not found")
         assertThat(parameter.type).isEqualTo(
             Type(
                 packageName = "test",
@@ -328,7 +319,6 @@ class ResolverProjectLoaderTest {
                 typeParameters = listOf(Type(packageName = "test", name = "TypeB", nullable = false))
             )
         )
-        assertThat(parameter.name).isEqualTo("depEB")
     }
 
     @Test

@@ -3,11 +3,9 @@ package io.mzlnk.javalin.xt.internal.context.processing.ksp
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
-import io.mzlnk.javalin.xt.context.Module
-import io.mzlnk.javalin.xt.context.Singleton
-import io.mzlnk.javalin.xt.internal.context.processing.ModuleClass
+import io.mzlnk.javalin.xt.internal.context.processing.Module
 import io.mzlnk.javalin.xt.internal.context.processing.Project
-import io.mzlnk.javalin.xt.internal.context.processing.SingletonMethod
+import io.mzlnk.javalin.xt.internal.context.processing.Singleton
 import io.mzlnk.javalin.xt.internal.context.processing.Type
 
 /**
@@ -23,7 +21,7 @@ internal object ResolverProjectLoader {
      * @return loaded project
      */
     fun load(resolver: Resolver): Project {
-        val modules = resolver.getSymbolsWithAnnotation(Module::class.java.canonicalName)
+        val modules = resolver.getSymbolsWithAnnotation(io.mzlnk.javalin.xt.context.Module::class.java.canonicalName)
             .map { it as KSClassDeclaration }
             .map { it.asModule }
             .toList()
@@ -32,61 +30,79 @@ internal object ResolverProjectLoader {
     }
 
     private val KSClassDeclaration.asModule
-        get(): ModuleClass {
-            return ModuleClass(
-                type = Type(
-                    packageName = this.packageName.asString(),
-                    name = this.simpleName.asString(),
-                    nullable = false,
-                    typeParameters = emptyList() // not needed for now
-                ),
-                singletons = this.getDeclaredFunctions()
-                    .filter { it.annotations.any { annotation -> annotation.isTypeOf(Singleton::class.java) } }
-                    .map { it.asSingleton }
-                    .toList()
-            )
-        }
+        get(): Module = Module(
+            type = Type(
+                packageName = packageName.asString(),
+                name = simpleName.asString(),
+                nullable = false,
+                typeParameters = emptyList() // not needed for now
+            ),
+            singletons = getDeclaredFunctions()
+                .filter { it.annotations.any { annotation -> annotation.isTypeOf(io.mzlnk.javalin.xt.context.Singleton::class.java) } }
+                .map { it.asSingleton }
+                .toList()
+        )
 
     private val KSFunctionDeclaration.asSingleton
-        get(): SingletonMethod {
-            return SingletonMethod(
-                name = this.simpleName.asString(),
-                returnType = Type(
-                    packageName = this.returnType?.resolve()?.declaration?.packageName?.asString() ?: "",
-                    name = this.returnType?.resolve()?.declaration?.simpleName?.asString() ?: "",
-                    nullable = this.returnType?.resolve()?.isMarkedNullable ?: false,
-                    typeParameters = this.returnType?.resolve()?.arguments?.map { it.asType } ?: emptyList()
-                ),
-                parameters = this.parameters.map { it.asParameter }.toList(),
-                annotations = this.annotations.map { it.asAnnotation }.toList()
-            )
+        get(): Singleton = Singleton(
+            methodName = simpleName.asString(),
+            type = Type(
+                packageName = returnType?.resolve()?.declaration?.packageName?.asString() ?: "",
+                name = returnType?.resolve()?.declaration?.simpleName?.asString() ?: "",
+                nullable = returnType?.resolve()?.isMarkedNullable ?: false,
+                typeParameters = returnType?.resolve()?.arguments?.map { it.asType } ?: emptyList()
+            ),
+            conditionals = annotations
+                .filter {
+                    it.annotationType.resolve().declaration.qualifiedName?.asString()
+                        ?.startsWith(io.mzlnk.javalin.xt.context.Conditional::class.java.canonicalName) == true
+                }
+                .map { it.asConditional }
+                .toList(),
+            dependencies = parameters.map { it.asDependency }.toList(),
+        )
+
+    private val KSAnnotation.asConditional
+        get(): Singleton.Conditional {
+            return when  {
+                this.isTypeOf(io.mzlnk.javalin.xt.context.Conditional.OnProperty::class.java) -> {
+                    Singleton.Conditional.OnProperty(
+                        key = this.arguments[0].value as String,
+                        havingValue = this.arguments[1].value as String
+                    )
+                }
+
+                else -> throw IllegalArgumentException("Unsupported conditional annotation: ${this.annotationType.resolve().declaration.qualifiedName?.asString()}")
+            }
         }
 
-    private val KSValueParameter.asParameter
-        get(): SingletonMethod.Parameter {
-            return SingletonMethod.Parameter(
-                name = this.name?.asString() ?: "",
-                type = Type(
-                    packageName = this.type.resolve().declaration.packageName.asString(),
-                    name = this.type.resolve().declaration.simpleName.asString(),
-                    nullable = this.type.resolve().isMarkedNullable,
-                    typeParameters = this.type.resolve().arguments.map { it.asType }
-                ),
-                annotations = this.annotations.map { it.asAnnotation }.toList()
-            )
-        }
+    private val KSValueParameter.asDependency
+        get(): Singleton.Dependency {
+            val isPropertyAnnotated =
+                this.annotations.any { it.isTypeOf(io.mzlnk.javalin.xt.context.Property::class.java) }
 
-    private val KSAnnotation.asAnnotation
-        get(): io.mzlnk.javalin.xt.internal.context.processing.Annotation {
-            return io.mzlnk.javalin.xt.internal.context.processing.Annotation(
-                type = Type(
-                    packageName = this.annotationType.resolve().declaration.packageName.asString(),
-                    name = (this.annotationType.resolve().declaration as KSClassDeclaration).className,
-                    nullable = this.annotationType.resolve().isMarkedNullable,
-                    typeParameters = emptyList() // not needed for now
-                ),
-                parameters = this.arguments.associate { it.name!!.asString() to it.value }
-            )
+            return if (isPropertyAnnotated) {
+                Singleton.Dependency.Property(
+                    type = Type(
+                        packageName = this.type.resolve().declaration.packageName.asString(),
+                        name = this.type.resolve().declaration.simpleName.asString(),
+                        nullable = this.type.resolve().isMarkedNullable,
+                        typeParameters = this.type.resolve().arguments.map { it.asType }
+                    ),
+                    key = this.annotations.first { it.isTypeOf(io.mzlnk.javalin.xt.context.Property::class.java) }.arguments.first().value as String,
+                    required = !this.type.resolve().isMarkedNullable,
+                )
+            } else {
+                Singleton.Dependency.Singleton(
+                    type = Type(
+                        packageName = this.type.resolve().declaration.packageName.asString(),
+                        name = this.type.resolve().declaration.simpleName.asString(),
+                        nullable = this.type.resolve().isMarkedNullable,
+                        typeParameters = this.type.resolve().arguments.map { it.asType }
+                    )
+                )
+            }
+
         }
 
 
@@ -101,14 +117,6 @@ internal object ResolverProjectLoader {
         }
 
 }
-
-private val KSClassDeclaration.className: String
-    get() =
-        generateSequence(seed = this) { it.parentDeclaration as? KSClassDeclaration }
-            .map { it.simpleName.asString() }
-            .toList()
-            .reversed()
-            .joinToString(separator = ".") { it }
 
 private fun KSAnnotation.isTypeOf(type: Class<*>): Boolean {
     return this.annotationType.resolve().declaration.qualifiedName?.asString() == type.canonicalName

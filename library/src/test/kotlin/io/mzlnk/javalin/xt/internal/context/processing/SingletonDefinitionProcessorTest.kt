@@ -1,6 +1,6 @@
 package io.mzlnk.javalin.xt.internal.context.processing
 
-import io.mzlnk.javalin.xt.internal.context.processing.SingletonMethod.Parameter
+import io.mzlnk.javalin.xt.internal.context.processing.Singleton.Dependency
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -12,11 +12,11 @@ class SingletonDefinitionProcessorTest {
         // given:
         val project = Project(
             modules = listOf(
-                ModuleClass(
+                Module(
                     type = Type(packageName = "a.b", name = "TestModule1", nullable = false),
                     singletons = emptyList()
                 ),
-                ModuleClass(
+                Module(
                     type = Type(packageName = "c.d", name = "TestModule2", nullable = false),
                     singletons = emptyList()
                 )
@@ -46,13 +46,13 @@ class SingletonDefinitionProcessorTest {
         // given:
         val project = Project(
             modules = listOf(
-                ModuleClass(
+                Module(
                     type = Type(packageName = "a.b", name = "TestModule", nullable = false),
                     singletons = listOf(
-                        SingletonMethod(
-                            name = "providesType",
-                            returnType = Type(packageName = "c.d", name = "Type", nullable = false),
-                            parameters = emptyList()
+                        Singleton(
+                            methodName = "providesType",
+                            type = Type(packageName = "c.d", name = "Type", nullable = false),
+                            dependencies = emptyList()
                         ),
                     )
                 )
@@ -105,22 +105,18 @@ class SingletonDefinitionProcessorTest {
         // given:
         val project = Project(
             modules = listOf(
-                ModuleClass(
+                Module(
                     type = Type(packageName = "a.b", name = "TestModule", nullable = false),
                     singletons = listOf(
-                        SingletonMethod(
-                            name = "providesType1",
-                            returnType = Type(packageName = "c.d", name = "Type1", nullable = false),
-                            parameters = listOf(
-                                Parameter(
-                                    name = "type2",
+                        Singleton(
+                            methodName = "providesType1",
+                            type = Type(packageName = "c.d", name = "Type1", nullable = false),
+                            dependencies = listOf(
+                                Dependency.Singleton(
                                     type = Type(packageName = "e.f", name = "Type2", nullable = false),
-                                    annotations = emptyList()
                                 ),
-                                Parameter(
-                                    name = "type3",
+                                Dependency.Singleton(
                                     type = Type(packageName = "g.h", name = "Type3", nullable = false),
-                                    annotations = emptyList()
                                 )
                             )
                         )
@@ -181,12 +177,12 @@ class SingletonDefinitionProcessorTest {
         // given:
         val project = Project(
             modules = listOf(
-                ModuleClass(
+                Module(
                     type = Type(packageName = "a.b", name = "TestModule", nullable = false),
                     singletons = listOf(
-                        SingletonMethod(
-                            name = "providesType1",
-                            returnType = Type(
+                        Singleton(
+                            methodName = "providesType1",
+                            type = Type(
                                 packageName = "c.d",
                                 name = "Type1",
                                 nullable = false,
@@ -198,9 +194,8 @@ class SingletonDefinitionProcessorTest {
                                     )
                                 )
                             ),
-                            parameters = listOf(
-                                Parameter(
-                                    name = "type2",
+                            dependencies = listOf(
+                                Dependency.Singleton(
                                     type = Type(
                                         packageName = "g.h",
                                         name = "Type2",
@@ -217,7 +212,6 @@ class SingletonDefinitionProcessorTest {
                                             Type(packageName = "e.f", name = "GenericType3", nullable = false)
                                         )
                                     ),
-                                    annotations = emptyList()
                                 )
                             )
                         ),
@@ -276,44 +270,22 @@ class SingletonDefinitionProcessorTest {
         // given:
         val project = Project(
             modules = listOf(
-                ModuleClass(
+                Module(
                     type = Type(packageName = "a.b", name = "TestModule", nullable = false),
                     singletons = listOf(
-                        SingletonMethod(
-                            name = "providesType1",
-                            returnType = Type(packageName = "c.d", name = "Type1", nullable = false),
-                            parameters = listOf(
-                                Parameter(
-                                    name = "propertyA",
+                        Singleton(
+                            methodName = "providesType1",
+                            type = Type(packageName = "c.d", name = "Type1", nullable = false),
+                            dependencies = listOf(
+                                Dependency.Property(
                                     type = Type(packageName = "kotlin", name = "String", nullable = false),
-                                    annotations = listOf(
-                                        Annotation(
-                                            type = Type(
-                                                packageName = "io.mzlnk.javalin.xt.context",
-                                                name = "Property",
-                                                nullable = false
-                                            ),
-                                            parameters = mapOf(
-                                                "key" to "propertyA"
-                                            )
-                                        )
-                                    )
+                                    key = "propertyA",
+                                    required = true
                                 ),
-                                Parameter(
-                                    name = "propertyA",
+                                Dependency.Property(
                                     type = Type(packageName = "kotlin", name = "Int", nullable = true),
-                                    annotations = listOf(
-                                        Annotation(
-                                            type = Type(
-                                                packageName = "io.mzlnk.javalin.xt.context",
-                                                name = "Property",
-                                                nullable = false
-                                            ),
-                                            parameters = mapOf(
-                                                "key" to "propertyB"
-                                            )
-                                        )
-                                    )
+                                    key = "propertyB",
+                                    required = false
                                 ),
                             )
                         )
@@ -375,26 +347,19 @@ class SingletonDefinitionProcessorTest {
         // given:
         val project = Project(
             modules = listOf(
-                ModuleClass(
+                Module(
                     type = Type(packageName = "a.b", name = "TestModule", nullable = false),
                     singletons = listOf(
-                        SingletonMethod(
-                            name = "providesType1",
-                            returnType = Type(packageName = "c.d", name = "Type1", nullable = false),
-                            parameters = emptyList(),
-                            annotations = listOf(
-                                Annotation(
-                                    type = Type(
-                                        packageName = "io.mzlnk.javalin.xt.context",
-                                        name = "Conditional.OnProperty",
-                                        nullable = false
-                                    ),
-                                    parameters = mapOf(
-                                        "property" to "propertyA",
-                                        "havingValue" to "valueA"
-                                    )
+                        Singleton(
+                            methodName = "providesType1",
+                            type = Type(packageName = "c.d", name = "Type1", nullable = false),
+                            dependencies = emptyList(),
+                            conditionals = listOf(
+                                Singleton.Conditional.OnProperty(
+                                    key = "propertyA",
+                                    havingValue = "valueA"
                                 )
-                            )
+                            ),
                         )
                     )
                 )
