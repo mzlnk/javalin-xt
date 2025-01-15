@@ -45,6 +45,9 @@ internal object ResolverProjectLoader {
 
     private val KSFunctionDeclaration.asSingleton
         get(): Singleton = Singleton(
+            name = annotations
+                .firstOrNull { it.isTypeOf(io.mzlnk.javalin.xt.context.Named::class.java) }
+                ?.arguments?.first()?.value as? String,
             methodName = simpleName.asString(),
             type = Type(
                 packageName = returnType?.resolve()?.declaration?.packageName?.asString() ?: "",
@@ -64,7 +67,7 @@ internal object ResolverProjectLoader {
 
     private val KSAnnotation.asConditional
         get(): Singleton.Conditional {
-            return when  {
+            return when {
                 this.isTypeOf(io.mzlnk.javalin.xt.context.Conditional.OnProperty::class.java) -> {
                     Singleton.Conditional.OnProperty(
                         key = this.arguments[0].value as String,
@@ -93,14 +96,35 @@ internal object ResolverProjectLoader {
                     required = !this.type.resolve().isMarkedNullable,
                 )
             } else {
-                Singleton.Dependency.Singleton(
-                    type = Type(
-                        packageName = this.type.resolve().declaration.packageName.asString(),
-                        name = this.type.resolve().declaration.simpleName.asString(),
-                        nullable = this.type.resolve().isMarkedNullable,
-                        typeParameters = this.type.resolve().arguments.map { it.asType }
-                    )
+                val type = Type(
+                    packageName = this.type.resolve().declaration.packageName.asString(),
+                    name = this.type.resolve().declaration.simpleName.asString(),
+                    nullable = this.type.resolve().isMarkedNullable,
+                    typeParameters = this.type.resolve().arguments.map { it.asType }
                 )
+
+                val name: String? = this.annotations
+                    .firstOrNull { it.isTypeOf(io.mzlnk.javalin.xt.context.Named::class.java) }
+                    ?.arguments?.first()
+                    ?.value as? String
+
+                if (KOTLIN_LIST_TYPE_REGEX.matches(type.qualifiedName)) {
+                    Singleton.Dependency.Singleton.List(
+                        type = type,
+                        name = name,
+                        elementName = this.type.resolve()
+                            .arguments.getOrNull(0)
+                            ?.annotations?.toList()
+                            ?.firstOrNull { it.isTypeOf(io.mzlnk.javalin.xt.context.Named::class.java) }
+                            ?.arguments?.first()
+                            ?.value as? String
+                    )
+                } else {
+                    Singleton.Dependency.Singleton.Singular(
+                        type = type,
+                        name = name
+                    )
+                }
             }
 
         }
@@ -117,6 +141,8 @@ internal object ResolverProjectLoader {
         }
 
 }
+
+private val KOTLIN_LIST_TYPE_REGEX = Regex("kotlin.collections.List<.*>")
 
 private fun KSAnnotation.isTypeOf(type: Class<*>): Boolean {
     return this.annotationType.resolve().declaration.qualifiedName?.asString() == type.canonicalName

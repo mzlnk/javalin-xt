@@ -109,23 +109,24 @@ internal object SingletonDefinitionProviderFileGenerator {
             )
             .build()
 
-    private fun CodeBlock.Builder.addSingletonDefinitionInstance(method: Singleton) =
+    private fun CodeBlock.Builder.addSingletonDefinitionInstance(singleton: Singleton) =
         this
             .add("%T(\n", SingletonDefinition::class)
             .indent()
             .add("identifier = %T(\n", SingletonDefinition.Identifier::class)
             .indent()
-            .add("typeRef = object : %T<%L>() {}\n", TypeReference::class.java, method.type.qualifiedName)
+            .add("name = %L,\n", singleton.name?.let { "\"$it\"" } ?: "null")
+            .add("typeRef = object : %T<%L>() {}\n", TypeReference::class.java, singleton.type.qualifiedName)
             .unindent()
             .add("),\n")
             .add("conditions = ")
             .apply {
-                method.conditionals
+                singleton.conditionals
                     .takeIf { it.isNotEmpty() }
                     ?.let {
                         add("listOf(\n")
                         indent()
-                        method.conditionals.forEach { conditional ->
+                        singleton.conditionals.forEach { conditional ->
                             when (conditional) {
                                 is Singleton.Conditional.OnProperty -> {
                                     add(
@@ -144,17 +145,28 @@ internal object SingletonDefinitionProviderFileGenerator {
             }
             .add("dependencies = ")
             .apply {
-                method.dependencies
+                singleton.dependencies
                     .takeIf { it.isNotEmpty() }
                     ?.let {
                         add("listOf(\n")
                         indent()
-                        method.dependencies.forEach { dependency ->
+                        singleton.dependencies.forEach { dependency ->
                             when(dependency) {
-                                is Singleton.Dependency.Singleton -> {
+                                is Singleton.Dependency.Singleton.Singular -> {
                                     add(
-                                        "%T(typeRef = object : %T<%L>() {}),\n",
-                                        SingletonDefinition.DependencyIdentifier.Singleton::class.java,
+                                        "%T(name = %L, typeRef = object : %T<%L>() {}),\n",
+                                        SingletonDefinition.DependencyIdentifier.Singleton.Singular::class.java,
+                                        dependency.name?.let { "\"$it\"" } ?: "null",
+                                        TypeReference::class.java,
+                                        dependency.type.qualifiedName
+                                    )
+                                }
+                                is Singleton.Dependency.Singleton.List -> {
+                                    add(
+                                        "%T(name = %L, elementName = %L, typeRef = object : %T<%L>() {}),\n",
+                                        SingletonDefinition.DependencyIdentifier.Singleton.List::class.java,
+                                        dependency.name?.let { "\"$it\"" } ?: "null",
+                                        dependency.elementName?.let { "\"$it\"" } ?: "null",
                                         TypeReference::class.java,
                                         dependency.type.qualifiedName
                                     )
@@ -190,20 +202,20 @@ internal object SingletonDefinitionProviderFileGenerator {
             }
             .add("instanceProvider = {\n")
             .indent()
-            .add("module.%L(", method.methodName)
+            .add("module.%L(", singleton.methodName)
             .indent()
             .apply {
-                method.dependencies.forEachIndexed { index, parameter ->
+                singleton.dependencies.forEachIndexed { index, parameter ->
                     add(
                         "\nit[%L] as %L",
                         index,
                         parameter.type.qualifiedName
                     )
-                    if (index < method.dependencies.size - 1) add(",")
+                    if (index < singleton.dependencies.size - 1) add(",")
                 }
             }
             .unindent()
-            .apply { if (method.dependencies.isNotEmpty()) add("\n") }
+            .apply { if (singleton.dependencies.isNotEmpty()) add("\n") }
             .add(")\n")
             .unindent()
             .add("}\n")

@@ -85,6 +85,7 @@ class SingletonDefinitionProcessorTest {
             |  override val definitions: List<SingletonDefinition<*>> = listOf(
             |        SingletonDefinition(
             |          identifier = SingletonDefinition.Identifier(
+            |            name = null,
             |            typeRef = object : TypeReference<c.d.Type>() {}
             |          ),
             |          conditions = emptyList(),
@@ -112,10 +113,11 @@ class SingletonDefinitionProcessorTest {
                             methodName = "providesType1",
                             type = Type(packageName = "c.d", name = "Type1", nullable = false),
                             dependencies = listOf(
-                                Dependency.Singleton(
+                                Dependency.Singleton.Singular(
                                     type = Type(packageName = "e.f", name = "Type2", nullable = false),
+
                                 ),
-                                Dependency.Singleton(
+                                Dependency.Singleton.Singular(
                                     type = Type(packageName = "g.h", name = "Type3", nullable = false),
                                 )
                             )
@@ -151,12 +153,13 @@ class SingletonDefinitionProcessorTest {
             |  override val definitions: List<SingletonDefinition<*>> = listOf(
             |        SingletonDefinition(
             |          identifier = SingletonDefinition.Identifier(
+            |            name = null,
             |            typeRef = object : TypeReference<c.d.Type1>() {}
             |          ),
             |          conditions = emptyList(),
             |          dependencies = listOf(
-            |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<e.f.Type2>() {}),
-            |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<g.h.Type3>() {}),
+            |            SingletonDefinition.DependencyIdentifier.Singleton.Singular(name = null, typeRef = object : TypeReference<e.f.Type2>() {}),
+            |            SingletonDefinition.DependencyIdentifier.Singleton.Singular(name = null, typeRef = object : TypeReference<g.h.Type3>() {}),
             |          ),
             |          instanceProvider = {
             |            module.providesType1(
@@ -195,7 +198,7 @@ class SingletonDefinitionProcessorTest {
                                 )
                             ),
                             dependencies = listOf(
-                                Dependency.Singleton(
+                                Dependency.Singleton.Singular(
                                     type = Type(
                                         packageName = "g.h",
                                         name = "Type2",
@@ -246,11 +249,12 @@ class SingletonDefinitionProcessorTest {
             |  override val definitions: List<SingletonDefinition<*>> = listOf(
             |        SingletonDefinition(
             |          identifier = SingletonDefinition.Identifier(
+            |            name = null,
             |            typeRef = object : TypeReference<c.d.Type1<e.f.GenericType1>>() {}
             |          ),
             |          conditions = emptyList(),
             |          dependencies = listOf(
-            |            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>>() {}),
+            |            SingletonDefinition.DependencyIdentifier.Singleton.Singular(name = null, typeRef = object : TypeReference<g.h.Type2<e.f.GenericType2A<e.f.GenericType2B>, e.f.GenericType3>>() {}),
             |          ),
             |          instanceProvider = {
             |            module.providesType1(
@@ -321,6 +325,7 @@ class SingletonDefinitionProcessorTest {
             |  override val definitions: List<SingletonDefinition<*>> = listOf(
             |        SingletonDefinition(
             |          identifier = SingletonDefinition.Identifier(
+            |            name = null,
             |            typeRef = object : TypeReference<c.d.Type1>() {}
             |          ),
             |          conditions = emptyList(),
@@ -392,6 +397,7 @@ class SingletonDefinitionProcessorTest {
             |  override val definitions: List<SingletonDefinition<*>> = listOf(
             |        SingletonDefinition(
             |          identifier = SingletonDefinition.Identifier(
+            |            name = null,
             |            typeRef = object : TypeReference<c.d.Type1>() {}
             |          ),
             |          conditions = listOf(

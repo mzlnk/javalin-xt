@@ -1,6 +1,8 @@
 package io.mzlnk.javalin.xt.context.definition
 
 import io.mzlnk.javalin.xt.context.TypeReference
+import io.mzlnk.javalin.xt.context.definition.SingletonDefinition.Identifier
+import io.mzlnk.javalin.xt.internal.context.elementType
 import java.util.*
 
 /**
@@ -29,12 +31,15 @@ data class SingletonDefinition<T>(
      * @param T type of the singleton
      *
      * @property typeRef reference to the type of the singleton
+     * @property name name of the singleton
      */
     data class Identifier<T : Any>(
-        val typeRef: TypeReference<T>
+        val typeRef: TypeReference<T>,
+        val name: String? = null
     ) {
 
-        override fun toString(): String = typeRef.type.typeName
+        override fun toString(): String =
+            "${typeRef.type.typeName}${name?.let { " ($it)" } ?: ""}"
 
     }
 
@@ -49,12 +54,50 @@ data class SingletonDefinition<T>(
          * @param T type of the singleton
          *
          * @property typeRef reference to the type of the singleton
+         * @property name name of the singleton
          */
-        data class Singleton<T : Any>(
-            val typeRef: TypeReference<T>
-        ) : DependencyIdentifier<T> {
+        sealed interface Singleton<T : Any> : DependencyIdentifier<T> {
 
-            override fun toString(): String = typeRef.type.typeName
+            val typeRef: TypeReference<T>
+            val name: String?
+
+
+            /**
+             * Represents a dependency identifier representing a singleton of singular type.
+             *
+             * @param T type of the singleton
+             *
+             * @property typeRef reference to the type of the singleton
+             * @property name name of the singleton
+             */
+            data class Singular<T : Any>(
+                override val typeRef: TypeReference<T>,
+                override val name: String?
+            ) : Singleton<T> {
+
+                override fun toString(): String = "${typeRef.type.typeName}${name?.let { " ($it)" } ?: ""}"
+            }
+
+
+            /**
+             * Represents a dependency identifier representing a singleton of list type.
+             *
+             * @param T type of singleton list element
+             *
+             * @property typeRef reference to the type of the singleton
+             * @property name name of the singleton
+             * @property elementName name of the list element
+             */
+            data class List<T : Any>(
+                override val typeRef: TypeReference<kotlin.collections.List<T>>,
+                override val name: String?,
+                val elementName: String?
+            ) : Singleton<kotlin.collections.List<T>> {
+
+                override fun toString(): String =
+                    "kotlin.collections.List<${typeRef.elementType.type.typeName}${elementName?.let { "($it)" } ?: ""}>${name?.let { "($it)" } ?: ""}"
+
+            }
 
         }
 

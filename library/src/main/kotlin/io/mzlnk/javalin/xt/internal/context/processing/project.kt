@@ -28,6 +28,7 @@ internal data class Module(
  * @param dependencies list of parameters of the method
  */
 internal data class Singleton(
+    val name: String? = null,
     val methodName: String,
     val type: Type,
     val conditionals: List<Conditional> = emptyList(),
@@ -54,7 +55,23 @@ internal data class Singleton(
         
         val type: Type
         
-        data class Singleton(override val type: Type) : Dependency
+        sealed interface Singleton : Dependency {
+
+            override val type: Type
+            val name: String?
+
+            data class Singular(
+                override val type: Type,
+                override val name: String? = null
+            ) : Singleton
+
+            data class List(
+                override val type: Type,
+                override val name: String? = null,
+                val elementName: String? = null
+            ) : Singleton
+
+        }
 
         data class Property(
             override val type: Type,
