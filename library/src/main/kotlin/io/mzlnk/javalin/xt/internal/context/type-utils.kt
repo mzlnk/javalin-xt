@@ -18,7 +18,7 @@ internal fun <T : Any> TypeReference<T>.isList(): Boolean {
  *
  * @return type reference of the elements of the list
  */
-internal val <T: Any> TypeReference<List<T>>.elementType: TypeReference<T>
+internal val <T: Any> TypeReference<out List<T>>.elementType: TypeReference<T>
     get() = this.type
         .let { it as ParameterizedType }
         .actualTypeArguments[0]

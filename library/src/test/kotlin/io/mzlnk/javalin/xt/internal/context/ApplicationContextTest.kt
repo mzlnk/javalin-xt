@@ -24,7 +24,7 @@ class ApplicationContextTest {
         // given:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(ComponentB::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentB::class.java)),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB) }
         )
 
@@ -65,13 +65,13 @@ class ApplicationContextTest {
         // given:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(ComponentB::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentB::class.java)),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB) }
         )
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(ComponentC::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentC::class.java)),
             instanceProvider = { ComponentB("C" to it[0] as ComponentC) }
         )
 
@@ -113,7 +113,7 @@ class ApplicationContextTest {
         // given:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(ComponentB::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentB::class.java)),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB) }
         )
 
@@ -125,7 +125,7 @@ class ApplicationContextTest {
 
         val singletonC = SingletonDefinition(
             identifier = identifier(ComponentC::class.java),
-            dependencies = listOf(singletonDependency(ComponentD::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentD::class.java)),
             instanceProvider = { ComponentC("D" to it[0] as ComponentD) }
         )
 
@@ -168,8 +168,8 @@ class ApplicationContextTest {
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
             dependencies = listOf(
-                singletonDependency(ComponentB::class.java),
-                singletonDependency(ComponentC::class.java)
+                singletonSingularDependency(ComponentB::class.java),
+                singletonSingularDependency(ComponentC::class.java)
             ),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB, "C" to it[1] as ComponentC) }
         )
@@ -223,13 +223,13 @@ class ApplicationContextTest {
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(ComponentA::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentA::class.java)),
             instanceProvider = { ComponentB("A" to it[0] as ComponentA) }
         )
 
         val singletonC = SingletonDefinition(
             identifier = identifier(ComponentC::class.java),
-            dependencies = listOf(singletonDependency(ComponentA::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentA::class.java)),
             instanceProvider = { ComponentC("A" to it[0] as ComponentA) }
         )
 
@@ -268,8 +268,8 @@ class ApplicationContextTest {
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
             dependencies = listOf(
-                singletonDependency(ComponentB::class.java),
-                singletonDependency(ComponentC::class.java)
+                singletonSingularDependency(ComponentB::class.java),
+                singletonSingularDependency(ComponentC::class.java)
             ),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB, "C" to it[1] as ComponentC) }
         )
@@ -277,8 +277,8 @@ class ApplicationContextTest {
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
             dependencies = listOf(
-                singletonDependency(ComponentD::class.java),
-                singletonDependency(ComponentE::class.java)
+                singletonSingularDependency(ComponentD::class.java),
+                singletonSingularDependency(ComponentE::class.java)
             ),
             instanceProvider = { ComponentB("D" to it[0] as ComponentD, "E" to it[1] as ComponentE) }
         )
@@ -339,21 +339,21 @@ class ApplicationContextTest {
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
             dependencies = listOf(
-                singletonDependency(ComponentB::class.java),
-                singletonDependency(ComponentC::class.java)
+                singletonSingularDependency(ComponentB::class.java),
+                singletonSingularDependency(ComponentC::class.java)
             ),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB, "C" to it[1] as ComponentC) }
         )
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(ComponentD::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentD::class.java)),
             instanceProvider = { ComponentB("D" to it[0] as ComponentD) }
         )
 
         val singletonC = SingletonDefinition(
             identifier = identifier(ComponentC::class.java),
-            dependencies = listOf(singletonDependency(ComponentD::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentD::class.java)),
             instanceProvider = { ComponentC("D" to it[0] as ComponentD) }
         )
 
@@ -400,7 +400,7 @@ class ApplicationContextTest {
         // and:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(ComponentB::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentB::class.java)),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB) }
         )
 
@@ -436,7 +436,7 @@ class ApplicationContextTest {
 
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(ComponentB::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentB::class.java)),
             instanceProvider = { ComponentA("B" to it[0] as ComponentB) }
         )
 
@@ -475,7 +475,7 @@ class ApplicationContextTest {
 
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(TypeB::class.java)),
+            dependencies = listOf(singletonSingularDependency(TypeB::class.java)),
             instanceProvider = { ComponentA("B" to it[0] as TypeB) }
         )
 
@@ -516,7 +516,7 @@ class ApplicationContextTest {
         // and:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(object : TypeReference<List<ComponentB>>() {})),
+            dependencies = listOf(singletonListDependency(object : TypeReference<List<ComponentB>>() {})),
             instanceProvider = { ComponentA("Bs" to it[0] as List<ComponentB>) }
         )
 
@@ -564,7 +564,7 @@ class ApplicationContextTest {
         // and:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(object : TypeReference<List<ComponentB>>() {})),
+            dependencies = listOf(singletonListDependency(object : TypeReference<List<ComponentB>>() {})),
             instanceProvider = { ComponentA("Bs" to it[0] as List<ComponentB>) }
         )
 
@@ -610,7 +610,7 @@ class ApplicationContextTest {
         // and:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(object : TypeReference<List<TypeB>>() {})),
+            dependencies = listOf(singletonListDependency(object : TypeReference<List<TypeB>>() {})),
             instanceProvider = { ComponentA("Bs" to it[0] as List<TypeB>) }
         )
 
@@ -651,7 +651,7 @@ class ApplicationContextTest {
         // given:
         val singletonA = SingletonDefinition(
             identifier = identifier(ComponentA::class.java),
-            dependencies = listOf(singletonDependency(object : TypeReference<List<ComponentB>>() {})),
+            dependencies = listOf(singletonListDependency(object : TypeReference<List<ComponentB>>() {})),
             instanceProvider = { ComponentA("Bs" to it[0] as List<ComponentB>) }
         )
 
@@ -684,7 +684,7 @@ class ApplicationContextTest {
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(object : TypeReference<List<ComponentA>>() {})),
+            dependencies = listOf(singletonSingularDependency(object : TypeReference<List<ComponentA>>() {})),
             instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
         )
 
@@ -734,7 +734,7 @@ class ApplicationContextTest {
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(object : TypeReference<List<ComponentA>>() {})),
+            dependencies = listOf(singletonListDependency(object : TypeReference<List<ComponentA>>() {})),
             instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
         )
 
@@ -1194,6 +1194,143 @@ class ApplicationContextTest {
     }
 
     @Test
+    fun `should inject named singleton to component dependency`() {
+        // given:
+        val componentA1 = ComponentA()
+        val componentA2 = ComponentA()
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A1"),
+            dependencies = emptyList(),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A2"),
+            dependencies = emptyList(),
+            instanceProvider = { componentA2 }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(
+                singletonSingularDependency(ComponentA::class.java, name = "A1")
+            ),
+            instanceProvider = { ComponentB("A" to it[0] as ComponentA) }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2, singletonB)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create(config { enabled = true })
+
+        // then:
+        val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
+        assertThat(componentB.components["A"]).isEqualTo(componentA1)
+    }
+
+    @Test
+    fun `should inject list of named singletons to component dependency`() {
+        // given:
+        val componentAA1 = ComponentA()
+        val componentAA2 = ComponentA()
+        val componentAB1 = ComponentA()
+
+        // and:
+        val singletonAA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A"),
+            dependencies = emptyList(),
+            instanceProvider = { componentAA1 }
+        )
+
+        val singletonAA2 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A"),
+            dependencies = emptyList(),
+            instanceProvider = { componentAA2 }
+        )
+
+        val singletonAB1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "B"),
+            dependencies = emptyList(),
+            instanceProvider = { componentAB1 }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(
+                singletonListDependency(
+                    type = object : TypeReference<List<ComponentA>>() {},
+                    elementName = "A"
+                )
+            ),
+            instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
+        )
+
+        // and:
+        val definitions = listOf(singletonAA1, singletonAA2, singletonAB1, singletonB)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create(config { enabled = true })
+
+        // then:
+        val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
+        assertThat(componentB.components["As"] as List<ComponentA>)
+            .containsExactlyInAnyOrder(componentAA1, componentAA2)
+    }
+
+    @Test
+    fun `should inject named list of singletons to component dependency`() {
+        // given:
+        val componentsA1 = listOf(ComponentA(), ComponentA())
+        val componentsA2 = listOf(ComponentA(), ComponentA())
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}, name = "A1"),
+            dependencies = emptyList(),
+            instanceProvider = { componentsA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}, name = "A2"),
+            dependencies = emptyList(),
+            instanceProvider = { componentsA2 }
+        )
+
+        val singletonB = SingletonDefinition(
+            identifier = identifier(ComponentB::class.java),
+            dependencies = listOf(
+                singletonListDependency(
+                    type = object : TypeReference<List<ComponentA>>() {},
+                    name = "A1"
+                )
+            ),
+            instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2, singletonB)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create(config { enabled = true })
+
+        // then:
+        val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
+        assertThat(componentB.components["As"] as List<ComponentA>).containsExactlyInAnyOrder(*componentsA1.toTypedArray())
+    }
+
+    @Test
     fun `should get singleton by its type`() {
         // given:
         val componentA = ComponentA()
@@ -1507,6 +1644,116 @@ class ApplicationContextTest {
     }
 
     @Test
+    fun `should get named singleton`() {
+        // given:
+        val componentA1 = ComponentA("name" to "A1")
+        val componentA2 = ComponentA("name" to "A2")
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A1"),
+            dependencies = emptyList(),
+            instanceProvider = { componentA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A2"),
+            dependencies = emptyList(),
+            instanceProvider = { componentA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create(config { enabled = true })
+
+        // then:
+        assertThat(context.findInstance(ComponentA::class.java, name = "A1")).isEqualTo(componentA1)
+        assertThat(context.findInstance(ComponentA::class.java, name = "A2")).isEqualTo(componentA2)
+    }
+
+    @Test
+    fun `should get list of named singletons`() {
+        // given:
+        val componentAA1 = ComponentA()
+        val componentAA2 = ComponentA()
+        val componentAB1 = ComponentA()
+
+        // and:
+        val singletonAA1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A"),
+            dependencies = emptyList(),
+            instanceProvider = { componentAA1 }
+        )
+
+        val singletonAA2 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "A"),
+            dependencies = emptyList(),
+            instanceProvider = { componentAA2 }
+        )
+
+        val singletonAB1 = SingletonDefinition(
+            identifier = identifier(ComponentA::class.java, name = "B"),
+            dependencies = emptyList(),
+            instanceProvider = { componentAB1 }
+        )
+
+        // and:
+        val definitions = listOf(singletonAA1, singletonAA2, singletonAB1)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create(config { enabled = true })
+
+        // then:
+        val components = context.findInstance(object : TypeReference<List<ComponentA>>() {}, elementName = "A")
+            ?: fail("Components not found")
+
+        assertThat(components).containsExactlyInAnyOrder(componentAA1, componentAA2)
+    }
+
+    @Test
+    fun `should get named list of singletons`() {
+        // given:
+        val componentsA1 = listOf(ComponentA(), ComponentA())
+        val componentsA2 = listOf(ComponentA(), ComponentA())
+
+        // and:
+        val singletonA1 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}, name = "A1"),
+            dependencies = emptyList(),
+            instanceProvider = { componentsA1 }
+        )
+
+        val singletonA2 = SingletonDefinition(
+            identifier = identifier(object : TypeReference<List<ComponentA>>() {}, name = "A2"),
+            dependencies = emptyList(),
+            instanceProvider = { componentsA2 }
+        )
+
+        // and:
+        val definitions = listOf(singletonA1, singletonA2)
+
+        // when:
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create(config { enabled = true })
+
+        // then:
+        val components = context.findInstance(object : TypeReference<List<ComponentA>>() {}, name = "A1")
+            ?: fail("Components not found")
+
+        assertThat(components).containsExactlyInAnyOrder(*componentsA1.toTypedArray())
+    }
+
+    @Test
     fun `should throw exception if there are defined multiple explicit lists of singletons for given type`() {
         // given:
         val singletonsA1A2 = SingletonDefinition(
@@ -1523,7 +1770,7 @@ class ApplicationContextTest {
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(object : TypeReference<List<ComponentA>>() {})),
+            dependencies = listOf(singletonListDependency(object : TypeReference<List<ComponentA>>() {})),
             instanceProvider = { ComponentB("As" to it[0] as List<ComponentA>) }
         )
 
@@ -1561,7 +1808,7 @@ class ApplicationContextTest {
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(ComponentA::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentA::class.java)),
             instanceProvider = { ComponentB("A" to it[0] as ComponentA) }
         )
 
@@ -1588,7 +1835,7 @@ class ApplicationContextTest {
 
         val singletonB = SingletonDefinition(
             identifier = identifier(ComponentB::class.java),
-            dependencies = listOf(singletonDependency(ComponentA::class.java)),
+            dependencies = listOf(singletonSingularDependency(ComponentA::class.java)),
             instanceProvider = { ComponentB("A" to it[0] as ComponentA) }
         )
 
@@ -1620,17 +1867,17 @@ class ApplicationContextTest {
         val definitions = listOf(
             SingletonDefinition(
                 identifier = identifier(ComponentA::class.java),
-                dependencies = listOf(singletonDependency(ComponentB::class.java)),
+                dependencies = listOf(singletonSingularDependency(ComponentB::class.java)),
                 instanceProvider = { ComponentA("B" to it[0] as ComponentB) }
             ),
             SingletonDefinition(
                 identifier = identifier(ComponentB::class.java),
-                dependencies = listOf(singletonDependency(ComponentC::class.java)),
+                dependencies = listOf(singletonSingularDependency(ComponentC::class.java)),
                 instanceProvider = { ComponentB("C" to it[0] as ComponentC) }
             ),
             SingletonDefinition(
                 identifier = identifier(ComponentC::class.java),
-                dependencies = listOf(singletonDependency(ComponentA::class.java)),
+                dependencies = listOf(singletonSingularDependency(ComponentA::class.java)),
                 instanceProvider = { ComponentC("A" to it[0] as ComponentA) }
             )
         )
@@ -2054,17 +2301,40 @@ class ApplicationContextTest {
 
     private companion object {
 
-        inline fun <reified T : Any> identifier(type: Class<T>): SingletonDefinition.Identifier<T> =
-            SingletonDefinition.Identifier(typeRef = object : TypeReference<T>() {})
+        inline fun <reified T : Any> identifier(
+            type: Class<T>,
+            name: String? = null
+        ): SingletonDefinition.Identifier<T> =
+            SingletonDefinition.Identifier(typeRef = object : TypeReference<T>() {}, name = name)
 
-        inline fun <reified T : Any> identifier(typeRef: TypeReference<T>): SingletonDefinition.Identifier<T> =
-            SingletonDefinition.Identifier(typeRef = typeRef)
+        inline fun <reified T : Any> identifier(
+            typeRef: TypeReference<T>,
+            name: String? = null
+        ): SingletonDefinition.Identifier<T> =
+            SingletonDefinition.Identifier(typeRef = typeRef, name = name)
 
-        inline fun <reified T : Any> singletonDependency(type: Class<T>): SingletonDefinition.DependencyIdentifier<T> =
-            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = object : TypeReference<T>() {})
+        inline fun <reified T : Any> singletonSingularDependency(
+            type: Class<T>,
+            name: String? = null
+        ): SingletonDefinition.DependencyIdentifier<T> =
+            SingletonDefinition.DependencyIdentifier.Singleton.Singular(typeRef = object : TypeReference<T>() {}, name = name)
 
-        inline fun <reified T : Any> singletonDependency(typeRef: TypeReference<T>): SingletonDefinition.DependencyIdentifier<T> =
-            SingletonDefinition.DependencyIdentifier.Singleton(typeRef = typeRef)
+        inline fun <reified T : Any> singletonSingularDependency(
+            typeRef: TypeReference<T>,
+            name: String? = null
+        ): SingletonDefinition.DependencyIdentifier<T> =
+            SingletonDefinition.DependencyIdentifier.Singleton.Singular(typeRef = typeRef, name = name)
+
+        inline fun <reified T : Any> singletonListDependency(
+            type: TypeReference<List<T>>,
+            name: String? = null,
+            elementName: String? = null
+        ): SingletonDefinition.DependencyIdentifier<List<T>> =
+            SingletonDefinition.DependencyIdentifier.Singleton.List(
+                typeRef = type,
+                name = name,
+                elementName = elementName
+            )
 
         inline fun <reified T : Any> propertyDependency(
             key: String,

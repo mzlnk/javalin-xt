@@ -531,3 +531,64 @@ Feature: javalin-xt - DI
 
     Then application starts successfully
     And no assertions failed
+
+
+  Scenario: DI with named singletons
+    Given project is set up
+
+    And class io.mzlnk.javalin.xt.e2e.app.AppModule.kt is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.mzlnk.javalin.xt.context.Module
+      import io.mzlnk.javalin.xt.context.Singleton
+      import io.mzlnk.javalin.xt.context.Named
+
+      class ComponentA(val property: String)
+      class ComponentB(val component: ComponentA)
+
+      @Module
+      class AppModule {
+
+          @Singleton
+          @Named("componentA1")
+          fun componentA1(): ComponentA = ComponentA("A1")
+
+          @Singleton
+          @Named("componentA2")
+          fun componentA2(): ComponentA = ComponentA("A2")
+
+          @Singleton
+          fun componentB(@Named("componentA1") componentA: ComponentA): ComponentB = ComponentB(componentA)
+
+      }
+      """
+
+    And class io.mzlnk.javalin.xt.e2e.app.Application is created with content
+      # language=kotlin
+      """
+      package io.mzlnk.javalin.xt.e2e.app
+
+      import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.context
+      import io.mzlnk.javalin.xt.context.TypeReference
+      import io.mzlnk.javalin.xt.xt
+
+      fun main(args: Array<String>) {
+          val app = Javalin.create()
+              .xt()
+              .start(0) // 0 indicates that the server should start on a random port
+
+          val componentA = app.context.getInstance(ComponentA::class.java, name = "componentA1")
+          assert(componentA.property == "A1") { "component.property - expected: A1, actual: ${componentA.property}" }
+
+          val componentB = app.context.getInstance(ComponentB::class.java)
+          assert(componentB.component.property == "A1") { "componentB.component.property - expected: A1, actual: ${componentB.component.property}" }
+      }
+      """
+
+    When run the application
+
+    Then application starts successfully
+    And no assertions failed
