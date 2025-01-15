@@ -412,6 +412,7 @@ class ResolverProjectLoaderTest {
             annotation class Conditional {
                 annotation class OnProperty(val property: String, val havingValue: String)
             }
+            annotation class Named(val name: String)
             """
         )
 
