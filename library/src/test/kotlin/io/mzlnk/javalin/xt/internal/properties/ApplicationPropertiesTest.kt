@@ -1,7 +1,7 @@
 package io.mzlnk.javalin.xt.internal.properties
 
-import io.mzlnk.javalin.xt.JavalinXtConfiguration
 import io.mzlnk.javalin.xt.internal.common.EnvironmentVariablesProvider
+import io.mzlnk.javalin.xt.properties.ApplicationProperties
 import io.mzlnk.javalin.xt.properties.PropertyNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -26,23 +26,6 @@ class ApplicationPropertiesTest {
     }
 
     @Test
-    fun `should create empty properties when disabled`() {
-        // given:
-        basePropertiesFile.writeText(
-            // language=yaml
-            """
-            |property1: value1    
-            """.trimMargin()
-        )
-
-        // when:
-        val properties = factory.create(properties { enabled = false })
-
-        // expect:
-        assertThat(properties.getOrNull("property1")).isNull()
-    }
-
-    @Test
     fun `should create properties when values are only in base properties file`() {
         // given:
         basePropertiesFile.writeText(
@@ -54,7 +37,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties.getOrNull("property1")).isEqualTo(StringProperty("value1"))
@@ -73,7 +56,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true; profile = "profile" })
+        val properties = factory.create(config(profile = "profile" ))
 
         // expect:
         assertThat(properties.getOrNull("property1")).isEqualTo(StringProperty("value1"))
@@ -100,7 +83,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true; profile = "profile" })
+        val properties = factory.create(config(profile = "profile" ))
 
         // expect:
         assertThat(properties.getOrNull("property1")).isEqualTo(StringProperty("value1-base"))
@@ -129,7 +112,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true; profile = "profile" })
+        val properties = factory.create(config(profile = "profile"))
 
         // expect:
         assertThat(properties.getOrNull("property1")).isEqualTo(StringProperty("value1-base"))
@@ -147,7 +130,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(StringProperty("value1"))
@@ -164,7 +147,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(NumberProperty(1))
@@ -181,7 +164,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(BooleanProperty(true))
@@ -199,7 +182,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(ObjectProperty)
@@ -218,7 +201,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(StringListProperty(listOf("value1", "value2")))
@@ -237,7 +220,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(NumberListProperty(listOf(1, 2)))
@@ -256,7 +239,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(BooleanListProperty(listOf(true, false)))
@@ -275,7 +258,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(ObjectListProperty)
@@ -295,7 +278,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(ObjectListProperty)
@@ -313,7 +296,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1.property2"]).isEqualTo(StringProperty("value2"))
@@ -332,7 +315,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1[0]"]).isEqualTo(StringProperty("value1"))
@@ -351,7 +334,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1[0].property2"]).isEqualTo(StringProperty("value2"))
@@ -369,7 +352,7 @@ class ApplicationPropertiesTest {
 
         // when:
         val exception = assertThatThrownBy {
-            factory.create(properties { enabled = true })["property2"]
+            factory.create()["property2"]
         }
 
         // expect:
@@ -399,7 +382,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true })
+        val properties = factory.create()
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(StringProperty("value1"))
@@ -428,7 +411,7 @@ class ApplicationPropertiesTest {
         )
 
         // when:
-        val properties = factory.create(properties { enabled = true; resolveEnvironmentVariables = false })
+        val properties = factory.create(config(resolveEnvironmentVariables = false))
 
         // expect:
         assertThat(properties["property1"]).isEqualTo(StringProperty("\${ENV_VAR1}"))
@@ -453,7 +436,7 @@ class ApplicationPropertiesTest {
 
         // when:
         val exception = assertThatThrownBy {
-            factory.create(properties { enabled = true })
+            factory.create()
         }
 
         // expect:
@@ -465,7 +448,7 @@ class ApplicationPropertiesTest {
     fun `should throw exception when profile properties file is not found`() {
         // when:
         val exception = assertThatThrownBy {
-            factory.create(properties { enabled = true; profile = "profile" })
+            factory.create(config(profile = "profile"))
         }
 
         // expect:
@@ -476,8 +459,14 @@ class ApplicationPropertiesTest {
 
 }
 
-private fun properties(init: JavalinXtConfiguration.Properties.() -> Unit): JavalinXtConfiguration.Properties {
-    return JavalinXtConfiguration.Properties().apply(init)
+private fun config(
+    resolveEnvironmentVariables: Boolean = true,
+    profile: String? = null
+): ApplicationProperties.Configuration {
+    return ApplicationProperties.Configuration(
+        resolveEnvironmentVariables = resolveEnvironmentVariables,
+        profile = profile
+    )
 }
 
 /**

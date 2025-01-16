@@ -2,20 +2,28 @@ package io.mzlnk.javalin.xt.demo
 
 import io.javalin.Javalin
 import io.mzlnk.javalin.xt.context
+import io.mzlnk.javalin.xt.enableApplicationProperties
+import io.mzlnk.javalin.xt.enableIoC
 import io.mzlnk.javalin.xt.properties
-import io.mzlnk.javalin.xt.xt
+import kotlin.time.measureTimedValue
 
 fun main(args: Array<String>) {
-    val app = Javalin.create()
-        .xt {
-            properties {
-                profile = "dev"
+    val (app, elapsedTime) = measureTimedValue {
+        Javalin.create { config ->
+            config.enableApplicationProperties { propertiesConfig ->
+                propertiesConfig.resolveEnvironmentVariables = true
+                propertiesConfig.profile = "dev"
             }
+            config.enableIoC()
+            config.jetty.defaultHost
         }
-        .start(8080)
+    }
 
-    val a = 10
+    println("Total elapsed time: $elapsedTime.")
 
-    println("Size: ${app.context.size()}")
-    0 / 0
+    println("property10: ${app.properties.getOrNull("property10")?.asString ?: "<null>"}")
+    println("ComponentA: ${app.context.findInstance(ComponentA::class.java) ?: "<null>"}")
+
+    app.start()
+
 }
