@@ -1,6 +1,5 @@
 package io.mzlnk.javalin.xt.internal.properties
 
-import io.mzlnk.javalin.xt.JavalinXtConfiguration
 import io.mzlnk.javalin.xt.internal.common.EnvironmentVariablesProvider
 import io.mzlnk.javalin.xt.properties.ApplicationProperties
 
@@ -22,9 +21,7 @@ internal class ApplicationPropertiesFactory(
     /**
      * Creates application properties based on provided configuration
      */
-    fun create(config: JavalinXtConfiguration.Properties): ApplicationProperties {
-        if (!config.enabled) return EmptyApplicationProperties
-
+    fun create(config: ApplicationProperties.Configuration = ApplicationProperties.Configuration()): ApplicationProperties {
         val baseProperties = fileResolver.resolve("application.yml")
             ?.let { path ->
                 FilePropertySource.create(
