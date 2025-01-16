@@ -31,13 +31,15 @@ Feature: javalin-xt - application properties
       package io.mzlnk.javalin.xt.e2e.app
 
       import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.enableApplicationProperties
       import io.mzlnk.javalin.xt.properties
-      import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableApplicationProperties()
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.properties["property1a"].asInt == 1)
           assert(app.properties["property1a"].asLong == 1L)
@@ -85,15 +87,17 @@ Feature: javalin-xt - application properties
       package io.mzlnk.javalin.xt.e2e.app
 
       import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.enableApplicationProperties
       import io.mzlnk.javalin.xt.properties
-      import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt {
-                  properties { profile = "dev" }
+          val app = Javalin.create { config ->
+              config.enableApplicationProperties { propertiesConfig ->
+                  propertiesConfig.profile = "dev"
               }
-              .start(0) // 0 indicates that the server should start on a random port
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.properties["property1"].asString == "value1-base")
           assert(app.properties["property2"].asString == "value2-dev")
@@ -126,13 +130,17 @@ Feature: javalin-xt - application properties
       package io.mzlnk.javalin.xt.e2e.app
 
       import io.javalin.Javalin
+      import io.mzlnk.javalin.xt.enableApplicationProperties
       import io.mzlnk.javalin.xt.properties
-      import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableApplicationProperties { propertiesConfig ->
+                  propertiesConfig.resolveEnvironmentVariables = true
+              }
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.properties["property1"].asString == "value1-env-var-1")
           assert(app.properties["property2"].asString == "value2-env-var-2")
@@ -145,7 +153,7 @@ Feature: javalin-xt - application properties
     And no assertions failed
 
 
-  Scenario: Disabling application properties
+  Scenario: Not enabled application properties
     Given project is set up
 
     And resource application.yml is created with content
@@ -161,14 +169,12 @@ Feature: javalin-xt - application properties
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.properties
-      import io.mzlnk.javalin.xt.xt
 
       fun main(args: Array<String>) {
+          // no additional configuration to enable application properties
           val app = Javalin.create()
-              .xt {
-                  properties { enabled = false }
-              }
-              .start(0) // 0 indicates that the server should start on a random port
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.properties.getOrNull("property1") == null)
       }

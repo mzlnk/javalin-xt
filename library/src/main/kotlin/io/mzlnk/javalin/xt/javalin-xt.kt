@@ -1,53 +1,74 @@
 package io.mzlnk.javalin.xt
 
-import io.javalin.Javalin
 import io.mzlnk.javalin.xt.context.ApplicationContext
-import io.mzlnk.javalin.xt.internal.JavalinXtProxy
-import io.mzlnk.javalin.xt.internal.context.ApplicationContextFactory
-import io.mzlnk.javalin.xt.internal.properties.ApplicationPropertiesFactory
+import io.mzlnk.javalin.xt.internal.context.EmptyApplicationContext
+import io.mzlnk.javalin.xt.internal.plugins.ContextPlugin
+import io.mzlnk.javalin.xt.internal.plugins.PropertiesPlugin
+import io.mzlnk.javalin.xt.internal.properties.EmptyApplicationProperties
 import io.mzlnk.javalin.xt.properties.ApplicationProperties
+import java.util.function.Consumer
 
 /**
- * Enables javalin-xt features.
+ * Configuration for application properties
+ *
+ * @property resolveEnvironmentVariables flag that determines whether to resolve environment variables in property values
+ * @property profile the profile to use when resolving properties
  */
-fun Javalin.xt(init: JavalinXtConfiguration.() -> Unit = {}): Javalin {
-    val config = JavalinXtConfiguration().apply(init)
+class ApplicationPropertiesConfig {
 
-    val properties = ApplicationPropertiesFactory().create(config.properties)
-    val context = ApplicationContextFactory(propertiesSource = { properties }).create(config.context)
+    @JvmField
+    var resolveEnvironmentVariables: Boolean = true
 
+    @JvmField
+    var profile: String? = null
 
-    return JavalinXtProxy(
-        javalin = this,
-        context = context,
-        properties = properties
-    )
 }
 
 /**
- * Returns the context built by javalin-xt DI.
+ * Enables application properties support
  *
- * @return the context
+ * @param config optional configuration for application properties
  */
-val Javalin.context: ApplicationContext
-    get() {
-        if (this !is JavalinXtProxy) {
-            throw IllegalStateException("This is javalin-xt feature which has not been enabled. Call Javalin.xt() first.")
-        }
-
-        return this.context
-    }
+fun io.javalin.config.JavalinConfig.enableApplicationProperties(
+    config: Consumer<ApplicationPropertiesConfig> = Consumer { }
+) {
+    this.registerPlugin(PropertiesPlugin(config))
+}
 
 /**
- * Returns the application properties read by javalin-xt from resources.
- *
- * @return the properties
+ * Enables IoC support
  */
-val Javalin.properties: ApplicationProperties
-    get() {
-        if (this !is JavalinXtProxy) {
-            throw IllegalStateException("This is javalin-xt feature which has not been enabled. Call Javalin.xt() first.")
-        }
+fun io.javalin.config.JavalinConfig.enableIoC() {
+    this.registerPlugin(ContextPlugin())
+}
 
-        return this.properties
-    }
+/**
+ * Retrieves the application context associated with the Javalin instance
+ *
+ * @return application context
+ */
+val io.javalin.Javalin.context: ApplicationContext
+    get() =
+        runCatching {
+            this.unsafeConfig().pvt
+                .pluginManager.getContextPlugin(ContextPlugin::class.java)
+                .let { it as ContextPlugin }
+        }.getOrNull()
+            ?.context
+            ?: EmptyApplicationContext
+
+/**
+ * Retrieves the application properties associated with the Javalin instance
+ *
+ * @return application properties
+ */
+val io.javalin.Javalin.properties: ApplicationProperties
+    get() =
+        runCatching {
+            this.unsafeConfig().pvt
+                .pluginManager.getContextPlugin(PropertiesPlugin::class.java)
+                .let { it as PropertiesPlugin }
+        }.getOrNull()
+            ?.properties
+            ?: EmptyApplicationProperties
+

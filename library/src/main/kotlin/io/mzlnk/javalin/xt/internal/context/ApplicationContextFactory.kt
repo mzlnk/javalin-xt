@@ -1,6 +1,5 @@
 package io.mzlnk.javalin.xt.internal.context
 
-import io.mzlnk.javalin.xt.JavalinXtConfiguration
 import io.mzlnk.javalin.xt.context.ApplicationContext
 
 /**
@@ -15,14 +14,11 @@ internal class ApplicationContextFactory(
 ) {
 
     /**
-     * Creates application context based on provided configuration
+     * Creates application context
      *
-     * @param config configuration of the application
      * @return application context
      */
-    fun create(config: JavalinXtConfiguration.Context): ApplicationContext {
-        if(!config.enabled) return EmptyApplicationContext
-
+    fun create(): ApplicationContext {
         return DefaultApplicationContext.create(
             definitions = definitionSource.get(),
             properties = propertiesSource.get()

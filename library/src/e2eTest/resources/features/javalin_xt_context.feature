@@ -31,12 +31,14 @@ Feature: javalin-xt - DI
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableIoC()
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.context.size() == 2)
 
@@ -88,12 +90,14 @@ Feature: javalin-xt - DI
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableIoC()
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.context.size() == 2)
 
@@ -145,12 +149,14 @@ Feature: javalin-xt - DI
 
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableIoC()
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.context.size() == 2)
 
@@ -202,12 +208,14 @@ Feature: javalin-xt - DI
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
       import io.mzlnk.javalin.xt.context.TypeReference
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableIoC()
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.context.size() == 2) { "size - expected: 2, actual: ${app.context.size()}" }
 
@@ -262,12 +270,14 @@ Feature: javalin-xt - DI
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
       import io.mzlnk.javalin.xt.context.TypeReference
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableIoC()
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.context.size() == 3) { "size - expected: 3, actual: ${app.context.size()}" }
 
@@ -326,12 +336,14 @@ Feature: javalin-xt - DI
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
       import io.mzlnk.javalin.xt.context.TypeReference
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+                  config.enableIoC()
+              }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.context.size() == 3) { "size - expected: 3, actual: ${app.context.size()}" }
 
@@ -389,12 +401,14 @@ Feature: javalin-xt - DI
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
       import io.mzlnk.javalin.xt.context.TypeReference
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+                  config.enableIoC()
+              }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           assert(app.context.size() == 3) { "size - expected: 3, actual: ${app.context.size()}" }
 
@@ -453,12 +467,16 @@ Feature: javalin-xt - DI
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
       import io.mzlnk.javalin.xt.context.TypeReference
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
+      import io.mzlnk.javalin.xt.enableApplicationProperties
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+                  config.enableIoC()
+                  config.enableApplicationProperties()
+              }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           val component = app.context.getInstance(Component::class.java)
           assert(component.property == "test-value") { "component.property - expected: test-value, actual: ${component.property}" }
@@ -515,12 +533,16 @@ Feature: javalin-xt - DI
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
       import io.mzlnk.javalin.xt.context.TypeReference
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableApplicationProperties
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+              config.enableApplicationProperties()
+              config.enableIoC()
+          }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           val component = app.context.getInstance(Component::class.java)
           assert(component.property == "A") { "component.property - expected: A, actual: ${component.property}" }
@@ -573,12 +595,14 @@ Feature: javalin-xt - DI
       import io.javalin.Javalin
       import io.mzlnk.javalin.xt.context
       import io.mzlnk.javalin.xt.context.TypeReference
-      import io.mzlnk.javalin.xt.xt
+      import io.mzlnk.javalin.xt.enableIoC
 
       fun main(args: Array<String>) {
-          val app = Javalin.create()
-              .xt()
-              .start(0) // 0 indicates that the server should start on a random port
+          val app = Javalin.create { config ->
+                  config.enableIoC()
+              }
+
+          app.start(0) // 0 indicates that the server should start on a random port
 
           val componentA = app.context.getInstance(ComponentA::class.java, name = "componentA1")
           assert(componentA.property == "A1") { "component.property - expected: A1, actual: ${componentA.property}" }

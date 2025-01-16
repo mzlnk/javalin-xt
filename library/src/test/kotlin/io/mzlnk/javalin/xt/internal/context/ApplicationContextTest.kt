@@ -2,7 +2,6 @@
 
 package io.mzlnk.javalin.xt.internal.context
 
-import io.mzlnk.javalin.xt.JavalinXtConfiguration
 import io.mzlnk.javalin.xt.context.ApplicationContextException
 import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.definition.SingletonDefinition
@@ -41,7 +40,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(2)
@@ -88,7 +87,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -142,7 +141,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(4)
@@ -193,7 +192,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -240,7 +239,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -308,7 +307,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(5)
@@ -370,7 +369,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(4)
@@ -417,7 +416,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentA = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -453,7 +452,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(2)
@@ -492,7 +491,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(2)
@@ -539,7 +538,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(3)
@@ -587,7 +586,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentA = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -633,7 +632,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentA = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -662,7 +661,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentA = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -695,7 +694,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
@@ -745,7 +744,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
@@ -780,7 +779,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -814,7 +813,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -848,7 +847,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -882,7 +881,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -916,7 +915,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -950,7 +949,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -984,7 +983,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -1018,7 +1017,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -1052,7 +1051,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -1086,7 +1085,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -1120,7 +1119,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -1154,7 +1153,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -1186,7 +1185,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val component = context.findInstance(ComponentA::class.java) ?: fail("Component A not found")
@@ -1227,7 +1226,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
@@ -1278,7 +1277,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
@@ -1323,7 +1322,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val componentB = context.findInstance(ComponentB::class.java) ?: fail("Component B not found")
@@ -1347,7 +1346,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA)
@@ -1372,7 +1371,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.findInstance(object : TypeReference<ComponentG<String>>() {}))
@@ -1398,7 +1397,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.findInstance(ComponentA::class.java)).isEqualTo(componentA1)
@@ -1423,7 +1422,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.findInstance(TypeB::class.java)).isEqualTo(componentB)
@@ -1441,7 +1440,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.findInstance(ComponentA::class.java)).isNull()
@@ -1473,7 +1472,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
@@ -1508,7 +1507,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
@@ -1543,7 +1542,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<TypeA>>() {})
@@ -1564,7 +1563,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
@@ -1593,7 +1592,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
@@ -1636,7 +1635,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {})
@@ -1669,7 +1668,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.findInstance(ComponentA::class.java, name = "A1")).isEqualTo(componentA1)
@@ -1709,7 +1708,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {}, elementName = "A")
@@ -1744,7 +1743,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {}, name = "A1")
@@ -1782,7 +1781,7 @@ class ApplicationContextTest {
             ApplicationContextFactory(
                 definitionSource = { definitions },
                 propertiesSource = { EmptyApplicationProperties }
-            ).create(config { enabled = true })
+            ).create()
         }
 
         // then:
@@ -1820,7 +1819,7 @@ class ApplicationContextTest {
             ApplicationContextFactory(
                 definitionSource = { definitions },
                 propertiesSource = { EmptyApplicationProperties }
-            ).create(config { enabled = true })
+            ).create()
         }
 
         // then:
@@ -1847,7 +1846,7 @@ class ApplicationContextTest {
             ApplicationContextFactory(
                 definitionSource = { definitions },
                 propertiesSource = { EmptyApplicationProperties }
-            ).create(config { enabled = true })
+            ).create()
         }
 
         // then:
@@ -1887,7 +1886,7 @@ class ApplicationContextTest {
             ApplicationContextFactory(
                 definitionSource = { definitions },
                 propertiesSource = { EmptyApplicationProperties }
-            ).create(config { enabled = true })
+            ).create()
         }
 
         // then:
@@ -1929,7 +1928,7 @@ class ApplicationContextTest {
             ApplicationContextFactory(
                 definitionSource = { definitions },
                 propertiesSource = { properties }
-            ).create(config { enabled = true })
+            ).create()
         }
 
         // then:
@@ -1965,7 +1964,7 @@ class ApplicationContextTest {
             ApplicationContextFactory(
                 definitionSource = { definitions },
                 propertiesSource = { properties }
-            ).create(config { enabled = true })
+            ).create()
         }
 
         // then:
@@ -1995,7 +1994,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         val exception = assertThatThrownBy {
@@ -2004,29 +2003,6 @@ class ApplicationContextTest {
 
         exception.isInstanceOf(ApplicationContextException::class.java)
         exception.hasMessage("Multiple candidates found for io.mzlnk.javalin.xt.internal.context.ComponentA")
-    }
-
-    @Test
-    fun `should create empty context when disabled`() {
-        // given:
-        val singletonA = SingletonDefinition(
-            identifier = identifier(ComponentA::class.java),
-            dependencies = emptyList(),
-            instanceProvider = { ComponentA() }
-        )
-
-        // and:
-        val definitions = listOf(singletonA)
-
-        // when:
-        val context = ApplicationContextFactory(
-            definitionSource = { definitions },
-            propertiesSource = { EmptyApplicationProperties }
-        ).create(config { enabled = false })
-
-        // then:
-        assertThat(context.size()).isEqualTo(0)
-        assertThat(context.findInstance(ComponentA::class.java)).isNull()
     }
 
     @Test
@@ -2062,7 +2038,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(1)
@@ -2102,7 +2078,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(1)
@@ -2142,7 +2118,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(1)
@@ -2192,7 +2168,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(1)
@@ -2242,7 +2218,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(1)
@@ -2292,7 +2268,7 @@ class ApplicationContextTest {
         val context = ApplicationContextFactory(
             definitionSource = { definitions },
             propertiesSource = { properties }
-        ).create(config { enabled = true })
+        ).create()
 
         // then:
         assertThat(context.size()).isEqualTo(1)
@@ -2349,9 +2325,6 @@ class ApplicationContextTest {
     }
 
 }
-
-private fun config(init: JavalinXtConfiguration.Context.() -> Unit = {}): JavalinXtConfiguration.Context =
-    JavalinXtConfiguration.Context().apply(init)
 
 // general purpose types for testing
 private interface TypeA
