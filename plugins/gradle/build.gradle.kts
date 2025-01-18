@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.mzlnk"
-version = "0.4.0-SNAPSHOT"
+version = "0.4.0"
 
 repositories {
     mavenCentral()
