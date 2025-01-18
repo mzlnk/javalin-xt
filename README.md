@@ -13,6 +13,7 @@
 )](#)
 
 ## About 🌐
+
 **javalin-xt** is a very lightweight set of extension features dedicated to [Javalin](https://javalin.io/).
 
 ### Key concepts
@@ -21,24 +22,27 @@ Key concepts of **javalin-xt** include:
 
 #### ▶ Lightweight
 
-Designed to be as lightweight as possible. It does not introduce any additional dependencies to your project. Just the most basic and useful features that can enhance working with Javalin.  
+Designed to be as lightweight as possible. It does not introduce any additional dependencies to your project. Just the
+most basic and useful features that can enhance working with Javalin.
 
-#### ▶ No reflection 
+#### ▶ No reflection
 
 No use of reflection in its features. Everything is done at compile time.
 
 #### ▶ Not over-engineered
 
-No heavy use of proxies, annotations, or other complex mechanisms under the hood. Everything is kept simple in order to make 
+No heavy use of proxies, annotations, or other complex mechanisms under the hood. Everything is kept simple in order to
+make
 any potential debugging or troubleshooting easier.
 
 #### ▶ Invisible
 
-Can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the added benefit of javalin-xt features accessible via Javalin  `app`.
+Can be considered as an extension to Javalin. Using it, you can still use Javalin as you would normally do, but with the
+added benefit of javalin-xt features accessible via Javalin  `app`.
 
 #### ▶ Dedicated to Javalin
 
-Specifically designed to work with Javalin which allows for a more streamlined and efficient integration. 
+Specifically designed to work with Javalin which allows for a more streamlined and efficient integration.
 
 ### Key features
 
@@ -74,13 +78,21 @@ To be announced soon.
 
 ### Enabling javalin-xt 🔓
 
-To enable javalin-xt, you just need to invoke `xt()` extension function on your Javalin instance:
+To enable javalin-xt, you just need to invoke dedicated method on `JavalinConfig` instance during Javalin creation. For
+example:
 
 ```kotlin
 fun main(args: Array<String>) {
-    val app = Javalin.create()
-        .xt()
-        .start(8080)
+    val app = Javalin.create { config ->
+        // enables IoC container and dependency injection
+        config.enableIoC()
+        // enables application properties engine
+        config.enableProperties { propertiesConfig ->
+            propertiesConfig.profile = "dev"
+        }
+    }
+    
+    app.start(8080)
 }
 ```
 
