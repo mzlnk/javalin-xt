@@ -2,6 +2,9 @@ package io.mzlnk.javalin.xt
 
 import io.mzlnk.javalin.xt.context.ApplicationContext
 import io.mzlnk.javalin.xt.properties.ApplicationProperties
+import io.mzlnk.javalin.xt.routing.Endpoint
+import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
+import java.util.*
 import java.util.function.Consumer
 
 /**
@@ -36,6 +39,19 @@ fun io.javalin.config.JavalinConfig.enableApplicationProperties(
  */
 fun io.javalin.config.JavalinConfig.enableIoC() {
     this.registerPlugin(ContextPlugin())
+}
+
+/**
+ * Registers and endpoint defined in declarative way using javalin-xt annotations to the Javalin instance.
+ *
+ * @param endpoint instance of the endpoint to register
+ */
+fun io.javalin.Javalin.registerEndpoint(endpoint: Endpoint) {
+    val adapterFactory = ServiceLoader.load(EndpointAdapter.Factory::class.java)
+        .find { it.supportedEndpoint == endpoint::class.java }
+        ?: throw IllegalStateException("No adapter factory found for endpoint: ${endpoint::class.java}")
+
+    adapterFactory.create(endpoint).apply(this)
 }
 
 /**
