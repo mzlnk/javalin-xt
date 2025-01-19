@@ -1,10 +1,6 @@
 package io.mzlnk.javalin.xt
 
 import io.mzlnk.javalin.xt.context.ApplicationContext
-import io.mzlnk.javalin.xt.internal.context.EmptyApplicationContext
-import io.mzlnk.javalin.xt.internal.plugins.ContextPlugin
-import io.mzlnk.javalin.xt.internal.plugins.PropertiesPlugin
-import io.mzlnk.javalin.xt.internal.properties.EmptyApplicationProperties
 import io.mzlnk.javalin.xt.properties.ApplicationProperties
 import java.util.function.Consumer
 
@@ -47,28 +43,11 @@ fun io.javalin.config.JavalinConfig.enableIoC() {
  *
  * @return application context
  */
-val io.javalin.Javalin.context: ApplicationContext
-    get() =
-        runCatching {
-            this.unsafeConfig().pvt
-                .pluginManager.getContextPlugin(ContextPlugin::class.java)
-                .let { it as ContextPlugin }
-        }.getOrNull()
-            ?.context
-            ?: EmptyApplicationContext
+val io.javalin.Javalin.context: ApplicationContext get() = this.unsafeConfig().context
 
 /**
  * Retrieves the application properties associated with the Javalin instance
  *
  * @return application properties
  */
-val io.javalin.Javalin.properties: ApplicationProperties
-    get() =
-        runCatching {
-            this.unsafeConfig().pvt
-                .pluginManager.getContextPlugin(PropertiesPlugin::class.java)
-                .let { it as PropertiesPlugin }
-        }.getOrNull()
-            ?.properties
-            ?: EmptyApplicationProperties
-
+val io.javalin.Javalin.properties: ApplicationProperties get() = this.unsafeConfig().properties
