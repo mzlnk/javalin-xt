@@ -20,6 +20,9 @@ class E2EStepDefinitions {
     private lateinit var project: Project
     private lateinit var application: Application
 
+    private lateinit var httpRequestBuilder: HttpRequest.Builder
+    private lateinit var httpRespone: HttpResponse
+
     @Given("project is set up")
     fun `gradle project is set up`() {
         this.project = Project.initialize()
@@ -93,6 +96,61 @@ class E2EStepDefinitions {
         assertThat(application.assertionFailures)
             .withFailMessage("There were assertion failures:\n${application.assertionFailures.joinToString("\n")}")
             .isEmpty()
+    }
+
+    @Then("HTTP request to application is created")
+    fun `http request is created`() {
+        this.httpRequestBuilder = HttpRequest.builder()
+
+        this.httpRequestBuilder.host = "localhost"
+        this.httpRequestBuilder.port = application.listeningPort
+    }
+
+    @Then("HTTP request method is {word}")
+    fun `http request method is methodValue`(method: String) {
+        this.httpRequestBuilder.method = when (method) {
+            "GET" -> HttpRequest.Method.GET
+            "POST" -> HttpRequest.Method.POST
+            "PUT" -> HttpRequest.Method.PUT
+            "DELETE" -> HttpRequest.Method.DELETE
+            "PATCH" -> HttpRequest.Method.PATCH
+            else -> throw IllegalArgumentException("Unsupported HTTP method: $method")
+        }
+    }
+
+    @Then("HTTP request path is {word}")
+    fun `http request path is pathValue`(path: String) {
+        this.httpRequestBuilder.path = path.removePrefix("/")
+    }
+
+    @Then("HTTP request body is")
+    fun `http request body is bodyValue`(body: DocString) {
+        this.httpRequestBuilder.body = body.content
+    }
+
+    @Then("HTTP request header {word} is {word}")
+    fun `http request header headerName is headerValue`(headerName: String, headerValue: String) {
+        this.httpRequestBuilder.headers += headerName to headerValue
+    }
+
+    @Then("HTTP request query parameter {word} is {word}")
+    fun `http request query parameter parameterName is parameterValue`(parameterName: String, parameterValue: String) {
+        this.httpRequestBuilder.queryParams += parameterName to parameterValue
+    }
+
+    @Then("HTTP request is sent")
+    fun `HTTP request is sent`() {
+        this.httpRespone = HttpFacade.send(httpRequestBuilder.build())
+    }
+
+    @Then("HTTP response status code is {int}")
+    fun `HTTP response status code is statusCode`(statusCode: Int) {
+        assertThat(httpRespone.status).isEqualTo(statusCode)
+    }
+
+    @Then("HTTP response body is")
+    fun `HTTP response body is bodyValue`(body: DocString) {
+        assertThat(httpRespone.body).isEqualTo(body.content)
     }
 
     @After

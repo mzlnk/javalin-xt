@@ -66,6 +66,8 @@ dependencies {
     e2eTestImplementation("io.cucumber:cucumber-expressions:_")
     e2eTestImplementation("org.assertj:assertj-core:_")
     e2eTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
+    e2eTestImplementation("com.squareup.okhttp3:okhttp:_")
+
 }
 
 idea {

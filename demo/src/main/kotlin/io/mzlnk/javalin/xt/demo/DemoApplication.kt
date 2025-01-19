@@ -1,10 +1,7 @@
 package io.mzlnk.javalin.xt.demo
 
 import io.javalin.Javalin
-import io.mzlnk.javalin.xt.context
-import io.mzlnk.javalin.xt.enableApplicationProperties
-import io.mzlnk.javalin.xt.enableIoC
-import io.mzlnk.javalin.xt.properties
+import io.mzlnk.javalin.xt.*
 import kotlin.time.measureTimedValue
 
 fun main(args: Array<String>) {
@@ -18,6 +15,8 @@ fun main(args: Array<String>) {
             config.jetty.defaultHost
         }
     }
+
+    app.registerEndpoint(TestEndpoint())
 
     println("Total elapsed time: $elapsedTime.")
 
