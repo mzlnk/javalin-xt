@@ -1,1 +1,2 @@
 io.mzlnk.javalin.xt.context.internal.processing.ksp.ModuleSymbolProcessorProvider
+io.mzlnk.javalin.xt.routing.internal.processing.inbound.ksp.EndpointSymbolProcessorProvider
