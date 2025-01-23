@@ -86,7 +86,7 @@ fun main(args: Array<String>) {
         // enables IoC container and dependency injection
         config.enableIoC()
         // enables application properties engine
-        config.enableProperties { propertiesConfig ->
+        config.enableApplicationProperties { propertiesConfig ->
             propertiesConfig.profile = "dev"
         }
     }
