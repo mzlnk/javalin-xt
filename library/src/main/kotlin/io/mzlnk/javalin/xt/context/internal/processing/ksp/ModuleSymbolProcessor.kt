@@ -28,7 +28,7 @@ internal class ModuleSymbolProcessor(
 
     private fun save(file: GeneratedFile) = try {
         codeGenerator.createNewFile(
-            dependencies = Dependencies(aggregating = true),
+            dependencies = Dependencies.ALL_FILES,
             packageName = file.packageName ?: "",
             fileName = file.name,
             extensionName = file.extension
