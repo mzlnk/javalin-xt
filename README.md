@@ -50,15 +50,14 @@ Specifically designed to work with Javalin which allows for a more streamlined a
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | **Dependency injection**   | Simple and lightweight dependency injection (DI) framework that uses no reflection.                                             |
 | **Application properties** | Simple engine to read and access application properties in a Spring Boot-like way via application.yml stored in your resources. |
-| **Declarative routing**    | Simple way to define routes and handlers in a declarative way using annotations. (TBA)                                          |
+| **Declarative routing**    | Simple way to define routes and handlers in a declarative way using annotations.                                                |
 
 ## Notes 📄
 
 Currently, javalin-xt is still in development 🚧. Therefore:
 
 - Kotlin support only (support for Java is planned in the future)
-- limited features
-- no UX-friendly configuration (dedicated Gradle/Maven plugin is planned in the future)
+- Some features may have limited functionality
 
 ## Quickstart 🚀
 
@@ -91,7 +90,7 @@ fun main(args: Array<String>) {
             propertiesConfig.profile = "dev"
         }
     }
-    
+
     app.start(8080)
 }
 ```
@@ -103,7 +102,7 @@ the [Wiki](https://github.com/mzlnk/javalin-xt/wiki) section:
 
 - [Dependency injection](https://github.com/mzlnk/javalin-xt/wiki/Dependency-injection)
 - [Application properties](https://github.com/mzlnk/javalin-xt/wiki/Application-properties)
-- Declarative routing (TBA)
+- [Declarative routing](https://github.com/mzlnk/javalin-xt/wiki/Declarative-routing)
 
 ## Examples 📂
 
