@@ -50,7 +50,7 @@ Specifically designed to work with Javalin which allows for a more streamlined a
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | **Dependency injection**   | Simple and lightweight dependency injection (DI) framework that uses no reflection.                                             |
 | **Application properties** | Simple engine to read and access application properties in a Spring Boot-like way via application.yml stored in your resources. |
-| **Declarative routing**    | Simple way to define routes and handlers in a declarative way using annotations.                                                |
+| **Declarative routing**    | Simple way to define routes in a declarative way using minimized set of annotations.                                            |
 
 ## Notes 📄
 
@@ -90,6 +90,8 @@ fun main(args: Array<String>) {
             propertiesConfig.profile = "dev"
         }
     }
+
+    app.registerEndpoint(SampleEndpoint())
 
     app.start(8080)
 }
