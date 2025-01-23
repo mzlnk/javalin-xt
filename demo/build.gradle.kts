@@ -1,10 +1,10 @@
 plugins {
     kotlin("jvm") version "2.0.21"
-    id("io.mzlnk.javalin-xt") version "0.5.0-SNAPSHOT"
+    id("io.mzlnk.javalin-xt") version "0.5.0"
 }
 
 group = "io.mzlnk"
-version = "0.5.0-SNAPSHOT"
+version = "0.5.0"
 
 kotlin {
     jvmToolchain(21)
