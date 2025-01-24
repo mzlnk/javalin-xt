@@ -3,8 +3,6 @@ name: "[library] CI"
 on:
   pull_request:
     branches:
-      - main
-      - develop
       - '**' # Run on any branch with a PR
 
 jobs:
