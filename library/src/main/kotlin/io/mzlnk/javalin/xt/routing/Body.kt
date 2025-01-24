@@ -6,4 +6,6 @@ package io.mzlnk.javalin.xt.routing
  * Supported types:
  * - String
  */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class Body

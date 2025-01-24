@@ -5,4 +5,6 @@ package io.mzlnk.javalin.xt.routing
  *
  * @param name name of header
  */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class Header(val name: String)

@@ -5,4 +5,6 @@ package io.mzlnk.javalin.xt.routing
  *
  * @param value HTTP path
  */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
 annotation class Path(val value: String)

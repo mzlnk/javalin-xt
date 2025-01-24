@@ -5,4 +5,6 @@ package io.mzlnk.javalin.xt.routing
  *
  * @param name query parameter name
  */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class QueryParameter(val name: String)

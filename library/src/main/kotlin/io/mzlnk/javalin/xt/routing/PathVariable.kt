@@ -8,4 +8,6 @@ package io.mzlnk.javalin.xt.routing
  *
  * @param name name of path variable
  */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class PathVariable(val name: String)
