@@ -2,7 +2,6 @@ package io.mzlnk.javalin.xt.context.internal.management
 
 import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.generated.SingletonDefinition
-import io.mzlnk.javalin.xt.context.internal.management.SingletonMatcher.Companion.matcherFor
 import io.mzlnk.javalin.xt.context.internal.utils.graph.Graph
 import java.util.*
 
@@ -39,27 +38,31 @@ internal object DependencyGraphFactory {
                  */
                 .filterIsInstance<SingletonDefinition.DependencyIdentifier.Singleton<*>>()
                 .forEach { dependency ->
-                    val matcher = when(dependency) {
-                        is SingletonDefinition.DependencyIdentifier.Singleton.Singular<*>-> matcherFor(
+                    val toMatch = when (dependency) {
+                        is SingletonDefinition.DependencyIdentifier.Singleton.Singular<*> ->
                             SingletonToMatch.Singular(
                                 typeRef = dependency.typeRef,
                                 name = dependency.name
                             )
-                        )
-                        is SingletonDefinition.DependencyIdentifier.Singleton.List<*> -> matcherFor(
+
+                        is SingletonDefinition.DependencyIdentifier.Singleton.List<*> ->
                             SingletonToMatch.List(
                                 typeRef = dependency.typeRef as TypeReference<List<Any>>,
                                 name = dependency.name,
                                 elementName = dependency.elementName
                             )
-                        )
                     }
 
                     nodes
                         // skip the node itself
                         .filter { candidate -> candidate.id != node.id }
                         // apply filters:
-                        .filter { candidate -> matcher.matches(candidate.identifier) }
+                        .filter { candidate ->
+                            SingletonMatcher.matches(
+                                toMatch = toMatch,
+                                candidate = candidate.identifier
+                            )
+                        }
                         // set corresponding edges
                         .forEach { candidate ->
                             edges[nodeIdxsByIds[candidate.id]!!][nodeIdxsByIds[node.id]!!] = true

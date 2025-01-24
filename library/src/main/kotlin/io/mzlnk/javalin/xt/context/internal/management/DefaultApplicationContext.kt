@@ -4,7 +4,6 @@ import io.mzlnk.javalin.xt.context.ApplicationContext
 import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.generated.SingletonDefinition
 import io.mzlnk.javalin.xt.context.generated.SingletonDefinition.DependencyIdentifier
-import io.mzlnk.javalin.xt.context.internal.management.SingletonMatcher.Companion.matcherFor
 import io.mzlnk.javalin.xt.properties.ApplicationProperties
 
 /**
@@ -67,10 +66,11 @@ internal class DefaultApplicationContext : ApplicationContext {
      */
     @Suppress("UNCHECKED_CAST")
     private fun <T : Any> findInstance(singletonToMatch: SingletonToMatch<T>): T? {
-        val matcher = matcherFor(singletonToMatch)
-
         val matching = _singletons.filter { (candidateIdentifier, _) ->
-            matcher.matches(candidateIdentifier)
+            SingletonMatcher.matches(
+                toMatch = singletonToMatch,
+                candidate = candidateIdentifier
+            )
         }
 
         if (singletonToMatch is SingletonToMatch.List<*>) {

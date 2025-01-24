@@ -52,147 +52,117 @@ internal sealed interface SingletonToMatch<T : Any> {
  * Matcher is created based on requirements that candidate singleton must meet.
  *
  * There are two types of matchers:
- * - SingularSingletonMatcher - used for regular singleton definitions. See: [SingularSingletonMatcher]
- * - ListSingletonMatcher - used for singleton definitions of list types that are treated in different way
- *                          as they can be match with both list types and their element types to e.g. allow
- *                          defining dependencies as list of all available components of given type.
- *                          See: [ListSingletonMatcher]
- *
+ * - singular - used for regular singleton definitions. See: [matchesSingular]
+ * - list     - used for singleton definitions of list types that are treated in different way
+ *              as they can be match with both list types and their element types to e.g. allow
+ *              defining dependencies as list of all available components of given type.
+ *              See: [matchesList]
  *
  */
-internal interface SingletonMatcher {
+internal object SingletonMatcher {
 
-    fun matches(identifier: SingletonDefinition.Identifier<*>): Boolean
-
-    companion object {
-
-        /**
-         * Creates a matcher for singleton with given identifier.
-         *
-         * @param identifier identifier of the singleton
-         *
-         * @return matcher for the singleton
-         */
-        fun matcherFor(singletonToMatch: SingletonToMatch<*>): SingletonMatcher = when (singletonToMatch) {
-            is SingletonToMatch.Singular<*> -> SingularSingletonMatcher(
-                typeRef = singletonToMatch.typeRef,
-                name = singletonToMatch.name
-            )
-
-            is SingletonToMatch.List<*> -> ListSingletonMatcher(
-                typeRef = singletonToMatch.typeRef,
-                name = singletonToMatch.name,
-                elementName = singletonToMatch.elementName
-            )
+    fun matches(toMatch: SingletonToMatch<*>, candidate: SingletonDefinition.Identifier<*>): Boolean =
+        when (toMatch) {
+            is SingletonToMatch.Singular<*> -> matchesSingular(toMatch, candidate)
+            is SingletonToMatch.List<*> -> matchesList(toMatch, candidate)
         }
 
+    /**
+     * Matcher used for regular singleton definitions.
+     *
+     * Matching matrix:
+     * matches(A, B) = A.matchesTypeRef(B) && A.matchesName(B)
+     *
+     * A.matchesTypeRef(B) matrix:
+     * +-------------------------------+---------------------+
+     * | relation between A and B      | A.matchesTypeRef(B) |
+     * +-------------------------------+---------------------+
+     * | A is the same type as B       | true                |
+     * | A is a super type of B        | true                |
+     * | A implements B                | true                |
+     * | A is different type than B    | false               |
+     * +-------------------------------+---------------------+
+     *
+     * A.matchesName(B) matrix:
+     * +--------+--------+------------------+
+     * | A name | B name | A.matchesName(B) |
+     * +--------+--------+------------------+
+     * | -      | -      | true             |
+     * | N      | -      | false            |
+     * | -      | N      | true             |
+     * | N      | N      | true             |
+     * | N      | M      | false            |
+     * +--------+--------+------------------+
+     */
+    private fun matchesSingular(
+        toMatch: SingletonToMatch.Singular<*>,
+        candidate: SingletonDefinition.Identifier<*>
+    ): Boolean {
+        val matchesTypeRef: Boolean = toMatch.typeRef.isAssignableFrom(candidate.typeRef)
+        val matchesName: Boolean = toMatch.name?.let { it == candidate.name } ?: true
+
+        return matchesTypeRef && matchesName
     }
 
-}
-
-/**
- * Matcher used for regular singleton definitions.
- *
- * Matching matrix:
- * A.matches(B) = A.matchesTypeRef(B) && A.matchesName(B)
- *
- * A.matchesTypeRef(B) matrix:
- * +-------------------------------+---------------------+
- * | relation between A and B      | A.matchesTypeRef(B) |
- * +-------------------------------+---------------------+
- * | A is the same type as B       | true                |
- * | A is a super type of B        | true                |
- * | A implements B                | true                |
- * | A is different type than B    | false               |
- * +-------------------------------+---------------------+
- *
- * A.matchesName(B) matrix:
- * +--------+--------+------------------+
- * | A name | B name | A.matchesName(B) |
- * +--------+--------+------------------+
- * | -      | -      | true             |
- * | N      | -      | false            |
- * | -      | N      | true             |
- * | N      | N      | true             |
- * | N      | M      | false            |
- * +--------+--------+------------------+
- */
-private class SingularSingletonMatcher(
-    private val typeRef: TypeReference<*>,
-    private val name: String?
-) : SingletonMatcher {
-
-    override fun matches(identifier: SingletonDefinition.Identifier<*>): Boolean =
-        matchesTypeRef(identifier.typeRef) && matchesName(identifier.name)
-
-    private fun matchesTypeRef(typeRef: TypeReference<*>): Boolean = this.typeRef.isAssignableFrom(typeRef)
-    private fun matchesName(name: String?): Boolean = this.name?.let { it == name } ?: true
-}
-
-/**
- * Matcher used for singleton definitions of list types.
- *
- * List types are treated in different way as they can be match with both list types and their element types
- * to e.g. allow defining dependencies as list of all available components of given type.
- *
- * Matching matrix:
- * A.matches(B) = A.matchesTypeRef(B) && A.matchesName(B)
- *
- * A.matchesTypeRef(B) matrix:
- * +--------------------------------------------------------------+---------------------+
- * | relation between A and B                                     | A.matchesTypeRef(B) |
- * +--------------------------------------------------------------+---------------------+
- * | A is List<X> and B is List<X>                                | true                |
- * | A is List<X> and B is X                                      | true                |
- * | A is List<X> and B is List<Y>                                | false               |
- * | A is List<X> and B is Y                                      | false               |
- * | A is List<X> and B is Y where X is super type of Y           | true                |
- * | A is List<X> and B is Y where Y implements X                 | true                |
- * | A is List<X> and B is List<Y> where X is super type of Y     | false               |
- * | A is List<X> and B is List<Y> where Y implements X           | false               |
- * +--------------------------------------------------------------+---------------------+
- *
- * A.matchesName(B) matrix:
- *
- * I: A is List<X> and B is List<X>
- * +---------------+------------+------------+------------------+
- * | A elementName | A name     | B name     | A.matchesName(B) |
- * +---------------+------------+------------+------------------+
- * | N             | <anything> | <anything> | true             |
- * | -             | -          | -          | true             |
- * | -             | N          | -          | false            |
- * | -             | -          | N          | true             |
- * | -             | N          | N          | true             |
- * | -             | N          | M          | false            |
- * +---------------+------------+------------+------------------+
- *
- * II: A is List<X> and B is X
- * +--------+---------------+------------+------------------+
- * | A.name | A.elementName | B.name     | A.matchesName(B) |
- * +--------+---------------+------------+------------------+
- * | N      | <anything>    | <anything> | false            |
- * | -      | -             | -          | true             |
- * | -      | N             | -          | false            |
- * | -      | -             | N          | true             |
- * | -      | N             | N          | true             |
- * | -      | N             | M          | false            |
- * +--------+---------------+------------+------------------+
- */
-private class ListSingletonMatcher(
-    private val typeRef: TypeReference<out List<Any>>,
-    private val name: String?,
-    private val elementName: String?
-) : SingletonMatcher {
-
-    private val elementTypeRef: TypeReference<*> = typeRef.elementType
-
-    override fun matches(identifier: SingletonDefinition.Identifier<*>): Boolean {
-        return if (identifier.typeRef.isList()) {
-            this.typeRef == identifier.typeRef
-                    && this.elementName?.let { false } ?: this.name?.let { it == identifier.name } ?: true
+    /**
+     * Matcher used for singleton definitions of list types.
+     *
+     * List types are treated in different way as they can be match with both list types and their element types
+     * to e.g. allow defining dependencies as list of all available components of given type.
+     *
+     * Matching matrix:
+     * matches(A, B) = A.matchesTypeRef(B) && A.matchesName(B)
+     *
+     * A.matchesTypeRef(B) matrix:
+     * +--------------------------------------------------------------+---------------------+
+     * | relation between A and B                                     | A.matchesTypeRef(B) |
+     * +--------------------------------------------------------------+---------------------+
+     * | A is List<X> and B is List<X>                                | true                |
+     * | A is List<X> and B is X                                      | true                |
+     * | A is List<X> and B is List<Y>                                | false               |
+     * | A is List<X> and B is Y                                      | false               |
+     * | A is List<X> and B is Y where X is super type of Y           | true                |
+     * | A is List<X> and B is Y where Y implements X                 | true                |
+     * | A is List<X> and B is List<Y> where X is super type of Y     | false               |
+     * | A is List<X> and B is List<Y> where Y implements X           | false               |
+     * +--------------------------------------------------------------+---------------------+
+     *
+     * A.matchesName(B) matrix:
+     *
+     * I: A is List<X> and B is List<X>
+     * +---------------+------------+------------+------------------+
+     * | A elementName | A name     | B name     | A.matchesName(B) |
+     * +---------------+------------+------------+------------------+
+     * | N             | <anything> | <anything> | true             |
+     * | -             | -          | -          | true             |
+     * | -             | N          | -          | false            |
+     * | -             | -          | N          | true             |
+     * | -             | N          | N          | true             |
+     * | -             | N          | M          | false            |
+     * +---------------+------------+------------+------------------+
+     *
+     * II: A is List<X> and B is X
+     * +--------+---------------+------------+------------------+
+     * | A.name | A.elementName | B.name     | A.matchesName(B) |
+     * +--------+---------------+------------+------------------+
+     * | N      | <anything>    | <anything> | false            |
+     * | -      | -             | -          | true             |
+     * | -      | N             | -          | false            |
+     * | -      | -             | N          | true             |
+     * | -      | N             | N          | true             |
+     * | -      | N             | M          | false            |
+     * +--------+---------------+------------+------------------+
+     */
+    private fun matchesList(
+        toMatch: SingletonToMatch.List<*>,
+        candidate: SingletonDefinition.Identifier<*>
+    ): Boolean {
+        return if (candidate.typeRef.isList()) {
+            toMatch.typeRef == candidate.typeRef
+                    && toMatch.elementName?.let { false } ?: toMatch.name?.let { it == candidate.name } ?: true
         } else {
-            this.elementTypeRef.isAssignableFrom(identifier.typeRef)
-                    && this.name?.let { false } ?: this.elementName?.let { it == identifier.name } ?: true
+            toMatch.typeRef.elementType.isAssignableFrom(candidate.typeRef)
+                    && toMatch.name?.let { false } ?: toMatch.elementName?.let { it == candidate.name } ?: true
         }
     }
 
