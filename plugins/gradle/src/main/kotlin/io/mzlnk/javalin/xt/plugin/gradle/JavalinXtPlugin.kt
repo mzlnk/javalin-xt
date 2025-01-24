@@ -17,7 +17,7 @@ class JavalinXtPlugin : Plugin<Project> {
         project.pluginManager.apply("com.google.devtools.ksp")
 
         // Add required dependencies for javalin-xt
-        project.dependencies.add("implementation", "io.mzlnk:javalin-xt:0.5.0")
-        project.dependencies.add("ksp", "io.mzlnk:javalin-xt:0.5.0")
+        project.dependencies.add("implementation", "io.mzlnk:javalin-xt:0.6.0-SNAPSHOT")
+        project.dependencies.add("ksp", "io.mzlnk:javalin-xt:0.6.0-SNAPSHOT")
     }
 }
