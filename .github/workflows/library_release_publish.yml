@@ -1,4 +1,4 @@
-name: "[library] release"
+name: "[library] publish release"
 
 on:
   workflow_dispatch:
