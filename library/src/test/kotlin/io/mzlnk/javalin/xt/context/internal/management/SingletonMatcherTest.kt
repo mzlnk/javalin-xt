@@ -2,8 +2,6 @@ package io.mzlnk.javalin.xt.context.internal.management
 
 import io.mzlnk.javalin.xt.context.TypeReference
 import io.mzlnk.javalin.xt.context.generated.SingletonDefinition
-import io.mzlnk.javalin.xt.context.internal.management.SingletonMatcher
-import io.mzlnk.javalin.xt.context.internal.management.SingletonToMatch
 import io.mzlnk.javalin.xt.utils.testCase
 import io.mzlnk.javalin.xt.utils.testCases
 import org.assertj.core.api.Assertions.assertThat
@@ -24,17 +22,17 @@ class SingletonMatcherTest {
         expectedResult: Boolean
     ) {
         // given:
-        val matcher = SingletonMatcher.matcherFor(
-            singletonToMatch = SingletonToMatch.Singular(matcherTypeRef, matcherName)
+        val toMatch = SingletonToMatch.Singular(
+            typeRef = matcherTypeRef,
+            name = matcherName
+        )
+        val candidate = SingletonDefinition.Identifier(
+            typeRef = toMatchTypeRef,
+            name = toMatchName
         )
 
         // when:
-        val result = matcher.matches(
-            identifier = SingletonDefinition.Identifier(
-                typeRef = toMatchTypeRef,
-                name = toMatchName
-            )
-        )
+        val result = SingletonMatcher.matches(toMatch, candidate)
 
         // then:
         assertThat(result).isEqualTo(expectedResult)
@@ -51,17 +49,18 @@ class SingletonMatcherTest {
         expectedResult: Boolean
     ) {
         // given:
-        val matcher = SingletonMatcher.matcherFor(
-            singletonToMatch = SingletonToMatch.List(matcherTypeRef, matcherName, matcherElementName)
+        val toMatch = SingletonToMatch.List(
+            typeRef = matcherTypeRef,
+            name = matcherName,
+            elementName = matcherElementName
+        )
+        val candidate = SingletonDefinition.Identifier(
+            typeRef = toMatchTypeRef,
+            name = toMatchName
         )
 
         // when:
-        val result = matcher.matches(
-            identifier = SingletonDefinition.Identifier(
-                typeRef = toMatchTypeRef,
-                name = toMatchName
-            )
-        )
+        val result = SingletonMatcher.matches(toMatch, candidate)
 
         // then:
         assertThat(result).isEqualTo(expectedResult)
