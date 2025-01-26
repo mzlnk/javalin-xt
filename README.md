@@ -50,7 +50,7 @@ Specifically designed to work with Javalin which allows for a more streamlined a
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | **Dependency injection**   | Simple and lightweight dependency injection (DI) framework that uses no reflection.                                             |
 | **Application properties** | Simple engine to read and access application properties in a Spring Boot-like way via application.yml stored in your resources. |
-| **Declarative routing**    | Simple way to define routes in a declarative way using minimized set of annotations.                                            |
+| **Declarative routing**    | Simple way to define routes in a declarative way using minimized set of annotations and no reflection                           |
 
 ## Notes 📄
 
@@ -58,6 +58,7 @@ Currently, javalin-xt is still in development 🚧. Therefore:
 
 - Kotlin support only (support for Java is planned in the future)
 - Some features may have limited functionality
+- Gradle support only
 
 ## Quickstart 🚀
 
@@ -91,6 +92,7 @@ fun main(args: Array<String>) {
         }
     }
 
+    // registers declaratively defined endpoint
     app.registerEndpoint(SampleEndpoint())
 
     app.start(8080)
@@ -112,7 +114,7 @@ There are example project using different build tools available in the `examples
 
 ## License 🎫
 
-Javalin DI is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for more information.
+javalin-xt is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for more information.
 
 ## Contributing 💪
 
