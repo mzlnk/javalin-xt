@@ -39,5 +39,5 @@ application {
 
 tasks.named<JavaExec>("run") {
     // enable assertions used in E2E test scenarios
-    jvmArgs = listOf("-ea")
+    jvmArgs = listOf("-ea") + System.getenv("APP_JVM_ARGS").split(" ")
 }

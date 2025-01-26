@@ -62,6 +62,7 @@ class Project private constructor(private val rootDirectory: Path) {
     fun startApplication(): Application {
         val process = ProcessBuilder("./gradlew", "run")
             .apply { environment().putAll(environmentVariables) }
+            .apply { System.getenv("APP_JVM_ARGS")?.let { environment()["APP_JVM_ARGS"] = it } }
             .directory(rootDirectory.toFile())
             .start()
 

@@ -31,6 +31,11 @@ sourceSets {
 }
 
 val e2eTestImplementation = configurations["e2eTestImplementation"]
+val e2eTestRuntimeOnly = configurations["e2eTestRuntimeOnly"]
+
+configurations.named("e2eTestRuntimeOnly") {
+    isCanBeResolved = true
+}
 
 configurations.create("cucumberRuntime") {
     extendsFrom(configurations["e2eTestImplementation"])
@@ -68,6 +73,7 @@ dependencies {
     e2eTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
     e2eTestImplementation("com.squareup.okhttp3:okhttp:_")
 
+    e2eTestRuntimeOnly("org.jacoco:org.jacoco.agent:0.8.12:runtime")
 }
 
 idea {
@@ -138,7 +144,7 @@ publishing {
             url = uri("${System.getProperty("user.home")}/.m2/repository")
         }
 
-        if(!project.version.toString().endsWith("-SNAPSHOT")) {
+        if (!project.version.toString().endsWith("-SNAPSHOT")) {
             maven {
                 name = "releases"
                 url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
@@ -150,7 +156,7 @@ publishing {
             }
         }
 
-        if(project.version.toString().endsWith("-SNAPSHOT")) {
+        if (project.version.toString().endsWith("-SNAPSHOT")) {
             maven {
                 name = "snapshots"
                 url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
@@ -188,8 +194,39 @@ tasks.test {
     finalizedBy(tasks.jacocoTestReport)
 }
 
+tasks.register<Test>("e2eTest") {
+    group = "verification"
+
+    dependsOn("build")
+    dependsOn("e2eTestClasses")
+
+    doLast {
+        val jacocoAgentFile = configurations.named("e2eTestRuntimeOnly").get()
+            .files.find { it.name.startsWith("org.jacoco.agent-") } ?: throw GradleException("Jacoco agent not found")
+
+        val jacocoJvmArgs = listOf(
+            "-javaagent:${jacocoAgentFile.absolutePath}=destfile=${layout.buildDirectory.asFile.get().absolutePath}/jacoco/e2eTest.exec,append=true"
+        )
+
+        javaexec {
+            mainClass = "io.cucumber.core.cli.Main"
+            classpath = configurations["cucumberRuntime"] + sourceSets["e2eTest"].runtimeClasspath
+            environment("APP_JVM_ARGS", jacocoJvmArgs.joinToString(" "))
+        }
+    }
+}
+
 tasks.jacocoTestReport {
-    dependsOn(tasks.test)
+    dependsOn(tasks.test, tasks.named("e2eTest"))
+
+    executionData(
+        fileTree(layout.buildDirectory).include("jacoco/*.exec")
+    )
+
+    classDirectories.setFrom(
+        files("${layout.buildDirectory.asFile.get().absolutePath}/classes/kotlin/main"),
+        zipTree("${layout.buildDirectory.asFile.get()}/libs/javalin-xt.jar")
+    )
 
     reports {
         html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
@@ -225,18 +262,6 @@ tasks.register("testCoverage") {
         coverageFile.writeText(coverage.toString())
 
         println("Test coverage: $coverage%")
-    }
-}
-
-tasks.register("e2eTest") {
-    dependsOn("build")
-    dependsOn("e2eTestClasses")
-
-    doLast {
-        javaexec {
-            mainClass = "io.cucumber.core.cli.Main"
-            classpath = configurations["cucumberRuntime"] + sourceSets["e2eTest"].runtimeClasspath
-        }
     }
 }
 
