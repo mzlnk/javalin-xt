@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.mzlnk"
-version = "1.0.0"
+version = "1.1.0-SNAPSHOT"
 
 kotlin {
     jvmToolchain(17)
@@ -104,7 +104,7 @@ publishing {
 
             groupId = "io.mzlnk"
             artifactId = "javalin-xt"
-            version = "1.0.0"
+            version = "1.1.0-SNAPSHOT"
 
             artifact(tasks.getByName("sourcesJar"))
             artifact(tasks.getByName("javadocJar"))
