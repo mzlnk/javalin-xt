@@ -1,8 +1,6 @@
 package io.mzlnk.javalin.xt.e2e
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -14,15 +12,6 @@ class Application private constructor(private val process: Process) {
         val scope = CoroutineScope(Dispatchers.Default)
 
         scope.launch {
-            process.errorStream.bufferedReader().use { reader ->
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    _logs.add(line)
-                }
-            }
-        }
-
-        scope.launch {
             process.inputStream.bufferedReader().use { reader ->
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
@@ -30,6 +19,7 @@ class Application private constructor(private val process: Process) {
                 }
             }
         }
+
     }
 
     val isStarted: Boolean get() = _logs.any { it.matches(APPLICATION_STARTED_REGEX) }

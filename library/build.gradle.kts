@@ -211,6 +211,7 @@ tasks.register("e2eTest") {
             mainClass = "io.cucumber.core.cli.Main"
             classpath = configurations["cucumberRuntime"] + sourceSets["e2eTest"].runtimeClasspath
             environment("APP_JVM_ARGS", jacocoJvmArgs.joinToString(" "))
+            args = listOf("--threads", "4")
         }
     }
 }

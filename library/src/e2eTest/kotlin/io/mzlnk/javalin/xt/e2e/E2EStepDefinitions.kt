@@ -65,7 +65,7 @@ class E2EStepDefinitions {
     fun `application starts successfully`() {
         val result = runBlocking {
             runCatching {
-                withTimeout(30.seconds) {
+                withTimeout(120.seconds) {
                     while (true) {
                         if (application.isStarted) {
                             // TODO: fix this
@@ -162,11 +162,6 @@ class E2EStepDefinitions {
                 .filter { it.isFile }
                 .forEach { println("${it.absolutePath}:\n${it.readText().prependLineNumbers()}") }
         }
-    }
-
-    @After
-    fun `print out logs`() {
-        application.printLogs()
     }
 
     @After
