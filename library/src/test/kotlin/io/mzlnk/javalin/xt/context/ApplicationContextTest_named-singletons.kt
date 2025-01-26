@@ -4,6 +4,8 @@ import io.mzlnk.javalin.xt.context.generated.SingletonDefinition
 import io.mzlnk.javalin.xt.context.internal.management.ApplicationContextFactory
 import io.mzlnk.javalin.xt.properties.internal.management.EmptyApplicationProperties
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class `ApplicationContextTest_named-singletons` {
@@ -37,8 +39,8 @@ class `ApplicationContextTest_named-singletons` {
         ).create()
 
         // then:
-        Assertions.assertThat(context.findInstance(ComponentA::class.java, name = "A1")).isEqualTo(componentA1)
-        Assertions.assertThat(context.findInstance(ComponentA::class.java, name = "A2")).isEqualTo(componentA2)
+        assertThat(context.findInstance(ComponentA::class.java, name = "A1")).isEqualTo(componentA1)
+        assertThat(context.findInstance(ComponentA::class.java, name = "A2")).isEqualTo(componentA2)
     }
 
     @Test
@@ -80,7 +82,7 @@ class `ApplicationContextTest_named-singletons` {
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {}, elementName = "A")
             ?: Assertions.fail("Components not found")
 
-        Assertions.assertThat(components).containsExactlyInAnyOrder(componentAA1, componentAA2)
+        assertThat(components).containsExactlyInAnyOrder(componentAA1, componentAA2)
     }
 
     @Test
@@ -115,7 +117,45 @@ class `ApplicationContextTest_named-singletons` {
         val components = context.findInstance(object : TypeReference<List<ComponentA>>() {}, name = "A1")
             ?: Assertions.fail("Components not found")
 
-        Assertions.assertThat(components).containsExactlyInAnyOrder(*componentsA1.toTypedArray())
+        assertThat(components).containsExactlyInAnyOrder(*componentsA1.toTypedArray())
+    }
+
+    @Test
+    fun `should return empty list when try to get named list of singletons that does not exist in context`() {
+        // given:
+        val definitions = emptyList<SingletonDefinition<*>>()
+
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create()
+
+        // when:
+        val result = context.getInstance(object : TypeReference<List<ComponentA>>() {}, name = "B")
+
+        // then:
+        assertThat(result).isEqualTo(emptyList<ComponentA>())
+    }
+
+    @Test
+    fun `should throw exception when try to get named singleton that does not exist in context`() {
+        // given:
+        val definitions = emptyList<SingletonDefinition<*>>()
+
+        val context = ApplicationContextFactory(
+            definitionSource = { definitions },
+            propertiesSource = { EmptyApplicationProperties }
+        ).create()
+
+        // when:
+        val exception = assertThatThrownBy {
+            context.getInstance(object : TypeReference<ComponentA>() {}, name = "B")
+        }
+
+        // then:
+        exception
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessage("No instance found for io.mzlnk.javalin.xt.context.ComponentA(B)")
     }
 
 }

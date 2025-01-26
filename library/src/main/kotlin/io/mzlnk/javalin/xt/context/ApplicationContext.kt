@@ -59,7 +59,8 @@ interface ApplicationContext {
      * @throws IllegalStateException if no instance found for the specified type
      */
     fun <T : Any> getInstance(type: TypeReference<T>, name: String? = null): T =
-        findInstance(type = type, name = name) ?: throw IllegalStateException("No instance found for $type")
+        findInstance(type = type, name = name)
+            ?: throw IllegalStateException("No instance found for ${type.type.typeName}${name?.let { "($name)" }}")
 
     /**
      * Gets an instance of the specified list type from the context.
@@ -68,17 +69,14 @@ interface ApplicationContext {
      * @param name the name of the instance to get
      * @param elementName the name of the element to get
      *
-     * @return the instance if exists
-     *
-     * @throws IllegalStateException if no instance found for the specified type
+     * @return the instance if exists or an empty list otherwise
      */
     fun <T : Any> getInstance(
         type: TypeReference<List<T>>,
         name: String? = null,
         elementName: String? = null
     ): List<T> =
-        findInstance(type = type, name = name, elementName = elementName)
-            ?: throw IllegalStateException("No instance found for $type")
+        findInstance(type = type, name = name, elementName = elementName) ?: emptyList()
 
     /**
      * Gets an instance of the specified type from the context.

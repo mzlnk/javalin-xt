@@ -15,20 +15,11 @@ internal class DefaultApplicationContext : ApplicationContext {
 
     override fun size(): Int = _singletons.size
 
-    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> findInstance(type: TypeReference<T>, name: String?): T? {
-        val singletonToMatch = if(type.isList()) {
-            type as TypeReference<List<T>>
-            SingletonToMatch.List(
-                typeRef = type,
-                name = name,
-            )
-        } else {
-            SingletonToMatch.Singular(
-                typeRef = type,
-                name = name
-            )
-        } as SingletonToMatch<T>
+        val singletonToMatch = SingletonToMatch.Singular(
+            typeRef = type,
+            name = name
+        )
         return findInstance(singletonToMatch)
     }
 

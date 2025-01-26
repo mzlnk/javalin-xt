@@ -2,7 +2,6 @@ package io.mzlnk.javalin.xt.context
 
 import io.mzlnk.javalin.xt.context.generated.SingletonDefinition
 import io.mzlnk.javalin.xt.context.internal.management.ApplicationContextFactory
-import io.mzlnk.javalin.xt.properties.internal.management.*
 import io.mzlnk.javalin.xt.properties.internal.management.BooleanListProperty
 import io.mzlnk.javalin.xt.properties.internal.management.BooleanProperty
 import io.mzlnk.javalin.xt.properties.internal.management.NumberListProperty

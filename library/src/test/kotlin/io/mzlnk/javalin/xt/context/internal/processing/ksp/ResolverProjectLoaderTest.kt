@@ -11,7 +11,6 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import io.mzlnk.javalin.xt.context.internal.processing.Project
 import io.mzlnk.javalin.xt.context.internal.processing.Singleton
 import io.mzlnk.javalin.xt.context.internal.processing.Type
-import io.mzlnk.javalin.xt.context.internal.processing.ksp.ResolverProjectLoader
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
@@ -230,6 +229,80 @@ class ResolverProjectLoaderTest {
         assertThat(dependencyB.type).isEqualTo(Type(packageName = "test", name = "TypeB", nullable = true))
         assertThat(dependencyB.key).isEqualTo("propertyB")
         assertThat(dependencyB.required).isEqualTo(false)
+    }
+
+    @Test
+    fun `should load details of singleton with list dependency`() {
+        // given:
+        val moduleFile = SourceFile.kotlin(
+            name = "module.kt",
+            """
+            package test
+            
+            import io.mzlnk.javalin.xt.context.*
+            
+            @Module
+            class TestModule {
+                
+                @Singleton
+                fun provideTypeA(typesB: List<TypeB>): TypeA = TypeA()
+                
+            }
+            """
+        )
+
+        // when:
+        val project = process(annotationsFile, typesFile, moduleFile)
+
+        // then:
+        val module = project?.modules?.firstOrNull() ?: fail("Module not found")
+        val singleton = module.singletons.find { it.methodName == "provideTypeA" } ?: fail("Singleton not found")
+
+        assertThat(singleton.dependencies[0]).isEqualTo(
+            Singleton.Dependency.Singleton.List(
+                type = Type(
+                    packageName = "kotlin.collections",
+                    name = "List",
+                    typeParameters = listOf(Type(packageName = "test", name = "TypeB", nullable = false)),
+                    nullable = false,
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `should load details of singleton with named dependency`() {
+        // given:
+        val moduleFile = SourceFile.kotlin(
+            name = "module.kt",
+            """
+            package test
+            
+            import io.mzlnk.javalin.xt.context.*
+            
+            @Module
+            class TestModule {
+                
+                @Singleton
+                fun provideTypeA(@Named("B") typeB: TypeB): TypeA = TypeA()
+                
+            }
+            """
+        )
+
+        // when:
+        val project = process(annotationsFile, typesFile, moduleFile)
+
+        // then:
+        val module = project?.modules?.firstOrNull() ?: fail("Module not found")
+        val singleton = module.singletons.find { it.methodName == "provideTypeA" } ?: fail("Singleton not found")
+
+        assertThat(singleton.dependencies[0]).isEqualTo(
+            Singleton.Dependency.Singleton.Singular(
+                type = Type(packageName = "test", name = "TypeB", nullable = false),
+                name = "B"
+            )
+        )
     }
 
     @Test
