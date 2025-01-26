@@ -7,7 +7,7 @@
 [![Java](https://img.shields.io/badge/Java-17-f5222f.svg)](https://www.java.com/)
 [![Gradle](https://img.shields.io/badge/Gradle-8.5-27c2b7.svg)](https://gradle.org/)
 
-[![Version](https://img.shields.io/badge/version-0.5.0-397ee6)](https://central.sonatype.com/artifact/io.mzlnk/javalin-xt/overview)
+[![Version](https://img.shields.io/badge/version-1.0.0-397ee6)](https://central.sonatype.com/artifact/io.mzlnk/javalin-xt/overview)
 [![Build](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fjavalin-xt-bot%2F896b6842fd99039b5a14141bd2e80f41%2Fraw%2Fbuild.json)](#)
 [![Code coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fjavalin-xt-bot%2F896b6842fd99039b5a14141bd2e80f41%2Fraw%2Fcode-coverage.json
 )](#)
@@ -68,7 +68,7 @@ Currently, javalin-xt is still in development 🚧. Therefore:
 
 ```kotlin
 plugins {
-    id("io.mzlnk:javalin-xt") version "0.5.0"
+    id("io.mzlnk:javalin-xt") version "1.0.0"
 }
 ```
 
