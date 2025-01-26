@@ -371,6 +371,39 @@ class ResolverProjectLoaderTest {
         assertThat(handler.parameters).contains(Parameter.Context)
     }
 
+    @Test
+    fun `should load endpoint handler path when path is defined at endpoint class level`() {
+        // given:
+        val endpointFile = SourceFile.kotlin(
+            "endpoint.kt",
+            """
+            package test
+
+            import io.mzlnk.javalin.xt.routing.*
+
+            @Path("/test1")
+            class TestEndpoint : Endpoint {
+                    
+                    @Get
+                    @Path("/test2")
+                    fun testMethod() {
+                        
+                    }
+            }
+            """
+        )
+
+        // when:
+        val project = process(routingFile, javalinFile, endpointFile)
+
+        // then:
+        val handler = project!!
+            .endpoints.find { it.type.name == "TestEndpoint" }!!
+            .handlers.find { it.methodName == "testMethod" }!!
+
+        assertThat(handler.path).isEqualTo("/test1/test2")
+    }
+
     @OptIn(ExperimentalCompilerApi::class)
     private fun process(vararg sources: SourceFile): Project? {
         val verifier = ResolverProjectLoaderVerifier()
