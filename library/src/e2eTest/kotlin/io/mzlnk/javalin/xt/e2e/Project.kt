@@ -64,6 +64,7 @@ class Project private constructor(private val rootDirectory: Path) {
             .apply { environment().putAll(environmentVariables) }
             .apply { System.getenv("APP_JVM_ARGS")?.let { environment()["APP_JVM_ARGS"] = it } }
             .directory(rootDirectory.toFile())
+            .redirectErrorStream(true)
             .start()
 
         return Application.create(process)
@@ -111,6 +112,11 @@ class Project private constructor(private val rootDirectory: Path) {
             project.copyResource(
                 hostPath = Path.of("build/libs/javalin-xt.jar"),
                 targetPath = Path.of("./libs/javalin-xt.jar")
+            )
+
+            project.copyResource(
+                hostPath = Path.of("src/e2eTest/resources/files/resources/logback.xml"),
+                targetPath = Path.of("./src/main/resources/logback.xml")
             )
 
             println("Project initialized at ${project.rootDirectory}")
