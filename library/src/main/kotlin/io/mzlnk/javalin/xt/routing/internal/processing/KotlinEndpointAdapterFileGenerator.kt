@@ -34,6 +34,18 @@ internal object KotlinEndpointAdapterFileGenerator : EndpointAdapterFileGenerato
                             .initializer("endpoint")
                             .build()
                     )
+                    .addProperty(
+                        PropertySpec.builder(
+                            name = "log",
+                            type = ClassName("org.slf4j", "Logger")
+                        )
+                            .initializer(
+                                "%T.getLogger(%T::class.java)",
+                                ClassName("org.slf4j", "LoggerFactory"),
+                                ClassName(endpoint.type.packageName, endpoint.type.name)
+                            )
+                            .build()
+                    )
                     .addFunction(
                         FunSpec.builder(name = "apply")
                             .addParameter(name = "javalin", type = ClassName("io.javalin", "Javalin"))
@@ -73,6 +85,8 @@ internal object KotlinEndpointAdapterFileGenerator : EndpointAdapterFileGenerato
                                             }
                                             add(")")
                                             add(" }")
+                                            add("\n")
+                                            add("log.info(%S)", "Registered endpoint: ${handler.method.name} ${handler.path}")
                                             if (idx < endpoint.handlers.size - 1) add("\n")
                                         }
                                     }

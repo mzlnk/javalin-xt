@@ -160,10 +160,14 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |  }
             |
@@ -209,12 +213,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path") { ctx -> endpoint.handleGet() }
+            |    log.info("Registered endpoint: GET /path")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -265,13 +274,19 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path1") { ctx -> endpoint.handleGet() }
+            |    log.info("Registered endpoint: GET /path1")
             |    javalin.post("/path2") { ctx -> endpoint.handlePost() }
+            |    log.info("Registered endpoint: POST /path2")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -287,7 +302,9 @@ internal class EndpointProcessorTest {
     @ParameterizedTest
     @MethodSource("params for generate adapter file when endpoint handler is for HTTP methods")
     fun `should generate adapter file when endpoint handler is for HTTP method`(
-        method: Endpoint.Handler.Method, expectedHandlerCode: String
+        method: Endpoint.Handler.Method,
+        expectedHandlerCode: String,
+        expectedLogCode: String
     ) {
         // given:
         val project = Project(
@@ -319,12 +336,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    $expectedHandlerCode
+            |    $expectedLogCode
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -371,12 +393,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path") { ctx -> endpoint.handleGet(ctx) }
+            |    log.info("Registered endpoint: GET /path")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -423,12 +450,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path/{id}") { ctx -> endpoint.handleGet(ctx.pathParam("id")) }
+            |    log.info("Registered endpoint: GET /path/{id}")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -475,12 +507,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path") { ctx -> endpoint.handleGet(ctx.header("header-1")!!) }
+            |    log.info("Registered endpoint: GET /path")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -527,12 +564,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path") { ctx -> endpoint.handleGet(ctx.header("header-1")) }
+            |    log.info("Registered endpoint: GET /path")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -579,12 +621,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path") { ctx -> endpoint.handleGet(ctx.queryParam("param-1")!!) }
+            |    log.info("Registered endpoint: GET /path")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -631,12 +678,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.get("/path") { ctx -> endpoint.handleGet(ctx.queryParam("param-1")) }
+            |    log.info("Registered endpoint: GET /path")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -683,12 +735,17 @@ internal class EndpointProcessorTest {
             |import io.mzlnk.javalin.xt.routing.Endpoint
             |import io.mzlnk.javalin.xt.routing.generated.EndpointAdapter
             |import java.lang.Class
+            |import org.slf4j.Logger
+            |import org.slf4j.LoggerFactory
             |
             |public class TestEndpointAdapter(
             |  private val endpoint: TestEndpoint,
             |) : EndpointAdapter {
+            |  public val log: Logger = LoggerFactory.getLogger(TestEndpoint::class.java)
+            |
             |  override fun apply(javalin: Javalin) {
             |    javalin.post("/path") { ctx -> endpoint.handlePost(ctx.body()) }
+            |    log.info("Registered endpoint: POST /path")
             |  }
             |
             |  public class Factory : EndpointAdapter.Factory {
@@ -706,12 +763,12 @@ internal class EndpointProcessorTest {
         @JvmStatic
         fun `params for generate adapter file when endpoint handler is for HTTP methods`() = testCases(
             // @formatter:off
-            //      | method                         | expected handler code
-            testCase( Endpoint.Handler.Method.GET    , """javalin.get("/path") { ctx -> endpoint.handle() }"""    ),
-            testCase( Endpoint.Handler.Method.POST   , """javalin.post("/path") { ctx -> endpoint.handle() }"""   ),
-            testCase( Endpoint.Handler.Method.PUT    , """javalin.put("/path") { ctx -> endpoint.handle() }"""    ),
-            testCase( Endpoint.Handler.Method.DELETE , """javalin.delete("/path") { ctx -> endpoint.handle() }""" ),
-            testCase( Endpoint.Handler.Method.PATCH  , """javalin.patch("/path") { ctx -> endpoint.handle() }"""  ),
+            //      | method                         | expected handler code                                      | expected log code                                   |
+            testCase( Endpoint.Handler.Method.GET    , """javalin.get("/path") { ctx -> endpoint.handle() }"""    , """log.info("Registered endpoint: GET /path")"""    ),
+            testCase( Endpoint.Handler.Method.POST   , """javalin.post("/path") { ctx -> endpoint.handle() }"""   , """log.info("Registered endpoint: POST /path")"""   ),
+            testCase( Endpoint.Handler.Method.PUT    , """javalin.put("/path") { ctx -> endpoint.handle() }"""    , """log.info("Registered endpoint: PUT /path")"""    ),
+            testCase( Endpoint.Handler.Method.DELETE , """javalin.delete("/path") { ctx -> endpoint.handle() }""" , """log.info("Registered endpoint: DELETE /path")""" ),
+            testCase( Endpoint.Handler.Method.PATCH  , """javalin.patch("/path") { ctx -> endpoint.handle() }"""  , """log.info("Registered endpoint: PATCH /path")"""  ),
             // @formatter:on
         )
     }
