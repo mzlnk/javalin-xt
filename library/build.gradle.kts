@@ -191,10 +191,9 @@ jacoco {
 
 tasks.test {
     useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.register<Test>("e2eTest") {
+tasks.register("e2eTest") {
     group = "verification"
 
     dependsOn("build")

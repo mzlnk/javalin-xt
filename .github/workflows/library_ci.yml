@@ -20,8 +20,12 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
-      - name: Run tests
-        run: ./gradlew check
+      - name: Build
+        run: ./gradlew assemble
+        working-directory: ./library
+
+      - name: Run unit tests
+        run: ./gradlew test
         working-directory: ./library
 
       - name: Run E2E tests
