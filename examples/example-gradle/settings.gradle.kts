@@ -10,4 +10,4 @@ plugins {
     id("de.fayard.refreshVersions") version "0.60.3"
 }
 
-rootProject.name = "demo"
+rootProject.name = "example-gradle"

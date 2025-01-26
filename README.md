@@ -108,7 +108,7 @@ the [Wiki](https://github.com/mzlnk/javalin-xt/wiki) section:
 
 ## Examples 📂
 
-There is an example project available in the `demo` directory.
+There are example project using different build tools available in the `examples` directory.
 
 ## License 🎫
 
